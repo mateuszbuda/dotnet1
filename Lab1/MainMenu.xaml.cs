@@ -23,6 +23,12 @@ namespace Lab1
         public MainMenu()
         {
             InitializeComponent();
+
+            using (SystemContext context = new SystemContext())
+            {
+                int wCount = context.Warehouses.Count();
+                StatBlock1.Text = wCount.ToString();
+            }
         }
     }
 }
