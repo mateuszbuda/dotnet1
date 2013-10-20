@@ -30,5 +30,13 @@ namespace Lab1
                 StatBlock1.Text = wCount.ToString();
             }
         }
+
+        private void ButtonWarehouses_Click(object sender, RoutedEventArgs e)
+        {
+            Grid content = Parent as Grid;
+
+            content.Children.Remove(this);
+            content.Children.Add(new WarehouseMenu());
+        }
     }
 }
