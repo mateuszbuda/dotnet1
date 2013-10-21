@@ -18,7 +18,7 @@ namespace Lab1
     /// <summary>
     /// Interaction logic for MainMenu.xaml
     /// </summary>
-    public partial class MainMenu : UserControl
+    public partial class MainMenu : UserControl // 1
     {
         public MainMenu()
         {
@@ -27,6 +27,10 @@ namespace Lab1
             using (SystemContext context = new SystemContext())
             {
                 int wCount = context.Warehouses.Count();
+                var xx = (from x in context.Warehouses
+                          where x.Id == 1 && x.Deleted == false
+                          select x).Distinct();
+
                 StatBlock1.Text = wCount.ToString();
             }
         }
@@ -36,7 +40,7 @@ namespace Lab1
             Grid content = Parent as Grid;
 
             content.Children.Remove(this);
-            content.Children.Add(new WarehouseMenu());
+            content.Children.Add(new WarehousesMenu());
         }
     }
 }

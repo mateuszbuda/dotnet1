@@ -18,7 +18,7 @@ namespace Lab1
     /// <summary>
     /// Interaction logic for SectorMenu.xaml
     /// </summary>
-    public partial class SectorMenu : UserControl
+    public partial class SectorMenu : UserControl   // 4
     {
         public SectorMenu()
         {

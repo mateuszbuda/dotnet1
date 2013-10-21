@@ -16,11 +16,11 @@ using System.Windows.Shapes;
 namespace Lab1
 {
     /// <summary>
-    /// Interaction logic for WarehousesMenu.xaml
+    /// Interaction logic for GroupMenu.xaml
     /// </summary>
-    public partial class WarehousesMenu : UserControl   // 2
+    public partial class GroupMenu : UserControl    // 5
     {
-        public WarehousesMenu()
+        public GroupMenu()
         {
             InitializeComponent();
         }

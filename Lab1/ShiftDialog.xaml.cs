@@ -10,17 +10,16 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace Lab1
 {
     /// <summary>
-    /// Interaction logic for WarehousesMenu.xaml
+    /// Interaction logic for ShiftDialog.xaml
     /// </summary>
-    public partial class WarehousesMenu : UserControl   // 2
+    public partial class ShiftDialog : Window   // 16
     {
-        public WarehousesMenu()
+        public ShiftDialog()
         {
             InitializeComponent();
         }

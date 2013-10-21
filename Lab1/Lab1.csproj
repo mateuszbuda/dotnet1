@@ -60,20 +60,75 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="GroupDialog.xaml.cs">
+      <DependentUpon>GroupDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GroupHistoryMenu.xaml.cs">
+      <DependentUpon>GroupHistoryMenu.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GroupMenu.xaml.cs">
+      <DependentUpon>GroupMenu.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GroupsMenu.xaml.cs">
+      <DependentUpon>GroupsMenu.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MainMenu.xaml.cs">
       <DependentUpon>MainMenu.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PartnerDialog.xaml.cs">
+      <DependentUpon>PartnerDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PartnerHistoryMenu.xaml.cs">
+      <DependentUpon>PartnerHistoryMenu.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PartnersMenu.xaml.cs">
+      <DependentUpon>PartnersMenu.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ProductDialog.xaml.cs">
+      <DependentUpon>ProductDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ProductsMenu.xaml.cs">
+      <DependentUpon>ProductsMenu.xaml</DependentUpon>
     </Compile>
     <Compile Include="SectorMenu.xaml.cs">
       <DependentUpon>SectorMenu.xaml</DependentUpon>
     </Compile>
+    <Compile Include="SectorsCountDialog.xaml.cs">
+      <DependentUpon>SectorsCountDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SectorsDialog.xaml.cs">
+      <DependentUpon>SectorsDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ShiftDialog.xaml.cs">
+      <DependentUpon>ShiftDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="SystemContext.cs" />
     <Compile Include="Warehouse.cs" />
+    <Compile Include="WarehouseDialog.xaml.cs">
+      <DependentUpon>WarehouseDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="WarehouseMenu.xaml.cs">
       <DependentUpon>WarehouseMenu.xaml</DependentUpon>
     </Compile>
     <Compile Include="WarehousesMenu.xaml.cs">
       <DependentUpon>WarehousesMenu.xaml</DependentUpon>
     </Compile>
+    <Page Include="GroupDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GroupHistoryMenu.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GroupMenu.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GroupsMenu.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainMenu.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -90,7 +145,43 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="PartnerDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PartnerHistoryMenu.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PartnersMenu.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ProductDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ProductsMenu.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="SectorMenu.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SectorsCountDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SectorsDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ShiftDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="WarehouseDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

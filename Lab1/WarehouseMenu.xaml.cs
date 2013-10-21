@@ -18,7 +18,7 @@ namespace Lab1
     /// <summary>
     /// Interaction logic for WarehouseMenu.xaml
     /// </summary>
-    public partial class WarehouseMenu : UserControl
+    public partial class WarehouseMenu : UserControl    // 3
     {
         public WarehouseMenu()
         {
