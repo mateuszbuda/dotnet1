@@ -43,6 +43,7 @@
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Data.Linq" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -60,6 +61,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Group.cs" />
     <Compile Include="GroupDialog.xaml.cs">
       <DependentUpon>GroupDialog.xaml</DependentUpon>
     </Compile>
@@ -75,6 +77,7 @@
     <Compile Include="MainMenu.xaml.cs">
       <DependentUpon>MainMenu.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Partner.cs" />
     <Compile Include="PartnerDialog.xaml.cs">
       <DependentUpon>PartnerDialog.xaml</DependentUpon>
     </Compile>
@@ -84,12 +87,14 @@
     <Compile Include="PartnersMenu.xaml.cs">
       <DependentUpon>PartnersMenu.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Product.cs" />
     <Compile Include="ProductDialog.xaml.cs">
       <DependentUpon>ProductDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="ProductsMenu.xaml.cs">
       <DependentUpon>ProductsMenu.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Sector.cs" />
     <Compile Include="SectorMenu.xaml.cs">
       <DependentUpon>SectorMenu.xaml</DependentUpon>
     </Compile>
@@ -99,6 +104,7 @@
     <Compile Include="SectorsDialog.xaml.cs">
       <DependentUpon>SectorsDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Shift.cs" />
     <Compile Include="ShiftDialog.xaml.cs">
       <DependentUpon>ShiftDialog.xaml</DependentUpon>
     </Compile>

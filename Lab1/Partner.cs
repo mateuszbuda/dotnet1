@@ -8,18 +8,15 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Lab1
 {
-    class Warehouse
+    class Partner
     {
-        [Column("id")]
         [Key]
+        [Column("id")]
         [Required]
+        public int PartnerId { get; set; }
+        [Required]
+        [Column("warehouse_id")]
         public int WarehouseId { get; set; }
-        [Required]
-        public bool Internal { get; set; }
-        public string Tel { get; set; }
-        public string Mail { get; set; }
-        [Required]
-        public string Name { get; set; }
         [Required]
         public string Street { get; set; }
         [Required]
@@ -29,10 +26,9 @@ namespace Lab1
         [Required]
         public string Code { get; set; }
         [Required]
-        public bool Deleted { get; set; }
+        public string Tel { get; set; }
+        public string Mail { get; set; }
 
-        public virtual ICollection<Sector> Sectors { get; set; }
-        public virtual ICollection<Shift> Sent { get; set; }
-        public virtual ICollection<Shift> Received { get; set; }
+        public Warehouse Warehouse { get; set; }
     }
 }
