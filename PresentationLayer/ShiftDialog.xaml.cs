@@ -10,21 +10,18 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace PresentationLayer
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for ShiftDialog.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class ShiftDialog : Window   // 16
     {
-        public MainWindow()
+        public ShiftDialog()
         {
             InitializeComponent();
-
-            MainWindowContent.Children.Add(new MainMenu());
         }
     }
 }

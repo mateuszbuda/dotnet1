@@ -10,21 +10,18 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace PresentationLayer
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for SectorsCountDialog.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class SectorsCountDialog : Window    // 14
     {
-        public MainWindow()
+        public SectorsCountDialog()
         {
             InitializeComponent();
-
-            MainWindowContent.Children.Add(new MainMenu());
         }
     }
 }

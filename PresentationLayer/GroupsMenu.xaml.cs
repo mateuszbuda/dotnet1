@@ -16,15 +16,13 @@ using System.Windows.Shapes;
 namespace PresentationLayer
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for GroupsMenu.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class GroupsMenu : UserControl   // 10
     {
-        public MainWindow()
+        public GroupsMenu()
         {
             InitializeComponent();
-
-            MainWindowContent.Children.Add(new MainMenu());
         }
     }
 }
