@@ -8,6 +8,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DatabaseAccess
 {
+    [Table("Group")]
     public class Group : Entity
     {
         [Column("sector_id"), Required]

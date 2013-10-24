@@ -16,5 +16,13 @@ namespace DatabaseAccess
         public DbSet<Product> Products { get; set; }
         public DbSet<Partner> Partners { get; set; }
         public DbSet<GroupDetails> GroupsDetails { get; set; }
+
+        public List<Warehouse> GetWarehouses()
+        {
+            return (from w in Warehouses
+                    where w.Internal == true
+                    where w.Deleted == false
+                    select w).ToList();
+        }
     }
 }

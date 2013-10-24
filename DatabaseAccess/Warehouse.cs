@@ -39,5 +39,24 @@ namespace DatabaseAccess
         public virtual ICollection<Sector> Sectors { get; set; }
         public virtual ICollection<Shift> Sent { get; set; }
         public virtual ICollection<Shift> Received { get; set; }
+
+        public int GetFreeSectorCount()
+        {
+            var q = from s in Sectors
+                    where s.Deleted == false
+                    where s.Limit > s.Groups.Count
+                    select s;
+
+            return q.Count();
+        }
+
+        public int GetAllSectorCount()
+        {
+            var q = from s in Sectors
+                    where s.Deleted == false
+                    select s;
+
+            return q.Count();
+        }
     }
 }

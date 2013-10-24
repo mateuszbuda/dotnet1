@@ -20,7 +20,7 @@ namespace PresentationLayer
     /// </summary>
     public partial class WarehouseMenu : UserControl    // 3
     {
-        public WarehouseMenu()
+        public WarehouseMenu(int warehouseId)
         {
             InitializeComponent();
         }

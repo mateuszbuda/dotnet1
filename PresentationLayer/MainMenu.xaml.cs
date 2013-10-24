@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -12,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 //using System.Data.Entity;
 using DatabaseAccess;
 
@@ -22,24 +24,68 @@ namespace PresentationLayer
     /// </summary>
     public partial class MainMenu : UserControl // 1
     {
+        private void ShowStats(Object _token)
+        {
+            CancellationToken token = (CancellationToken)_token;
+
+            using (SystemContext context = new SystemContext())
+            {
+                if (token.IsCancellationRequested)
+                    return;
+
+                int wCount = context.Warehouses.Count();
+
+                if (token.IsCancellationRequested)
+                    return;
+
+                Dispatcher.BeginInvoke(new Action(() => StatBlock1.Text = wCount.ToString()));
+            }
+        }
+
+        private CancellationTokenSource tokenSource;
+
         public MainMenu()
         {
             InitializeComponent();
 
-            using (SystemContext context = new SystemContext())
-            {
-                int wCount = context.Warehouses.Count();
+            //using(SystemContext c = new SystemContext())
+            //{
+            //    TestLabel.Content = (from s in c.Sectors
+            //                         select s).FirstOrDefault().Groups.Count;
+            //}
 
-                StatBlock1.Text = wCount.ToString();
-            }
+            tokenSource = new CancellationTokenSource();
+            Task showStats = Task.Factory.StartNew(ShowStats, tokenSource.Token, tokenSource.Token);
+        }
+
+        private void ChangeMenu(UserControl menu)
+        {
+            Grid content = Parent as Grid;
+
+            tokenSource.Cancel();
+
+            content.Children.Remove(this);
+            content.Children.Add(menu);
         }
 
         private void ButtonWarehouses_Click(object sender, RoutedEventArgs e)
         {
-            Grid content = Parent as Grid;
+            ChangeMenu(new WarehousesMenu());
+        }
 
-            content.Children.Remove(this);
-            content.Children.Add(new WarehousesMenu());
+        private void ButtonPartners_Click(object sender, RoutedEventArgs e)
+        {
+            ChangeMenu(new PartnersMenu());
+        }
+
+        private void ButtonGroups_Click(object sender, RoutedEventArgs e)
+        {
+            ChangeMenu(new GroupsMenu());
+        }
+
+        private void ButtonProducts_Click(object sender, RoutedEventArgs e)
+        {
+            ChangeMenu(new ProductsMenu());
         }
     }
 }
