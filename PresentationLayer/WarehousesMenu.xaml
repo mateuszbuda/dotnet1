@@ -21,10 +21,12 @@
             <Button Name="AddNewButton" Grid.Column="1" Content="Dodaj nowy..." HorizontalAlignment="Right" Margin="5" VerticalAlignment="Center" Width="90" Click="AddNewButton_Click"/>
         </Grid>
         <Button Name="MainMenuButton" Grid.Row="2" Content="Menu Główne" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="90" Height="28" Margin="5" Click="MainMenuButton_Click" FontWeight="Bold"/>
-        
-        <Grid Name="WarehousesGrid" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" SizeChanged="MenuSizeChanged">
-            <Label Name="LoadingLabel" Content="Ładowanie danych..." HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="24"/>
-        </Grid>
+
+        <ScrollViewer Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <Grid Name="WarehousesGrid" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" SizeChanged="MenuSizeChanged">
+                <Label Name="LoadingLabel" Content="Ładowanie danych..." HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="24"/>
+            </Grid>
+        </ScrollViewer>
 
     </Grid>
 </UserControl>

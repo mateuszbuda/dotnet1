@@ -95,6 +95,7 @@ namespace PresentationLayer
                 b.Margin = new Thickness(5);
                 b.Click += WarehouseClick;
                 b.ContextMenu = contextMenu;
+                b.Background = w.EmptySectors == 0 ? (w.AllSectors == 0 ? Brushes.Silver : Brushes.Red) : Brushes.Green;
 
                 buttons.Add(b);
             }
@@ -163,7 +164,9 @@ namespace PresentationLayer
 
         private void EditClick(object sender, RoutedEventArgs e)
         {
-            WarehouseDialog dlg = new WarehouseDialog();
+            int id = (int)(((e.Source as MenuItem).Parent as ContextMenu).PlacementTarget as Button).Tag;
+
+            WarehouseDialog dlg = new WarehouseDialog(id, LoadWarehouses, tokenSource.Token);
             dlg.Show();
         }
 
@@ -186,7 +189,7 @@ namespace PresentationLayer
             WarehousesGrid.RowDefinitions.Clear();
             WarehousesGrid.Children.Clear();
 
-            int n = (int)WarehousesGrid.ActualWidth / 120;
+            int n = (int)WarehousesGrid.ActualWidth / 112;
 
             for (int i = 0; i <= n; ++i)
                 WarehousesGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(110) });
@@ -209,7 +212,7 @@ namespace PresentationLayer
 
         private void AddNewButton_Click(object sender, RoutedEventArgs e)
         {
-            WarehouseDialog dlg = new WarehouseDialog();
+            WarehouseDialog dlg = new WarehouseDialog(LoadWarehouses, tokenSource.Token);
             dlg.Show();
         }
 
