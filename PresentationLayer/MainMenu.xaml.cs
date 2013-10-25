@@ -24,6 +24,8 @@ namespace PresentationLayer
     /// </summary>
     public partial class MainMenu : UserControl // 1
     {
+        private MainWindow mainWindow;
+
         private void ShowStats(Object _token)
         {
             CancellationToken token = (CancellationToken)_token;
@@ -44,8 +46,11 @@ namespace PresentationLayer
 
         private CancellationTokenSource tokenSource;
 
-        public MainMenu()
+        public MainMenu(MainWindow mainWindow)
         {
+            this.mainWindow = mainWindow;
+            mainWindow.ReloadWindow = new Action(() => { });
+
             InitializeComponent();
 
             //using(SystemContext c = new SystemContext())
@@ -70,7 +75,7 @@ namespace PresentationLayer
 
         private void ButtonWarehouses_Click(object sender, RoutedEventArgs e)
         {
-            ChangeMenu(new WarehousesMenu());
+            ChangeMenu(new WarehousesMenu(mainWindow));
         }
 
         private void ButtonPartners_Click(object sender, RoutedEventArgs e)

@@ -20,11 +20,13 @@ namespace PresentationLayer
     /// </summary>
     public partial class MainWindow : Window
     {
+        public Action ReloadWindow { get; set; }
+
         public MainWindow()
         {
             InitializeComponent();
 
-            MainWindowContent.Children.Add(new MainMenu());
+            MainWindowContent.Children.Add(new MainMenu(this));
         }
     }
 }

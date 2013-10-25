@@ -19,7 +19,7 @@ namespace PresentationLayer
     /// </summary>
     public partial class SectorsCountDialog : Window    // 14
     {
-        public SectorsCountDialog()
+        public SectorsCountDialog(MainWindow mainWindow)
         {
             InitializeComponent();
         }

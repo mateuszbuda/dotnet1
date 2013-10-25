@@ -21,6 +21,8 @@ namespace PresentationLayer
     /// </summary>
     public partial class WarehousesMenu : UserControl   // 2
     {
+        private MainWindow mainWindow;
+
         private struct Warehouse
         {
             public string Name { get; set; }
@@ -72,13 +74,16 @@ namespace PresentationLayer
         private void WarehouseClick(Object sender, RoutedEventArgs e)
         {
             int id = (int)(e.Source as Button).Tag;
+            string name = (from w in warehouses
+                           where w.Id == id
+                           select w.Name).FirstOrDefault();
 
             Grid content = Parent as Grid;
 
             tokenSource.Cancel();
 
             content.Children.Remove(this);
-            content.Children.Add(new WarehouseMenu(id));
+            content.Children.Add(new WarehouseMenu(mainWindow, id, name));
         }
 
         private void InitializeButtons()
@@ -104,8 +109,12 @@ namespace PresentationLayer
             ShowButtons();
         }
 
-        public WarehousesMenu()
+        public WarehousesMenu(MainWindow mainWindow)
         {
+            this.mainWindow = mainWindow;
+            tokenSource = new CancellationTokenSource();
+            mainWindow.ReloadWindow = new Action(() => LoadWarehouses(tokenSource.Token));
+
             isLoaded = false;
             InitializeComponent();
 
@@ -124,7 +133,6 @@ namespace PresentationLayer
 
             warehouses = new List<Warehouse>();
 
-            tokenSource = new CancellationTokenSource();
             Task.Factory.StartNew(LoadWarehouses, tokenSource.Token, tokenSource.Token);
         }
 
@@ -141,6 +149,17 @@ namespace PresentationLayer
                                               where x.Id == id
                                               select x).FirstOrDefault();
 
+                int c = (from s in w.Sectors
+                         where s.Deleted == false
+                         where s.Groups.Count != 0
+                         select s).Count();
+
+                if (c != 0)
+                {
+                    MessageBox.Show("Magazyn nie jest pusty!", "Błąd", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+
                 w.Deleted = true;
 
                 context.SaveChanges();
@@ -151,7 +170,6 @@ namespace PresentationLayer
 
         void DeleteClick(object sender, RoutedEventArgs e)
         {
-
             int id = (int)(((e.Source as MenuItem).Parent as ContextMenu).PlacementTarget as Button).Tag;
             string name = (from w in warehouses
                            where w.Id == id
@@ -166,7 +184,7 @@ namespace PresentationLayer
         {
             int id = (int)(((e.Source as MenuItem).Parent as ContextMenu).PlacementTarget as Button).Tag;
 
-            WarehouseDialog dlg = new WarehouseDialog(id, LoadWarehouses, tokenSource.Token);
+            WarehouseDialog dlg = new WarehouseDialog(mainWindow, id);
             dlg.Show();
         }
 
@@ -177,7 +195,7 @@ namespace PresentationLayer
             tokenSource.Cancel();
 
             content.Children.Remove(this);
-            content.Children.Add(new MainMenu());
+            content.Children.Add(new MainMenu(mainWindow));
         }
 
         private void ShowButtons()
@@ -212,7 +230,7 @@ namespace PresentationLayer
 
         private void AddNewButton_Click(object sender, RoutedEventArgs e)
         {
-            WarehouseDialog dlg = new WarehouseDialog(LoadWarehouses, tokenSource.Token);
+            WarehouseDialog dlg = new WarehouseDialog(mainWindow);
             dlg.Show();
         }
 

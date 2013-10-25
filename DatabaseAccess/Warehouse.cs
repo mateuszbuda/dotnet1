@@ -58,5 +58,12 @@ namespace DatabaseAccess
 
             return q.Count();
         }
+
+        public List<Sector> GetSectors()
+        {
+            return (from s in Sectors
+                    where s.Deleted == false
+                    select s).ToList();
+        }
     }
 }

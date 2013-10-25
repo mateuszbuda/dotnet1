@@ -20,13 +20,16 @@ namespace PresentationLayer
     /// </summary>
     public partial class WarehouseDialog : Window   // 13
     {
-        public WarehouseDialog(int id, Action<Object> evt, CancellationToken token) : this(evt, token)
+        private MainWindow mainWindow;
+
+        public WarehouseDialog(MainWindow mainWindow, int id) : this(mainWindow)
         {
-           
+            
         }
 
-        public WarehouseDialog(Action<Object> evt, CancellationToken token)
+        public WarehouseDialog(MainWindow mainWindow)
         {
+            this.mainWindow = mainWindow;
             InitializeComponent();
         }
     }

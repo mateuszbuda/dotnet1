@@ -19,7 +19,12 @@ namespace PresentationLayer
     /// </summary>
     public partial class SectorsDialog : Window     // 15
     {
-        public SectorsDialog()
+        public SectorsDialog(MainWindow mainWindow, int id)
+            : this(mainWindow)
+        {
+        }
+
+        public SectorsDialog(MainWindow mainWindow)
         {
             InitializeComponent();
         }

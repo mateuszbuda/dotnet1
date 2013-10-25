@@ -19,7 +19,7 @@ namespace PresentationLayer
     /// </summary>
     public partial class GroupDialog : Window   // 17
     {
-        public GroupDialog()
+        public GroupDialog(MainWindow mainWindow, int id)
         {
             InitializeComponent();
         }
