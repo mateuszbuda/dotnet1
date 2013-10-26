@@ -6,6 +6,54 @@
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="800">
     <Grid>
-            
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50"/>
+            <RowDefinition/>
+            <RowDefinition Height="40"/>
+        </Grid.RowDefinitions>
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="85"/>
+                <ColumnDefinition Width="85"/>
+            </Grid.ColumnDefinitions>
+
+            <Label Name="GroupLabel" Margin="10, 0, 0, 0" Content="" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="24"/>
+            <Button Name="HistoryButton" Grid.Column="1" Content="Historia" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5" Width="75" Click="HistoryButton_Click"/>
+            <Button Name="SendButton" Grid.Column="2" Content="Wyślij" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5" Width="75" Click="SendButton_Click"/>
+
+        </Grid>
+
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="100"/>
+            </Grid.ColumnDefinitions>
+            <Button Name="MainMenuButton" Grid.Column="1" Content="Menu Główne" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="90" Height="28" Margin="5" FontWeight="Bold" Click="MainMenuButton_Click"/>
+            <Button Name="GroupsButton" Grid.Column="2" Content="Partie" HorizontalAlignment="Right" VerticalAlignment="Top" Width="90" Height="28" Margin="0,7,5,0" FontWeight="Bold" Click="GroupsButton_Click"/>
+        </Grid>
+        <ScrollViewer Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                <Label Name="LoadingLabel" Content="Ładowanie danych..." HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="24"/>
+                <DataGrid IsReadOnly="True" Visibility="Hidden" Name="ProductsGrid" AutoGenerateColumns="False" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                    <DataGrid.Columns>
+                        <DataGridTemplateColumn Header="Produkt">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Button Margin="5,0,5,0" MinWidth="80" Click="IdButtonClick" Tag="{Binding Id}" Content="{Binding Name}"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTextColumn Binding="{Binding Count}" Header="Ilość"/>
+                        <DataGridTextColumn Binding="{Binding Price}" Header="Cena"/>
+                        <DataGridTextColumn Binding="{Binding OnePrice}" Header="Cena jednostkowa"/>
+                        <DataGridTextColumn Binding="{Binding Date}" Header="Data produkcji"/>                        
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
+        </ScrollViewer>
+
     </Grid>
 </UserControl>

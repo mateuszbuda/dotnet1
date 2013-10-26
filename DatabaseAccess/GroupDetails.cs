@@ -8,6 +8,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DatabaseAccess
 {
+    [Table("Product_Group")]
     public class GroupDetails
     {
         [Key, Required, Column("product_id", Order = 0)]

@@ -20,7 +20,7 @@ namespace PresentationLayer
     /// </summary>
     public partial class ProductsMenu : UserControl     // 11
     {
-        public ProductsMenu()
+        public ProductsMenu(MainWindow mainWindow)
         {
             InitializeComponent();
         }

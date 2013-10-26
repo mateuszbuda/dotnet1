@@ -85,12 +85,12 @@ namespace PresentationLayer
 
         private void ButtonGroups_Click(object sender, RoutedEventArgs e)
         {
-            ChangeMenu(new GroupsMenu());
+            ChangeMenu(new GroupsMenu(mainWindow));
         }
 
         private void ButtonProducts_Click(object sender, RoutedEventArgs e)
         {
-            ChangeMenu(new ProductsMenu());
+            ChangeMenu(new ProductsMenu(mainWindow));
         }
     }
 }

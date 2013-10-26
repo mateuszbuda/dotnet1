@@ -20,7 +20,7 @@ namespace PresentationLayer
     /// </summary>
     public partial class GroupHistoryMenu : UserControl     // 6
     {
-        public GroupHistoryMenu()
+        public GroupHistoryMenu(MainWindow mainWindow, int id)
         {
             InitializeComponent();
         }
