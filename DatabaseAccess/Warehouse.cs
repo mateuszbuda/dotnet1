@@ -39,6 +39,7 @@ namespace DatabaseAccess
         public virtual ICollection<Sector> Sectors { get; set; }
         public virtual ICollection<Shift> Sent { get; set; }
         public virtual ICollection<Shift> Received { get; set; }
+        public virtual ICollection<Partner> Owners { get; set; }
 
         public int GetFreeSectorCount()
         {

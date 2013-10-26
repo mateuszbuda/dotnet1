@@ -112,6 +112,7 @@ namespace PresentationLayer
             SectorsGrid.RowDefinitions.Clear();
 
             int n = (int)SectorsGrid.ActualWidth / 112;
+            n = n != 0 ? n : 1;
 
             for (int i = 0; i <= n; ++i)
                 SectorsGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(110) });

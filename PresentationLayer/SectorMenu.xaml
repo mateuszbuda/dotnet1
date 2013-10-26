@@ -17,12 +17,14 @@
                 <ColumnDefinition/>
                 <ColumnDefinition/>
                 <ColumnDefinition Width="85"/>
+                <ColumnDefinition Width="85"/>
             </Grid.ColumnDefinitions>
 
-            <Button Grid.Column="1" Name="EditButton" Content="Edytuj" HorizontalAlignment="Right" VerticalAlignment="Center" Width="75" Margin="5" Click="EditButton_Click"/>
-            <Button Grid.Column="2" Name="DeleteButton" Content="Usuń" HorizontalAlignment="Right" VerticalAlignment="Center" Width="75" Margin="5" Click="DeleteButton_Click"/>
+            <Button Grid.Column="2" Name="EditButton" Content="Edytuj" HorizontalAlignment="Right" VerticalAlignment="Center" Width="75" Margin="5" Click="EditButton_Click"/>
+            <Button Grid.Column="3" Name="DeleteButton" Content="Usuń" HorizontalAlignment="Right" VerticalAlignment="Center" Width="75" Margin="5" Click="DeleteButton_Click"/>
 
             <Label Name="WarehouseSectorLabel" Margin="10, 0, 0, 0" Content="" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="24"/>
+            <Label Grid.Column="1" Name="CountLabel" Content="" HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="16" Margin="0,0,10,0"/>
         </Grid>
 
         <Grid Grid.Row="2">
@@ -36,8 +38,34 @@
             <Button IsEnabled="False" Name="SectorsButton" Grid.Column="2" Content="Sektory" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="90" Height="28" Margin="5" FontWeight="Bold" Click="SectorsButton_Click"/>
         </Grid>
         <ScrollViewer Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-            <Grid Name="GroupsGrid" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                 <Label Name="LoadingLabel" Content="Ładowanie danych..." HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="24"/>
+                <DataGrid IsReadOnly="True" Visibility="Hidden" Name="GroupsGrid" AutoGenerateColumns="False" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                    <DataGrid.Columns>
+                        <DataGridTemplateColumn Header="Numer">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Button Margin="5,0,5,0" MinWidth="80" Click="IdButtonClick" Tag="{Binding Id}" Content="{Binding Id}"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTextColumn MinWidth="180" Binding="{Binding Date}" Header="Data"/>
+                        <DataGridTemplateColumn Header="Nadawca">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Button Margin="5,0,5,0" MinWidth="100" Click="SenderButtonClick" Tag="{Binding Id}" Content="{Binding Name}"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="Wyślij">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Button Margin="5,0,5,0" MinWidth="75" Click="SendButtonClick" Tag="{Binding Id}" Content="Wyślij"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
             </Grid>
         </ScrollViewer>
 

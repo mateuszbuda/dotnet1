@@ -81,6 +81,9 @@
     <Compile Include="PartnerHistoryMenu.xaml.cs">
       <DependentUpon>PartnerHistoryMenu.xaml</DependentUpon>
     </Compile>
+    <Compile Include="PartnerMenu.xaml.cs">
+      <DependentUpon>PartnerMenu.xaml</DependentUpon>
+    </Compile>
     <Compile Include="PartnersMenu.xaml.cs">
       <DependentUpon>PartnersMenu.xaml</DependentUpon>
     </Compile>
@@ -150,6 +153,10 @@
     <Page Include="PartnerHistoryMenu.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="PartnerMenu.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="PartnersMenu.xaml">
       <Generator>MSBuild:Compile</Generator>

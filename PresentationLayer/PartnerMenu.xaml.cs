@@ -10,16 +10,17 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace PresentationLayer
 {
     /// <summary>
-    /// Interaction logic for ShiftDialog.xaml
+    /// Interaction logic for PartnerMenu.xaml
     /// </summary>
-    public partial class ShiftDialog : Window   // 16
+    public partial class PartnerMenu : UserControl  // 8
     {
-        public ShiftDialog(MainWindow mainWindow, int id)
+        public PartnerMenu(MainWindow mainWindow, int id)
         {
             InitializeComponent();
         }

@@ -53,10 +53,10 @@ namespace PresentationLayer
 
             InitializeComponent();
 
-            //using(SystemContext c = new SystemContext())
+            //using (SystemContext c = new SystemContext())
             //{
-            //    TestLabel.Content = (from s in c.Sectors
-            //                         select s).FirstOrDefault().Groups.Count;
+            //    TestLabel.Content = (from s in c.Shifts
+            //                         select s).FirstOrDefault().Id;
             //}
 
             tokenSource = new CancellationTokenSource();

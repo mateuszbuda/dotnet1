@@ -24,5 +24,20 @@ namespace DatabaseAccess
                     where w.Deleted == false
                     select w).ToList();
         }
+
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Shift>()
+                .HasRequired(s => s.Recipient)
+                .WithMany(w => w.Received)
+                .HasForeignKey(s => s.RecipientId)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<Shift>()
+                .HasRequired(s => s.Sender)
+                .WithMany(w => w.Sent)
+                .HasForeignKey(s => s.SenderId)
+                .WillCascadeOnDelete(false);         
+        }
     }
 }

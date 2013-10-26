@@ -8,13 +8,14 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DatabaseAccess
 {
+    [Table("Shift")]
     public class Shift : Entity
     {
-        [Column("sender_id"), Required]
-        public int SenderId { get; set; }
+        [Column("sender_id")]
+        public int? SenderId { get; set; }
 
-        [Column("recipient_id"), Required]
-        public int RecipientId { get; set; }
+        [Column("recipient_id")]
+        public int? RecipientId { get; set; }
 
         [Required]
         public DateTime Date { get; set; }
