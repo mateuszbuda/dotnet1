@@ -19,7 +19,7 @@ namespace PresentationLayer
     /// </summary>
     public partial class ProductDialog : Window     // 19
     {
-        public ProductDialog()
+        public ProductDialog(MainWindow mainWindow, int id)
         {
             InitializeComponent();
         }
