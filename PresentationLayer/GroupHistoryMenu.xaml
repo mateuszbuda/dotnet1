@@ -4,8 +4,52 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="600" d:DesignWidth="800">
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50"/>
+            <RowDefinition/>
+            <RowDefinition Height="40"/>
+        </Grid.RowDefinitions>
+
+            <Label Name="GroupLabel" Margin="10, 0, 0, 0" Content="" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="24"/>
             
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="120"/>
+            </Grid.ColumnDefinitions>
+            <Button Name="MainMenuButton" Grid.Column="1" Content="Menu Główne" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="90" Height="28" Margin="5" FontWeight="Bold" Click="MainMenuButton_Click"/>
+            <Button Name="GroupsButton" Grid.Column="2" Content="Partie" HorizontalAlignment="Right" VerticalAlignment="Top" Width="90" Height="28" Margin="0,7,5,0" FontWeight="Bold" Click="GroupsButton_Click"/>
+            <Button Name="GroupButton" Grid.Column="3" Content="Partia" HorizontalAlignment="Right" VerticalAlignment="Top" Width="110" Height="28" Margin="0,7,5,0" FontWeight="Bold" Click="GroupButton_Click"/>
+        </Grid>
+        <ScrollViewer Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                <Label Name="LoadingLabel" Content="Ładowanie danych..." HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="24"/>
+                <DataGrid IsReadOnly="True" Visibility="Hidden" Name="HistoryGrid" AutoGenerateColumns="False" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                    <DataGrid.Columns>
+                        <DataGridTemplateColumn Header="Nadawca">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Button Margin="5,0,5,0" MinWidth="80" Background="{Binding SenderColor}" Click="SenderButtonClick" Tag="{Binding SenderId}" Content="{Binding SenderName}"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="Odbiorca">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Button Margin="5,0,5,0" MinWidth="80" Background="{Binding RecipientColor}" Click="RecipientButtonClick" Tag="{Binding RecipientId}" Content="{Binding RecipientName}"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        
+                        <DataGridTextColumn Binding="{Binding Date}" Header="Data otrzymania"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
+        </ScrollViewer>
+
     </Grid>
 </UserControl>
