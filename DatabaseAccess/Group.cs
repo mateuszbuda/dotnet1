@@ -22,6 +22,16 @@ namespace DatabaseAccess
         public virtual ICollection<Shift> Shifts { get; set; }
         public virtual ICollection<GroupDetails> GroupDetails { get; set; }
 
+        public bool InInternal()
+        {
+            using (var ctx = new SystemContext())
+            {
+                return (from g in ctx.Groups.Include("Sector.Warehouse")
+                        where g.Id == this.Id
+                        select g.Sector.Warehouse.Internal).FirstOrDefault();
+            }
+        }
+
         public DateTime GetLastDate()
         {
             var test = (from s in Shifts
@@ -50,10 +60,10 @@ namespace DatabaseAccess
         public int GetLastSenderId()
         {
             int? id = (from s in Shifts
-                 where s.Latest == true
-                 select s.SenderId).FirstOrDefault();
+                       where s.Latest == true
+                       select s.SenderId).FirstOrDefault();
 
-            if( IsSenderInternal())
+            if (IsSenderInternal())
                 return id.Value;
             else
             {
@@ -69,8 +79,8 @@ namespace DatabaseAccess
         public string GetSenderName()
         {
             int? id = (from s in Shifts
-                    where s.Latest == true
-                    select s.SenderId).FirstOrDefault();
+                       where s.Latest == true
+                       select s.SenderId).FirstOrDefault();
 
             using (var ctx = new SystemContext())
             {
