@@ -4,8 +4,60 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="600" d:DesignWidth="800">
     <Grid>
-            
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50"/>
+            <RowDefinition/>
+            <RowDefinition Height="40"/>
+        </Grid.RowDefinitions>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+
+            <Label Margin="10, 0, 0, 0" Content="Partnerzy" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="24"/>
+            <Button Name="AddNewButton" Grid.Column="1" Content="Dodaj nowego..." HorizontalAlignment="Right" Margin="5" VerticalAlignment="Center" Width="90" Click="AddNewButton_Click"/>
+        </Grid>
+        <Button Name="MainMenuButton" Grid.Row="2" Content="Menu Główne" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="90" Height="28" Margin="5" Click="MainMenuButton_Click" FontWeight="Bold"/>
+
+        <ScrollViewer Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                <Label Name="LoadingLabel" Content="Ładowanie danych..." HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="24"/>
+                <DataGrid IsReadOnly="True" Visibility="Hidden" Name="PartnersGrid" AutoGenerateColumns="False" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                    <DataGrid.Columns>
+                        <DataGridTemplateColumn Header="Magazyn">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Button Margin="5,0,5,0" MinWidth="80" Tag="{Binding WarehouseId}" Content="{Binding Warehouse.Name}"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTextColumn Binding="{Binding City}" Header="Miasto"/>
+                        <DataGridTextColumn Binding="{Binding Code}" Header="Kod"/>
+                        <DataGridTextColumn Binding="{Binding Street}" Header="Ulica"/>
+                        <DataGridTextColumn Binding="{Binding Num}" Header="Numer"/>
+                        <DataGridTextColumn Binding="{Binding Tel}" Header="Telefon"/>
+                        <DataGridTextColumn Binding="{Binding Mail}" Header="E-mail"/>
+                        <DataGridTemplateColumn Header="">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Button Margin="5,0,5,0" MinWidth="80" Tag="{Binding WarehouseId}" Content="Historia"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Button Margin="5,0,5,0" MinWidth="80" Tag="{Binding WarehouseId}" Content="Edycja"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
+        </ScrollViewer>
+
     </Grid>
 </UserControl>
