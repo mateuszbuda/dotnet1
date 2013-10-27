@@ -13,7 +13,7 @@
             <RowDefinition></RowDefinition>
         </Grid.RowDefinitions>
         
-        <Label Name="TestLabel" Grid.Row="3" Content="Test"/>
+        
 
         <Grid Grid.Row="0">
             <Grid.ColumnDefinitions>
@@ -45,8 +45,14 @@
                 <TextBlock Margin="2" HorizontalAlignment="Right" Grid.Row="3" Grid.Column="0" TextWrapping="NoWrap" Text="Liczba partnerów:" VerticalAlignment="Top"/>
                 <TextBlock Margin="2" HorizontalAlignment="Right" Grid.Row="4" Grid.Column="0" TextWrapping="NoWrap" Text="Liczba partii w magazynach:" VerticalAlignment="Top"/>
                 <TextBlock Margin="2" HorizontalAlignment="Right" Grid.Row="5" Grid.Column="0" TextWrapping="NoWrap" Text="Ilość przesunięć:" VerticalAlignment="Top"/>
+
+                <TextBlock Name="WarehousesCountInfo" Margin="5,2,2,2" HorizontalAlignment="Left" Grid.Row="0" Grid.Column="1" TextWrapping="NoWrap" Text="Loading..." VerticalAlignment="Top"/>
+                <TextBlock Name="WarehousesInfo" Margin="5,2,2,2" HorizontalAlignment="Left" Grid.Row="1" Grid.Column="1" TextWrapping="NoWrap" Text="Loading..." VerticalAlignment="Top"/>
+                <TextBlock Name="ProductsCountInfo" Margin="5,2,2,2" HorizontalAlignment="Left" Grid.Row="2" Grid.Column="1" TextWrapping="NoWrap" Text="Loading..." VerticalAlignment="Top"/>
+                <TextBlock Name="PartnersCountInfo" Margin="5,2,2,2" HorizontalAlignment="Left" Grid.Row="3" Grid.Column="1" TextWrapping="NoWrap" Text="Loading..." VerticalAlignment="Top"/>
+                <TextBlock Name="GroupsCountInfo" Margin="5,2,2,2" HorizontalAlignment="Left" Grid.Row="4" Grid.Column="1" TextWrapping="NoWrap" Text="Loading..." VerticalAlignment="Top"/>
+                <TextBlock Name="ShiftsCountInfo" Margin="5,2,2,2" HorizontalAlignment="Left" Grid.Row="5" Grid.Column="1" TextWrapping="NoWrap" Text="Loading..." VerticalAlignment="Top"/>
                 
-                <TextBlock Name="StatBlock1" Margin="5,2,2,2" HorizontalAlignment="Left" Grid.Row="0" Grid.Column="1" TextWrapping="NoWrap" Text="Loading..." VerticalAlignment="Top"/>
             </Grid>
         </GroupBox>
         <Grid Grid.Row="2">

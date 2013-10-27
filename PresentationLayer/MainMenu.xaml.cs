@@ -35,12 +35,26 @@ namespace PresentationLayer
                 if (token.IsCancellationRequested)
                     return;
 
-                int wCount = context.Warehouses.Count();
+                int warehousesCount = context.GetWarehousesCount();
+                int productsCount = context.Products.Count();
+                int partnersCount = context.Partners.Count();
+                int groupsCount = context.GetInternalGroupsCount();
+                int shiftsCount = context.Shifts.Count();
+                int fill = context.GetFillRate();
 
                 if (token.IsCancellationRequested)
                     return;
 
-                Dispatcher.BeginInvoke(new Action(() => StatBlock1.Text = wCount.ToString()));
+                Dispatcher.BeginInvoke(new Action(() =>
+                    {
+                        WarehousesCountInfo.Text = warehousesCount.ToString();
+                        ProductsCountInfo.Text = productsCount.ToString();
+                        PartnersCountInfo.Text = partnersCount.ToString();
+                        GroupsCountInfo.Text = groupsCount.ToString();
+                        ShiftsCountInfo.Text = shiftsCount.ToString();
+                        WarehousesInfo.Text = String.Format("{0}%", fill);
+                    }
+                ));
             }
         }
 
@@ -49,15 +63,12 @@ namespace PresentationLayer
         public MainMenu(MainWindow mainWindow)
         {
             this.mainWindow = mainWindow;
-            mainWindow.ReloadWindow = new Action(() => { });
+            mainWindow.ReloadWindow = new Action(() =>
+            {
+                Task.Factory.StartNew(ShowStats, tokenSource.Token, tokenSource.Token);
+            });
 
             InitializeComponent();
-
-            //using (SystemContext c = new SystemContext())
-            //{
-            //    TestLabel.Content = (from s in c.Shifts
-            //                         select s).FirstOrDefault().Id;
-            //}
 
             tokenSource = new CancellationTokenSource();
             Task showStats = Task.Factory.StartNew(ShowStats, tokenSource.Token, tokenSource.Token);

@@ -17,12 +17,43 @@ namespace DatabaseAccess
         public DbSet<Partner> Partners { get; set; }
         public DbSet<GroupDetails> GroupsDetails { get; set; }
 
+        public int GetInternalGroupsCount()
+        {
+            return (from g in Groups
+                    where g.Sector.Warehouse.Internal == true
+                    select g).Count();
+        }
+
+        public int GetFillRate()
+        {
+            int all = 0;
+            int full = 0;
+
+            foreach (Warehouse w in Warehouses)
+                if (w.Internal == true && w.Deleted == false)
+                    foreach (Sector s in w.Sectors)
+                    {
+                        all += s.Limit;
+                        full += s.Groups.Count;
+                    }
+
+            return (full * 100) / all;
+        }
+
         public List<Warehouse> GetWarehouses()
         {
             return (from w in Warehouses
                     where w.Internal == true
                     where w.Deleted == false
                     select w).ToList();
+        }
+
+        public int GetWarehousesCount()
+        {
+            return (from w in Warehouses
+                    where w.Internal == true
+                    where w.Deleted == false
+                    select w).Count();
         }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)

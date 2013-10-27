@@ -139,7 +139,7 @@ namespace PresentationLayer
 
         private void IdButtonClick(object sender, RoutedEventArgs e)
         {
-            //LoadNewMenu(new ProductsMenu(mainWindow, (int)(sender as Button).Tag));
+            LoadNewMenu(new ProductMenu(mainWindow, (int)(sender as Button).Tag));
         }
 
         private void LoadNewMenu(UserControl menu)

@@ -35,8 +35,8 @@
 
         </Grid>
 
-        <Grid Visibility="Hidden" Name="PartnerGrid" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-            <Grid>
+        <Grid  Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <Grid Visibility="Hidden" Name="PartnerGrid">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition/>
