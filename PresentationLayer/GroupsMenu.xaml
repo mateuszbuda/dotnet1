@@ -42,7 +42,7 @@
                         <DataGridTemplateColumn Header="Nr">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <Button Margin="5,0,5,0" MinWidth="80" Tag="{Binding Id}" Content="{Binding Id}"/>
+                                    <Button Margin="5,0,5,0" MinWidth="80" Click="GroupIdClick" Tag="{Binding Id}" Content="{Binding Id}"/>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>

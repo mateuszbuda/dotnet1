@@ -30,7 +30,7 @@
                         <DataGridTemplateColumn Header="Magazyn">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <Button Margin="5,0,5,0" MinWidth="80" Tag="{Binding WarehouseId}" Content="{Binding Warehouse.Name}"/>
+                                    <Button Margin="5,0,5,0" MinWidth="80" Click="WarehouseNameClick" Tag="{Binding Id}" Content="{Binding Warehouse.Name}" />
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
@@ -43,14 +43,14 @@
                         <DataGridTemplateColumn Header="">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <Button Margin="5,0,5,0" MinWidth="80" Tag="{Binding WarehouseId}" Content="Historia"/>
+                                    <Button Margin="5,0,5,0" MinWidth="80" Click="PartnerHistoryMenuClick" Tag="{Binding Id}" Content="Historia"/>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
                         <DataGridTemplateColumn Header="">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <Button Margin="5,0,5,0" MinWidth="80" Tag="{Binding WarehouseId}" Content="Edycja"/>
+                                    <Button Margin="5,0,5,0" MinWidth="80" Tag="{Binding Id}" Content="Edycja"/>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>

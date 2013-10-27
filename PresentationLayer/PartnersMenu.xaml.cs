@@ -101,5 +101,15 @@ namespace PresentationLayer
             content.Children.Remove(this);
             content.Children.Add(menu);
         }
+
+        private void WarehouseNameClick(object sender, RoutedEventArgs e)
+        {
+            //LoadNewMenu(new PartnerMenu(mainWindow, (int)(sender as Button).Tag));
+        }
+
+        private void PartnerHistoryMenuClick(object sender, RoutedEventArgs e)
+        {
+            LoadNewMenu(new PartnerHistoryMenu(mainWindow, (int)(sender as Button).Tag));
+        }
     }
 }

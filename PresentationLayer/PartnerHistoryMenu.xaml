@@ -4,8 +4,60 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="600" d:DesignWidth="800">
     <Grid>
-            
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50"/>
+            <RowDefinition/>
+            <RowDefinition Height="40"/>
+        </Grid.RowDefinitions>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+
+            <Grid Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+
+                <Label Grid.Row="0" Name="InfoLabel1" Content="" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                <Label Grid.Row="1" Name="InfoLabel2" Content="" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+
+            </Grid>
+
+            <Label Name="PartnerNameLabel" Margin="10, 0, 0, 0" Content="Historia" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="24"/>
+        </Grid>
+
+        <Grid Grid.Row="3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="100"/>
+            </Grid.ColumnDefinitions>
+            <Button Name="MainMenuButton" Grid.Column="0" Content="Menu Główne" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="90" Height="28" Margin="5" FontWeight="Bold" Click="MainMenuButton_Click"/>
+            <Button Name="WarehousesButton" Grid.Column="1" Content="Partnerzy" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="90" Height="28" Margin="5" FontWeight="Bold" Click="PartnersButton_Click"/>
+        </Grid>
+        
+        <ScrollViewer Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                <Label Name="LoadingLabel" Content="Ładowanie danych..." HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="24"/>
+                <DataGrid IsReadOnly="True" Visibility="Hidden" Name="ShiftsGrid" AutoGenerateColumns="False" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                    <DataGrid.Columns>
+                        <DataGridTemplateColumn Header="Partia">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Button Margin="5,0,5,0" MinWidth="80" Click="IdButtonClick" Tag="{Binding GroupId}" Content="{Binding GroupId}"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTextColumn Binding="{Binding Sender.Name}" Header="Nadawca"/>
+                        <DataGridTextColumn Binding="{Binding Recipient.Name}" Header="Odbiorca"/>
+                        <DataGridTextColumn Binding="{Binding Date}" Header="Data"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
+        </ScrollViewer>
     </Grid>
 </UserControl>

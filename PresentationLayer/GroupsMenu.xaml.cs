@@ -143,5 +143,10 @@ namespace PresentationLayer
                 Task.Factory.StartNew(LoadData, tokenSource.Token, tokenSource.Token);
             }
         }
+
+        private void GroupIdClick(object sender, RoutedEventArgs e)
+        {
+            LoadNewMenu(new GroupMenu(mainWindow, (int)(sender as Button).Tag));
+        }
     }
 }
