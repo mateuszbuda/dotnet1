@@ -36,6 +36,7 @@ namespace PresentationLayer
         private int groupId;
         private DatabaseAccess.Group group;
         private string warehouseName;
+        private bool isInternal;
 
         private List<Product> products;
 
@@ -72,6 +73,10 @@ namespace PresentationLayer
                                  where w.Id == wid
                                  select w.Name).FirstOrDefault();
 
+                isInternal = (from w in context.Warehouses
+                              where w.Id == wid
+                              select w.Internal).FirstOrDefault();
+
                 products = new List<Product>();
 
                 foreach (var p in group.GroupDetails)
@@ -94,6 +99,9 @@ namespace PresentationLayer
 
         private void InitializeData()
         {
+            if (!isInternal)
+                SendButton.IsEnabled = false;
+
             LoadingLabel.Visibility = System.Windows.Visibility.Hidden;
 
             GroupLabel.Content = String.Format("Magazyn '{0}', Sektor #{1}, Partia #{2}", warehouseName, group.Sector.Number, group.Id);
