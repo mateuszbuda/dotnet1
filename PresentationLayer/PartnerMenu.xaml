@@ -4,8 +4,72 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="600" d:DesignWidth="800">
     <Grid>
-            
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50"/>
+            <RowDefinition/>
+            <RowDefinition Height="40"/>
+        </Grid.RowDefinitions>
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="85"/>
+                <ColumnDefinition Width="85"/>
+            </Grid.ColumnDefinitions>
+
+            <Label Name="PartnerLabel" Margin="10, 0, 0, 0" Content="" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="24"/>
+            <Button Grid.Column="1" Name="EditButton" Content="Edytuj" HorizontalAlignment="Center" VerticalAlignment="Center" Width="75" Click="EditButton_Click"/>
+            <Button Grid.Column="2" Name="HistoryButton" Content="Historia" HorizontalAlignment="Center" VerticalAlignment="Center" Width="75" Click="HistoryButton_Click"/>
+        </Grid>
+
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="100"/>
+            </Grid.ColumnDefinitions>
+            <Button Name="MainMenuButton" Grid.Column="1" Content="Menu Główne" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="90" Height="28" Margin="5" FontWeight="Bold" Click="MainMenuButton_Click"/>
+            <Button Name="PartnersButton" Grid.Column="2" Content="Partnerzy" HorizontalAlignment="Right" VerticalAlignment="Top" Width="90" Height="28" Margin="0,7,5,0" FontWeight="Bold" Click="PartnersButton_Click"/>
+
+        </Grid>
+
+        <Grid Visibility="Hidden" Name="PartnerGrid" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="20"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Label Grid.Column="0" Margin="1" Grid.Row="0" Content="Adres:" HorizontalAlignment="Right" VerticalAlignment="Top"/>
+                <Label Grid.Column="0" Margin="1" Grid.Row="1" Content="Telefon:" HorizontalAlignment="Right" VerticalAlignment="Top"/>
+                <Label Grid.Column="0" Margin="1" Grid.Row="2" Content="E-Mail:" HorizontalAlignment="Right" VerticalAlignment="Top"/>
+
+                <Label Grid.Column="0" Margin="1" Grid.Row="4" Content="Adres magazynu:" HorizontalAlignment="Right" VerticalAlignment="Top"/>
+                <Label Grid.Column="0" Margin="1" Grid.Row="5" Content="Telefon:" HorizontalAlignment="Right" VerticalAlignment="Top"/>
+                <Label Grid.Column="0" Margin="1" Grid.Row="6" Content="E-Mail:" HorizontalAlignment="Right" VerticalAlignment="Top"/>
+
+                <Label Name="AddressLabel1" Grid.Column="1" Margin="1" Grid.Row="0" Content="" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                <Label Name="TelLabel1" Grid.Column="1" Margin="1" Grid.Row="1" Content="" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                <Label Name="MailLabel1" Grid.Column="1" Margin="1" Grid.Row="2" Content="" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+
+                <Label Name="AddressLabel2" Grid.Column="1" Margin="1" Grid.Row="4" Content="" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                <Label Name="TelLabel2" Grid.Column="1" Margin="1" Grid.Row="5" Content="" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                <Label Name="MailLabel2" Grid.Column="1" Margin="1" Grid.Row="6" Content="" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+
+            </Grid>
+            <Label Name="LoadingLabel" Content="Ładowanie danych..." HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="24"/>
+
+        </Grid>
     </Grid>
 </UserControl>

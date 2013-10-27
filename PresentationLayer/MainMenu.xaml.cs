@@ -80,7 +80,7 @@ namespace PresentationLayer
 
         private void ButtonPartners_Click(object sender, RoutedEventArgs e)
         {
-            ChangeMenu(new PartnersMenu());
+            ChangeMenu(new PartnersMenu(mainWindow));
         }
 
         private void ButtonGroups_Click(object sender, RoutedEventArgs e)

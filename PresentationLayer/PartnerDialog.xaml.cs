@@ -19,7 +19,12 @@ namespace PresentationLayer
     /// </summary>
     public partial class PartnerDialog : Window     // 18
     {
-        public PartnerDialog()
+        public PartnerDialog(MainWindow mainWindow, int id)
+            : this(mainWindow)
+        {
+        }
+
+        public PartnerDialog(MainWindow mainWindow)
         {
             InitializeComponent();
         }

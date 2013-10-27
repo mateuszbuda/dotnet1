@@ -20,7 +20,7 @@ namespace PresentationLayer
     /// </summary>
     public partial class PartnersMenu : UserControl     // 7
     {
-        public PartnersMenu()
+        public PartnersMenu(MainWindow mainWindow)
         {
             InitializeComponent();
         }
