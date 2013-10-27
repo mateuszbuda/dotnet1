@@ -50,7 +50,7 @@
                         <DataGridTemplateColumn Header="">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <Button Margin="5,0,5,0" MinWidth="80" Tag="{Binding Id}" Content="Edycja"/>
+                                    <Button Margin="5,0,5,0" MinWidth="80" Click="PartnerEditClick" Tag="{Binding Id}" Content="Edycja"/>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>

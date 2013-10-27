@@ -84,7 +84,8 @@ namespace PresentationLayer
 
         private void AddNewButton_Click(object sender, RoutedEventArgs e)
         {
-
+            PartnerDialog dlg = new PartnerDialog(mainWindow);
+            dlg.Show();
         }
 
         private void MainMenuButton_Click(object sender, RoutedEventArgs e)
@@ -110,6 +111,12 @@ namespace PresentationLayer
         private void PartnerHistoryMenuClick(object sender, RoutedEventArgs e)
         {
             LoadNewMenu(new PartnerHistoryMenu(mainWindow, (int)(sender as Button).Tag));
+        }
+
+        private void PartnerEditClick(object sender, RoutedEventArgs e)
+        {
+            PartnerDialog dlg = new PartnerDialog(mainWindow, (int)(sender as Button).Tag);
+            dlg.Show();
         }
     }
 }

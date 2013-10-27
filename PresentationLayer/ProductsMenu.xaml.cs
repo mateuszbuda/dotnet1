@@ -84,7 +84,8 @@ namespace PresentationLayer
 
         private void AddNewButton_Click(object sender, RoutedEventArgs e)
         {
-
+            ProductDialog dlg = new ProductDialog(mainWindow, -1);
+            dlg.Show();
         }
 
         private void MainMenuButton_Click(object sender, RoutedEventArgs e)
@@ -100,6 +101,17 @@ namespace PresentationLayer
 
             content.Children.Remove(this);
             content.Children.Add(menu);
+        }
+
+        private void ProductNameClick(object sender, RoutedEventArgs e)
+        {
+            LoadNewMenu(new ProductMenu(mainWindow, (int)(sender as Button).Tag));
+        }
+
+        private void EditProductClick(object sender, RoutedEventArgs e)
+        {
+            ProductDialog dlg = new ProductDialog(mainWindow, (int)(sender as Button).Tag);
+            dlg.Show();
         }
     }
 }

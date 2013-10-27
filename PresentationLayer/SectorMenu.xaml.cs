@@ -96,7 +96,7 @@ namespace PresentationLayer
             {
                 GroupsGrid.Items.Add(new
                 {
-                    Id = g.Id.ToString(), 
+                    Id = g.Id.ToString(),
                     Date = g.Date.ToString(),
                     Name = g.SenderName,
                     Send = "Wyślij",
@@ -157,7 +157,7 @@ namespace PresentationLayer
 
         private void EditButton_Click(object sender, RoutedEventArgs e)
         {
-            SectorsDialog dlg = new SectorsDialog(mainWindow, sectorId);
+            SectorsDialog dlg = new SectorsDialog(mainWindow, sector.WarehouseId, sectorId);
             dlg.Show();
         }
 

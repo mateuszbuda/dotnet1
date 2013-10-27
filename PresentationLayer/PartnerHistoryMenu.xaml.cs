@@ -25,8 +25,6 @@ namespace PresentationLayer
         private int partnerId;
         private DatabaseAccess.Partner partner;
         private List<DatabaseAccess.Shift> shifts;
-        private bool isLoaded;
-        private ContextMenu contextMenu;
         private MainWindow mainWindow;
 
         public PartnerHistoryMenu(MainWindow mainWindow, int partnerId)
@@ -37,10 +35,7 @@ namespace PresentationLayer
 
             mainWindow.ReloadWindow = new Action(() => LoadData(tokenSource.Token));
 
-            isLoaded = false;
             InitializeComponent();
-
-            contextMenu = new System.Windows.Controls.ContextMenu();
 
             Task.Factory.StartNew(LoadData, tokenSource.Token, tokenSource.Token);
         }
@@ -58,7 +53,7 @@ namespace PresentationLayer
                            where p.Id == partnerId
                            select p).FirstOrDefault();
 
-                shifts = (from s in context.Shifts
+                shifts = (from s in context.Shifts.Include("Sender").Include("Recipient")
                           where (int)s.RecipientId == partner.WarehouseId || (int)s.SenderId == partner.WarehouseId
                           select s).ToList();
 
@@ -85,7 +80,6 @@ namespace PresentationLayer
 
             LoadingLabel.Visibility = System.Windows.Visibility.Hidden;
             ShiftsGrid.Visibility = System.Windows.Visibility.Visible;
-            isLoaded = true;
         }
 
         private void AddNewButton_Click(object sender, RoutedEventArgs e)

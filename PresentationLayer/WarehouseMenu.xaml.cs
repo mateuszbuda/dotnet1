@@ -205,13 +205,13 @@ namespace PresentationLayer
         {
             int id = (int)(((e.Source as MenuItem).Parent as ContextMenu).PlacementTarget as Button).Tag;
 
-            SectorsDialog dlg = new SectorsDialog(mainWindow, id);
+            SectorsDialog dlg = new SectorsDialog(mainWindow, warehouseId, id);
             dlg.Show();
         }
 
         private void AddNewButton_Click(object sender, RoutedEventArgs e)
         {
-            SectorsCountDialog dlg = new SectorsCountDialog(mainWindow);
+            SectorsDialog dlg = new SectorsDialog(mainWindow, warehouseId, -1);
             dlg.Show();
         }
 
@@ -244,7 +244,8 @@ namespace PresentationLayer
                 context.SaveChanges();
             }
 
-            Dispatcher.BeginInvoke(new Action(() => { 
+            Dispatcher.BeginInvoke(new Action(() =>
+            {
                 mainWindow.MainWindowContent.Children.Clear();
                 mainWindow.MainWindowContent.Children.Add(new WarehousesMenu(mainWindow));
             }));

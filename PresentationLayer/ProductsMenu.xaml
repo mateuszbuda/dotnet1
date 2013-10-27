@@ -30,7 +30,7 @@
                         <DataGridTemplateColumn Header="Nazwa">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <Button Margin="5,0,5,0" MinWidth="80" Tag="{Binding Id}" Content="{Binding Name}"/>
+                                    <Button Margin="5,0,5,0" MinWidth="80" Click="ProductNameClick" Tag="{Binding Id}" Content="{Binding Name}"/>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
@@ -39,7 +39,7 @@
                         <DataGridTemplateColumn Header="">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <Button Margin="5,0,5,0" MinWidth="80" Tag="{Binding Id}" Content="Edycja"/>
+                                    <Button Margin="5,0,5,0" Click="EditProductClick" MinWidth="80" Tag="{Binding Id}" Content="Edycja"/>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
