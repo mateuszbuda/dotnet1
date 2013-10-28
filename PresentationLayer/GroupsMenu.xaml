@@ -56,7 +56,7 @@
                         <DataGridTemplateColumn Header="">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <Button Margin="5,0,5,0" MinWidth="80" Tag="{Binding WarehouseId}" Content="Przenieś"/>
+                                    <Button Margin="5,0,5,0" MinWidth="80" Tag="{Binding WarehouseId}" Content="Przenieś" Click="ShiftClick"/>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>

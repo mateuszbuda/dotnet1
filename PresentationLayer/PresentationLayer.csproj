@@ -92,6 +92,9 @@
     <Compile Include="ProductDialog.xaml.cs">
       <DependentUpon>ProductDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ProductGroupRow.xaml.cs">
+      <DependentUpon>ProductGroupRow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ProductMenu.xaml.cs">
       <DependentUpon>ProductMenu.xaml</DependentUpon>
     </Compile>
@@ -170,6 +173,10 @@
     <Page Include="ProductDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ProductGroupRow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="ProductMenu.xaml">
       <SubType>Designer</SubType>

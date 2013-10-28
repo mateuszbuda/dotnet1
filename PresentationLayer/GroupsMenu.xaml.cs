@@ -90,7 +90,8 @@ namespace PresentationLayer
 
         private void AddNewButton_Click(object sender, RoutedEventArgs e)
         {
-
+            GroupDialog dlg = new GroupDialog(mainWindow, 0);
+            dlg.Show();
         }
 
         private void MainMenuButton_Click(object sender, RoutedEventArgs e)
@@ -147,6 +148,12 @@ namespace PresentationLayer
         private void GroupIdClick(object sender, RoutedEventArgs e)
         {
             LoadNewMenu(new GroupMenu(mainWindow, (int)(sender as Button).Tag));
+        }
+
+        private void ShiftClick(object sender, RoutedEventArgs e)
+        {
+            ShiftDialog dlg = new ShiftDialog(mainWindow, int.Parse((sender as Button).Tag as string));
+            dlg.Show();
         }
     }
 }
