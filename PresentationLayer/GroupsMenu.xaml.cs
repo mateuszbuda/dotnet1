@@ -152,7 +152,7 @@ namespace PresentationLayer
 
         private void ShiftClick(object sender, RoutedEventArgs e)
         {
-            ShiftDialog dlg = new ShiftDialog(mainWindow, int.Parse((sender as Button).Tag as string));
+            ShiftDialog dlg = new ShiftDialog(mainWindow, (int)((sender as Button).Tag));
             dlg.Show();
         }
     }

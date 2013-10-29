@@ -24,7 +24,6 @@ namespace PresentationLayer
         private CancellationTokenSource tokenSource;
         private int warehouseId = -1;
         private DatabaseAccess.Warehouse warehouse;
-        private ContextMenu contextMenu;
 
         public WarehouseDialog(MainWindow mainWindow, int id)
             : this(mainWindow)

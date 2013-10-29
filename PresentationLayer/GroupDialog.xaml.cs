@@ -26,8 +26,9 @@ namespace PresentationLayer
         private List<DatabaseAccess.Warehouse> internalOnes;
         private List<DatabaseAccess.Warehouse> externalOnes;
         private bool isLoaded;
+        private int sectorId;
 
-        public GroupDialog(MainWindow mainWindow, int id)
+        public GroupDialog(MainWindow mainWindow, int sectorId)
         {
             this.mainWindow = mainWindow;
             tokenSource = new CancellationTokenSource();
@@ -85,7 +86,9 @@ namespace PresentationLayer
 
             foreach (DatabaseAccess.Warehouse w in internalOnes)
                 foreach (DatabaseAccess.Sector s in w.Sectors)
-                    WarehousesComboBox.Items.Add(w.Name + " - #" + s.Number);
+                {
+                    WarehousesComboBox.Items.Add(s);//w.Name + " - #" + s.Number);
+                }
 
             ProductGroupRow productRow = new ProductGroupRow();
             Products.Items.Add(productRow);
@@ -127,6 +130,8 @@ namespace PresentationLayer
                         SectorId = int.Parse(((string)WarehousesComboBox.Text).Substring(((string)WarehousesComboBox.Text).LastIndexOf('#') + 1)),
                         GroupDetails = new List<DatabaseAccess.GroupDetails>()
                     };
+
+                MessageBox.Show(s.Group.SectorId.ToString());
 
                 foreach (ProductGroupRow p in Products.Items)
                 {

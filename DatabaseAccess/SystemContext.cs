@@ -37,7 +37,7 @@ namespace DatabaseAccess
                         full += s.Groups.Count;
                     }
 
-            return (full * 100) / all;
+            return all == 0 ? 0 : (full * 100) / all;
         }
 
         public List<Warehouse> GetWarehouses()
@@ -68,7 +68,7 @@ namespace DatabaseAccess
                 .HasRequired(s => s.Sender)
                 .WithMany(w => w.Sent)
                 .HasForeignKey(s => s.SenderId)
-                .WillCascadeOnDelete(false);         
+                .WillCascadeOnDelete(false);
         }
     }
 }

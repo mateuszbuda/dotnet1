@@ -1,8 +1,31 @@
 ﻿<Window x:Class="PresentationLayer.ShiftDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="ShiftDialog" Height="300" Width="300">
+        Title="GroupDialog" Height="250" Width="500">
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="60"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="80"/>
+        </Grid.RowDefinitions>
+        <Label Name="Header" Content="Przesuwanie partii" FontSize="20" VerticalAlignment="Center" Margin="10, 0, 0, 0" />
+        <Grid Grid.Row="1">
+            
+            <Label Grid.Column="1" Content="Miejsce docelowe [Magazyn - sektor]:" HorizontalAlignment="Center"/>
+        </Grid>
+        <Grid Grid.Row="2">
+            
+            <ComboBox Name="WarehousesComboBox" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Top" Width="220"/>
+        </Grid>
         
+        <Grid Grid.Row="4">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Button Content="Zapisz" Width="100" Height="25" Click="SaveButtonClick" />
+            <Button Grid.Column="1" Content="Anuluj" Width="100" Height="25" Click="CancelButtonClick" />
+        </Grid>
     </Grid>
 </Window>

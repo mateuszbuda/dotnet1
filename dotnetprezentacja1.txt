@@ -1,0 +1,25 @@
+definicje, zakres...
+tehnologie:
+- sqlserver
+- visual 12
+- entity framework 6.0.0 (5.1)
+- code first
+- na pocz¹tku wyklikana baza, a potem mapowanie na klasy
+- C# 4.5
+
+ef, why?
+1. u¿ywaliœmy
+2. kompatybilnoœæ rozwi¹zañ ms
+3. 
+
+cf, why?
+1. inne tworz¹ dodatkowe pliki i modele danych, w których trudno siê po³apaæ a w code first wystarczy stworzyæ klasy i jest to przejrzyste.
+2. nie podoba³o nam siê brzydkie tworzenie kodu xmli i postanowiliœmy wykorzystaæ nowsze rozwi¹zanie code first
+3. refactoring w databaseAccess - przeniesienie wszystkich metod wyci¹gaj¹cych danych do funkcji w odpowiednich klasach
+
+tips:
+1. cf,3.
+2. prze³adowywanie okna z w¹tku ui do background taska
+3. zastanawialiœmy isê nad obs³ug¹ w¹tków w przestrzeni database access
+4. Jedno okna g³ówne z user control
+5. ³atwo by³o zrobiæ mapowanie i nanasiæ zmiany

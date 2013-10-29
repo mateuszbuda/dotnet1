@@ -24,7 +24,6 @@ namespace PresentationLayer
         private CancellationTokenSource tokenSource;
         private int productID = -1;
         private DatabaseAccess.Product product;
-        private ContextMenu contextMenu;
 
         public ProductDialog(MainWindow mainWindow, int id)
         {

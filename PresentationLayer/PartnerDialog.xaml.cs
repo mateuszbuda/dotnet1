@@ -24,7 +24,6 @@ namespace PresentationLayer
         private CancellationTokenSource tokenSource;
         private int partnerId = -1;
         private DatabaseAccess.Partner partner;
-        private ContextMenu contextMenu;
 
         public PartnerDialog(MainWindow mainWindow, int id)
             : this(mainWindow)
