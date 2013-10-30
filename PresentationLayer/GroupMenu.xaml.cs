@@ -44,6 +44,7 @@ namespace PresentationLayer
         {
             groupId = id;
             this.mainWindow = mainWindow;
+            mainWindow.Title = "Podgląd Partii";
             tokenSource = new CancellationTokenSource();
 
             mainWindow.ReloadWindow = new Action(() => { LoadData(tokenSource.Token); });

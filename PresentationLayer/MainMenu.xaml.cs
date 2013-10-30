@@ -63,6 +63,7 @@ namespace PresentationLayer
         public MainMenu(MainWindow mainWindow)
         {
             this.mainWindow = mainWindow;
+            mainWindow.Title = "Menu Główne";
             mainWindow.ReloadWindow = new Action(() =>
             {
                 Task.Factory.StartNew(ShowStats, tokenSource.Token, tokenSource.Token);

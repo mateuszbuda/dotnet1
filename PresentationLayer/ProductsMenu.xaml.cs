@@ -29,6 +29,7 @@ namespace PresentationLayer
         public ProductsMenu(MainWindow mainWindow)
         {
             this.mainWindow = mainWindow;
+            mainWindow.Title = "Produkty";
             tokenSource = new CancellationTokenSource();
 
             mainWindow.ReloadWindow = new Action(() => { LoadData(tokenSource.Token); });

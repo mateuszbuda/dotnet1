@@ -136,6 +136,7 @@ namespace PresentationLayer
         public WarehouseMenu(MainWindow mainWindow, int warehouseId, string name)
         {
             this.mainWindow = mainWindow;
+            mainWindow.Title = "Podgląd Magazynu";
             isLoaded = false;
             this.warehouseId = warehouseId;
             tokenSource = new CancellationTokenSource();

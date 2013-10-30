@@ -29,6 +29,7 @@ namespace PresentationLayer
         public PartnersMenu(MainWindow mainWindow)
         {
             this.mainWindow = mainWindow;
+            mainWindow.Title = "Partnerzy";
             tokenSource = new CancellationTokenSource();
 
             mainWindow.ReloadWindow = new Action(() => { LoadData(tokenSource.Token); });
@@ -105,7 +106,7 @@ namespace PresentationLayer
 
         private void WarehouseNameClick(object sender, RoutedEventArgs e)
         {
-            //LoadNewMenu(new PartnerMenu(mainWindow, (int)(sender as Button).Tag));
+            LoadNewMenu(new PartnerMenu(mainWindow, (int)(sender as Button).Tag));
         }
 
         private void PartnerHistoryMenuClick(object sender, RoutedEventArgs e)

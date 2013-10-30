@@ -29,6 +29,7 @@ namespace PresentationLayer
         public PartnerMenu(MainWindow mainWindow, int id)
         {
             this.mainWindow = mainWindow;
+            mainWindow.Title = "Podgląd Partnera";
             partnerId = id;
             tokenSource = new CancellationTokenSource();
             mainWindow.ReloadWindow = new Action(() => { LoadData(tokenSource.Token); });

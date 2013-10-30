@@ -30,6 +30,7 @@ namespace PresentationLayer
         public PartnerHistoryMenu(MainWindow mainWindow, int partnerId)
         {
             this.mainWindow = mainWindow;
+            mainWindow.Title = "Historia Partnera";
             this.partnerId = partnerId;
             tokenSource = new CancellationTokenSource();
 

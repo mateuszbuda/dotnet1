@@ -112,6 +112,7 @@ namespace PresentationLayer
         public WarehousesMenu(MainWindow mainWindow)
         {
             this.mainWindow = mainWindow;
+            mainWindow.Title = "Magazyny";
             tokenSource = new CancellationTokenSource();
             mainWindow.ReloadWindow = new Action(() => LoadWarehouses(tokenSource.Token));
 

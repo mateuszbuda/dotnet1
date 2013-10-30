@@ -42,6 +42,7 @@ namespace PresentationLayer
         public SectorMenu(MainWindow mainWindow, int id)
         {
             this.mainWindow = mainWindow;
+            mainWindow.Title = "Podgląd Sektora";
             isLoaded = false;
             sectorId = id;
             tokenSource = new CancellationTokenSource();

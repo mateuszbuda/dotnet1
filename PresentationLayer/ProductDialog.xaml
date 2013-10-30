@@ -35,7 +35,7 @@
                 <ColumnDefinition Width="2*"/>
             </Grid.ColumnDefinitions>
             <Label Content="Data Produkcji:" HorizontalAlignment="Right" VerticalAlignment="Center"/>
-            <TextBox Grid.Column="1" Name="DateTB" HorizontalAlignment="Left" Height="25" TextWrapping="Wrap" VerticalAlignment="Center" Width="200"/>
+            <DatePicker Grid.Column="1" Name="DateTB" HorizontalAlignment="Left" Height="25" VerticalAlignment="Center" Width="200"/>
         </Grid>
         <Grid Grid.Row="8">
             <Grid.ColumnDefinitions>

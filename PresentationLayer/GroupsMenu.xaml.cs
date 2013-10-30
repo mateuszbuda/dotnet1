@@ -31,6 +31,7 @@ namespace PresentationLayer
         public GroupsMenu(MainWindow mainWindow)
         {
             this.mainWindow = mainWindow;
+            mainWindow.Title = "Przetwarzane Partie";
             tokenSource = new CancellationTokenSource();
 
             mainWindow.ReloadWindow = new Action(() => { LoadData(tokenSource.Token); });

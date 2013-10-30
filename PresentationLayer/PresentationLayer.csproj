@@ -104,9 +104,6 @@
     <Compile Include="SectorMenu.xaml.cs">
       <DependentUpon>SectorMenu.xaml</DependentUpon>
     </Compile>
-    <Compile Include="SectorsCountDialog.xaml.cs">
-      <DependentUpon>SectorsCountDialog.xaml</DependentUpon>
-    </Compile>
     <Compile Include="SectorsDialog.xaml.cs">
       <DependentUpon>SectorsDialog.xaml</DependentUpon>
     </Compile>
@@ -187,10 +184,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="SectorMenu.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="SectorsCountDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
