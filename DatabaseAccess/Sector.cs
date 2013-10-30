@@ -28,5 +28,10 @@ namespace DatabaseAccess
 
         // Właściwości nawigacyjne
         public virtual ICollection<Group> Groups { get; set; }
+
+        public override string ToString()
+        {
+            return Warehouse.Name + " - #" + Number.ToString();
+        }
     }
 }

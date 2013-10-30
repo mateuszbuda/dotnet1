@@ -79,7 +79,7 @@ namespace PresentationLayer
 
             foreach (DatabaseAccess.Warehouse w in warehouses)
                 foreach (DatabaseAccess.Sector s in w.Sectors)
-                    WarehousesComboBox.Items.Add(w.Name + " - #" + s.Number);
+                    WarehousesComboBox.Items.Add(s);//w.Name + " - #" + s.Number);
         }
 
         private void SaveButtonClick(object sender, RoutedEventArgs e)
@@ -89,16 +89,18 @@ namespace PresentationLayer
                 DatabaseAccess.Shift s = new DatabaseAccess.Shift();
 
                 s.SenderId = group.Sector.WarehouseId;
-                s.RecipientId = warehouses.Find(delegate(DatabaseAccess.Warehouse w)
-                {
-                    return w.Name == ((string)WarehousesComboBox.Text).Substring(0, ((string)WarehousesComboBox.Text).LastIndexOf('#') - 3);
-                }).Id;
-                MessageBox.Show(s.RecipientId.ToString());
+                s.Recipient = ((DatabaseAccess.Sector)WarehousesComboBox.Items[WarehousesComboBox.SelectedIndex]).Warehouse;
                 s.Date = new DateTime(DateTime.Now.Ticks);
                 s.Latest = true;
 
-                group.SectorId = int.Parse(((string)WarehousesComboBox.Text).Substring(((string)WarehousesComboBox.Text).LastIndexOf('#') + 1));
+                group.Sector = (DatabaseAccess.Sector)WarehousesComboBox.SelectedValue;
                 s.Group = group;
+
+                List<DatabaseAccess.Shift> shifts = (from sh in context.Shifts
+                                                     where sh.GroupId == s.GroupId
+                                                     select sh).ToList();
+                foreach (DatabaseAccess.Shift shift in shifts)
+                    shift.Latest = false;
 
                 context.Shifts.Add(s);
 

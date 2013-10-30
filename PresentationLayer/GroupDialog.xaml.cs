@@ -82,7 +82,7 @@ namespace PresentationLayer
                 return;
 
             foreach (DatabaseAccess.Warehouse w in externalOnes)
-                PartnersComboBox.Items.Add(w.Name);
+                PartnersComboBox.Items.Add(w);//.Name);
 
             foreach (DatabaseAccess.Warehouse w in internalOnes)
                 foreach (DatabaseAccess.Sector s in w.Sectors)
@@ -114,24 +114,16 @@ namespace PresentationLayer
             {
                 DatabaseAccess.Shift s = new DatabaseAccess.Shift();
 
-                s.SenderId = externalOnes.Find(delegate(DatabaseAccess.Warehouse w)
-                {
-                    return w.Name == (string)PartnersComboBox.SelectedValue;
-                }).Id;
-                s.RecipientId = internalOnes.Find(delegate(DatabaseAccess.Warehouse w)
-                {
-                    return w.Name == ((string)WarehousesComboBox.Text).Substring(0, ((string)WarehousesComboBox.Text).LastIndexOf('#') - 3);
-                }).Id;
+                s.Sender = (DatabaseAccess.Warehouse)PartnersComboBox.Items[PartnersComboBox.SelectedIndex];
+                s.Recipient = ((DatabaseAccess.Sector)WarehousesComboBox.Items[PartnersComboBox.SelectedIndex]).Warehouse;
                 s.Date = new DateTime(DateTime.Now.Ticks);
                 s.Latest = true;
 
                 s.Group = new DatabaseAccess.Group()
                     {
-                        SectorId = int.Parse(((string)WarehousesComboBox.Text).Substring(((string)WarehousesComboBox.Text).LastIndexOf('#') + 1)),
+                        Sector = (DatabaseAccess.Sector)WarehousesComboBox.SelectedItem,
                         GroupDetails = new List<DatabaseAccess.GroupDetails>()
                     };
-
-                MessageBox.Show(s.Group.SectorId.ToString());
 
                 foreach (ProductGroupRow p in Products.Items)
                 {

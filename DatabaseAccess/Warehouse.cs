@@ -66,5 +66,10 @@ namespace DatabaseAccess
                     where s.Deleted == false
                     select s).ToList();
         }
+
+        public override string ToString()
+        {
+            return Name;
+        }
     }
 }
