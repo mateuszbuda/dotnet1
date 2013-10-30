@@ -116,6 +116,8 @@ namespace PresentationLayer
 
                 s.Sender = (DatabaseAccess.Warehouse)PartnersComboBox.Items[PartnersComboBox.SelectedIndex];
                 s.Recipient = ((DatabaseAccess.Sector)WarehousesComboBox.Items[PartnersComboBox.SelectedIndex]).Warehouse;
+                context.Warehouses.Attach(s.Recipient);
+                context.Warehouses.Attach(s.Sender);
                 s.Date = new DateTime(DateTime.Now.Ticks);
                 s.Latest = true;
 

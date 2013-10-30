@@ -90,11 +90,15 @@ namespace PresentationLayer
 
                 s.SenderId = group.Sector.WarehouseId;
                 s.Recipient = ((DatabaseAccess.Sector)WarehousesComboBox.Items[WarehousesComboBox.SelectedIndex]).Warehouse;
+                //context.Warehouses.Attach(s.Sender);
+                context.Warehouses.Attach(s.Recipient);
                 s.Date = new DateTime(DateTime.Now.Ticks);
                 s.Latest = true;
 
                 group.Sector = (DatabaseAccess.Sector)WarehousesComboBox.SelectedValue;
-                s.Group = group;
+                //s.GroupId = group.Id;
+                //s.Group.Sector = (DatabaseAccess.Sector)WarehousesComboBox.Items[WarehousesComboBox.SelectedIndex];
+                //context.Groups.Attach(group);
 
                 List<DatabaseAccess.Shift> shifts = (from sh in context.Shifts
                                                      where sh.GroupId == s.GroupId
