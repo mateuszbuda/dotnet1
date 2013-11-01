@@ -35,7 +35,7 @@
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
                         <DataGridTextColumn Binding="{Binding Price}" Header="Cena"/>
-                        <DataGridTextColumn Binding="{Binding Date}" Header="Data produkcji"/>
+                        <DataGridTextColumn Binding="{Binding DateShort}" Header="Data produkcji"/>
                         <DataGridTemplateColumn Header="">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>

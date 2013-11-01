@@ -47,12 +47,12 @@ namespace PresentationLayer
             mainWindow.Title = "Podgląd Partii";
             tokenSource = new CancellationTokenSource();
 
-            mainWindow.ReloadWindow = new Action(() => { LoadData(tokenSource.Token); });
+            mainWindow.ReloadWindow = new Action(() => { Task.Factory.StartNew(LoadData, tokenSource.Token, tokenSource.Token); });
 
             InitializeComponent();
 
-            //Task.Factory.StartNew(LoadData, tokenSource.Token, tokenSource.Token);
-            LoadData(tokenSource.Token);
+            Task.Factory.StartNew(LoadData, tokenSource.Token, tokenSource.Token);
+            //LoadData(tokenSource.Token);
         }
 
         private void LoadData(Object _token)

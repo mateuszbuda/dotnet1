@@ -34,7 +34,7 @@ namespace PresentationLayer
             this.partnerId = partnerId;
             tokenSource = new CancellationTokenSource();
 
-            mainWindow.ReloadWindow = new Action(() => LoadData(tokenSource.Token));
+            mainWindow.ReloadWindow = new Action(() => Task.Factory.StartNew(LoadData, tokenSource.Token, tokenSource.Token));
 
             InitializeComponent();
 

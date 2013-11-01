@@ -33,7 +33,8 @@ namespace PresentationLayer
             this.groupId = groupId;
             tokenSource = new CancellationTokenSource();
 
-            mainWindow.ReloadWindow = new Action(() => { LoadData(tokenSource.Token); });
+            // Błąd - nie będzie odświeżać MainWindow
+            //mainWindow.ReloadWindow = new Action(() => { LoadData(tokenSource.Token); });
 
             isLoaded = false;
             InitializeComponent();
@@ -55,7 +56,7 @@ namespace PresentationLayer
                          select g).FirstOrDefault();
 
                 warehouses = (from w in context.Warehouses.Include("Sectors")
-                              where w.Internal == true
+                              //where w.Internal == true
                               select w).ToList();
 
                 Dispatcher.BeginInvoke(new Action(() =>
@@ -86,25 +87,34 @@ namespace PresentationLayer
         {
             using (var context = new DatabaseAccess.SystemContext())
             {
+                List<DatabaseAccess.Shift> shifts = (from sh in context.Shifts
+                                                     where sh.GroupId == groupId
+                                                     select sh).ToList();
+
+                foreach (DatabaseAccess.Shift shift in shifts)
+                    shift.Latest = false;
+
+                context.SaveChanges();
+
+                context.Groups.Attach(group);
+
                 DatabaseAccess.Shift s = new DatabaseAccess.Shift();
 
-                s.SenderId = group.Sector.WarehouseId;
+                //s.SenderId = group.Sector.WarehouseId;
+                s.Sender = group.Sector.Warehouse;
                 s.Recipient = ((DatabaseAccess.Sector)WarehousesComboBox.Items[WarehousesComboBox.SelectedIndex]).Warehouse;
                 //context.Warehouses.Attach(s.Sender);
                 context.Warehouses.Attach(s.Recipient);
                 s.Date = new DateTime(DateTime.Now.Ticks);
                 s.Latest = true;
+                s.Group = group;
 
                 group.Sector = (DatabaseAccess.Sector)WarehousesComboBox.SelectedValue;
                 //s.GroupId = group.Id;
                 //s.Group.Sector = (DatabaseAccess.Sector)WarehousesComboBox.Items[WarehousesComboBox.SelectedIndex];
                 //context.Groups.Attach(group);
 
-                List<DatabaseAccess.Shift> shifts = (from sh in context.Shifts
-                                                     where sh.GroupId == s.GroupId
-                                                     select sh).ToList();
-                foreach (DatabaseAccess.Shift shift in shifts)
-                    shift.Latest = false;
+                
 
                 context.Shifts.Add(s);
 

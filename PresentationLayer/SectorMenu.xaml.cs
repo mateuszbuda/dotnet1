@@ -46,7 +46,7 @@ namespace PresentationLayer
             isLoaded = false;
             sectorId = id;
             tokenSource = new CancellationTokenSource();
-            mainWindow.ReloadWindow = new Action(() => LoadData(tokenSource.Token));
+            mainWindow.ReloadWindow = new Action(() => Task.Factory.StartNew(LoadData, tokenSource.Token, tokenSource.Token));
 
             InitializeComponent();
 

@@ -88,6 +88,12 @@ namespace PresentationLayer
                 {
                     p = new DatabaseAccess.Partner();
                     DatabaseAccess.Warehouse w = new DatabaseAccess.Warehouse();
+                    DatabaseAccess.Sector s = new DatabaseAccess.Sector();
+
+                    s.Limit = 0;
+                    s.Deleted = false;
+                    s.Number = 1;
+                    //s.Warehouse = w;
 
                     w.Name = NameTB.Text;
                     w.Internal = false;
@@ -98,6 +104,8 @@ namespace PresentationLayer
                     w.Tel = PhoneTB.Text;
                     w.Mail = MailTB.Text;
                     w.Deleted = false;
+                    w.Sectors = new HashSet<DatabaseAccess.Sector>();
+                    w.Sectors.Add(s);
 
                     p.Warehouse = w;
                     p.City = CityTB.Text;
@@ -119,6 +127,13 @@ namespace PresentationLayer
                     p.Num = NumberTB.Text;
                     p.Tel = PhoneTB.Text;
                     p.Mail = MailTB.Text;
+
+                    p.Warehouse.City = CityTB.Text;
+                    p.Warehouse.Code = CodeTB.Text;
+                    p.Warehouse.Street = StreetTB.Text;
+                    p.Warehouse.Num = NumberTB.Text;
+                    p.Warehouse.Tel = PhoneTB.Text;
+                    p.Warehouse.Mail = MailTB.Text;
                 }
 
                 context.SaveChanges();

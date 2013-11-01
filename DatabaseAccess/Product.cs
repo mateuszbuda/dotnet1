@@ -20,5 +20,9 @@ namespace DatabaseAccess
 
         // Właściwości nawigacyjne
         public virtual ICollection<GroupDetails> GroupsDetails { get; set; }
+
+        // Wyświetlenie daty bez godziny
+        [NotMapped]
+        public string DateShort { get { return Date.ToShortDateString(); } }
     }
 }

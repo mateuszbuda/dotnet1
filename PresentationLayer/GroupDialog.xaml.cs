@@ -33,7 +33,8 @@ namespace PresentationLayer
             this.mainWindow = mainWindow;
             tokenSource = new CancellationTokenSource();
 
-            mainWindow.ReloadWindow = new Action(() => { LoadData(tokenSource.Token); });
+            // Naprawione :)
+            //mainWindow.ReloadWindow = new Action(() => { LoadData(tokenSource.Token); });
 
             isLoaded = false;
             InitializeComponent();
@@ -129,14 +130,18 @@ namespace PresentationLayer
 
                 foreach (ProductGroupRow p in Products.Items)
                 {
-                    s.Group.GroupDetails.Add(new DatabaseAccess.GroupDetails()
+                    DatabaseAccess.GroupDetails gd = new DatabaseAccess.GroupDetails()
                     {
                         Product = products.Find(delegate(DatabaseAccess.Product prod)
                         {
                             return prod.Name == (string)p.ProductsComboBox.Text;
                         }),
                         Count = int.Parse(p.Quantity.Text),
-                    });
+                    };
+
+                    context.Products.Attach(gd.Product);
+
+                    s.Group.GroupDetails.Add(gd);                    
                 }
 
                 context.Shifts.Add(s);
@@ -144,7 +149,7 @@ namespace PresentationLayer
                 context.SaveChanges();
             }
 
-            mainWindow.ReloadWindow(); // nie działa
+            mainWindow.ReloadWindow();
             this.Close();
         }
 

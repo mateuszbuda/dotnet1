@@ -43,7 +43,7 @@ namespace PresentationLayer
             this.mainWindow = mainWindow;
             mainWindow.Title = "Historia Partii";
             tokenSource = new CancellationTokenSource();
-            mainWindow.ReloadWindow = new Action(() => { LoadData(tokenSource.Token); });
+            mainWindow.ReloadWindow = new Action(() => { Task.Factory.StartNew(LoadData, tokenSource.Token, tokenSource.Token); });
 
             InitializeComponent();
 
@@ -51,7 +51,6 @@ namespace PresentationLayer
             GroupButton.Content = String.Format("Partia #{0}", groupId);
 
             Task.Factory.StartNew(LoadData, tokenSource.Token, tokenSource.Token);
-            //LoadData(tokenSource.Token);
         }
 
         private void LoadData(Object _token)

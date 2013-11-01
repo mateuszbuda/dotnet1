@@ -114,7 +114,7 @@ namespace PresentationLayer
             this.mainWindow = mainWindow;
             mainWindow.Title = "Magazyny";
             tokenSource = new CancellationTokenSource();
-            mainWindow.ReloadWindow = new Action(() => LoadWarehouses(tokenSource.Token));
+            mainWindow.ReloadWindow = new Action(() => Task.Factory.StartNew(LoadWarehouses, tokenSource.Token, tokenSource.Token));
 
             isLoaded = false;
             InitializeComponent();
