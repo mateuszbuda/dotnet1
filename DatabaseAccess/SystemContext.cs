@@ -2,8 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Data.Entity;
+using System.Windows;
+using System.Windows.Threading;
 
 namespace DatabaseAccess
 {
@@ -16,6 +19,40 @@ namespace DatabaseAccess
         public DbSet<Product> Products { get; set; }
         public DbSet<Partner> Partners { get; set; }
         public DbSet<GroupDetails> GroupsDetails { get; set; }
+
+        public static void Transaction<T>(Func<SystemContext, T> action, Action<T> continuation = null, CancellationTokenSource _tokenSource = null)
+        {
+            Task<T> task = new Task<T>((object t) =>
+                {
+                    CancellationToken token = (CancellationToken)t;
+                    using (var context = new SystemContext())
+                    {
+                        using (var tran = context.Database.BeginTransaction())
+                        {
+                            try
+                            {
+                                T result = action(context);
+
+                                tran.Commit();
+                                return result;
+                            }
+                            catch
+                            {
+                                tran.Rollback();
+                                MessageBox.Show("Błąd wewnętrzny bazy danych.\nAplikacja zostanie zamknięta.", "Błąd", MessageBoxButton.OK, MessageBoxImage.Error);
+                                System.Diagnostics.Process.GetCurrentProcess().Kill();
+                                throw;
+                            }
+                        }
+                    }
+                }, _tokenSource.Token, _tokenSource.Token);
+
+            if (continuation != null)
+                task.ContinueWith((t, o) => { if (!((CancellationToken)o).IsCancellationRequested) continuation(t.Result); },
+                    _tokenSource.Token, _tokenSource.Token, TaskContinuationOptions.OnlyOnRanToCompletion, TaskScheduler.Default);
+                
+            task.Start();
+        }
 
         public int GetInternalGroupsCount()
         {

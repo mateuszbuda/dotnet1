@@ -26,36 +26,30 @@ namespace PresentationLayer
     {
         private MainWindow mainWindow;
 
-        private void ShowStats(Object _token)
+        private void ShowStats()
         {
-            CancellationToken token = (CancellationToken)_token;
-
-            using (SystemContext context = new SystemContext())
+            DatabaseAccess.SystemContext.Transaction(context =>
             {
-                if (token.IsCancellationRequested)
-                    return;
-
-                int warehousesCount = context.GetWarehousesCount();
-                int productsCount = context.Products.Count();
-                int partnersCount = context.Partners.Count();
-                int groupsCount = context.GetInternalGroupsCount();
-                int shiftsCount = context.Shifts.Count();
-                int fill = context.GetFillRate();
-
-                if (token.IsCancellationRequested)
-                    return;
-
-                Dispatcher.BeginInvoke(new Action(() =>
-                    {
-                        WarehousesCountInfo.Text = warehousesCount.ToString();
-                        ProductsCountInfo.Text = productsCount.ToString();
-                        PartnersCountInfo.Text = partnersCount.ToString();
-                        GroupsCountInfo.Text = groupsCount.ToString();
-                        ShiftsCountInfo.Text = shiftsCount.ToString();
-                        WarehousesInfo.Text = String.Format("{0}%", fill);
-                    }
-                ));
-            }
+                return new
+                {
+                    WarehousesCount = context.GetWarehousesCount(),
+                    ProductsCount = context.Products.Count(),
+                    PartnersCount = context.Partners.Count(),
+                    GroupsCount = context.GetInternalGroupsCount(),
+                    ShiftsCount = context.Shifts.Count(),
+                    Fill = context.GetFillRate()
+                };
+            },
+                t => Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    WarehousesCountInfo.Text = t.WarehousesCount.ToString();
+                    ProductsCountInfo.Text = t.ProductsCount.ToString();
+                    PartnersCountInfo.Text = t.PartnersCount.ToString();
+                    GroupsCountInfo.Text = t.GroupsCount.ToString();
+                    ShiftsCountInfo.Text = t.ShiftsCount.ToString();
+                    WarehousesInfo.Text = String.Format("{0}%", t.Fill);
+                }
+                )), tokenSource);
         }
 
         private CancellationTokenSource tokenSource;
@@ -64,15 +58,13 @@ namespace PresentationLayer
         {
             this.mainWindow = mainWindow;
             mainWindow.Title = "Menu Główne";
-            mainWindow.ReloadWindow = new Action(() =>
-            {
-                Task.Factory.StartNew(ShowStats, tokenSource.Token, tokenSource.Token);
-            });
+            mainWindow.ReloadWindow = ShowStats;
 
             InitializeComponent();
 
             tokenSource = new CancellationTokenSource();
-            Task showStats = Task.Factory.StartNew(ShowStats, tokenSource.Token, tokenSource.Token);
+
+            ShowStats();
         }
 
         private void ChangeMenu(UserControl menu)
