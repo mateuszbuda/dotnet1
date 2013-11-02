@@ -16,7 +16,7 @@ using System.Windows.Shapes;
 namespace PresentationLayer
 {
     /// <summary>
-    /// Interaction logic for WarehouseDialog.xaml
+    /// Okno dialogowe dodawania i edycji magazynów.
     /// </summary>
     public partial class WarehouseDialog : Window   // 13
     {
@@ -33,7 +33,7 @@ namespace PresentationLayer
 
             warehouseId = id;
 
-            Task.Factory.StartNew(LoadData, tokenSource.Token, tokenSource.Token);
+            LoadData();
         }
 
         public WarehouseDialog(MainWindow mainWindow)
@@ -47,24 +47,16 @@ namespace PresentationLayer
             Title = "Tworzenie nowego magazynu";
         }
 
-        private void LoadData(Object _token)
+        private void LoadData()
         {
-            CancellationToken token = (CancellationToken)_token;
+            DatabaseAccess.SystemContext.Transaction(context =>
+                {
+                    warehouse = (from w in context.Warehouses
+                                 where w.Id == warehouseId
+                                 select w).FirstOrDefault();
 
-            if (token.IsCancellationRequested)
-                return;
-
-            using (var context = new DatabaseAccess.SystemContext())
-            {
-                warehouse = (from w in context.Warehouses
-                             where w.Id == warehouseId
-                             select w).FirstOrDefault();
-
-                if (token.IsCancellationRequested)
-                    return;
-
-                Dispatcher.BeginInvoke(new Action(() => InitializeData()));
-            }
+                    return true;
+                }, t => Dispatcher.BeginInvoke(new Action(() => InitializeData())), tokenSource);
         }
 
         private void InitializeData()
@@ -80,45 +72,62 @@ namespace PresentationLayer
 
         private void SaveClick(object sender, RoutedEventArgs e)
         {
-            using (var context = new DatabaseAccess.SystemContext())
-            {
-                DatabaseAccess.Warehouse w;
+            (sender as Button).IsEnabled = false;
 
-                if (warehouseId == -1)
+            var tmp = new
                 {
-                    w = new DatabaseAccess.Warehouse();
-                    w.Name = NameTB.Text;
-                    w.City = CityTB.Text;
-                    w.Code = CodeTB.Text;
-                    w.Street = StreetTB.Text;
-                    w.Num = NumberTB.Text;
-                    w.Tel = PhoneTB.Text;
-                    w.Mail = MailTB.Text;
-                    w.Internal = true;
+                    Name = NameTB.Text,
+                    City = CityTB.Text,
+                    Code = CodeTB.Text,
+                    Street = StreetTB.Text,
+                    Num = NumberTB.Text,
+                    Tel = PhoneTB.Text,
+                    Mail = MailTB.Text
+                };
 
-                    context.Warehouses.Add(w);
-                }
-                else
+            DatabaseAccess.SystemContext.Transaction(context =>
                 {
-                    w = (from warehouse in context.Warehouses where warehouse.Id == warehouseId select warehouse).FirstOrDefault();
-                    w.Name = NameTB.Text;
-                    w.City = CityTB.Text;
-                    w.Code = CodeTB.Text;
-                    w.Street = StreetTB.Text;
-                    w.Num = NumberTB.Text;
-                    w.Tel = PhoneTB.Text;
-                    w.Mail = MailTB.Text;
-                }
+                    DatabaseAccess.Warehouse w;
 
-                context.SaveChanges();
-            }
+                    if (warehouseId == -1)
+                    {
+                        w = new DatabaseAccess.Warehouse();
+                        w.Name = tmp.Name;
+                        w.City = tmp.City;
+                        w.Code = tmp.Code;
+                        w.Street = tmp.Street;
+                        w.Num = tmp.Num;
+                        w.Tel = tmp.Tel;
+                        w.Mail = tmp.Mail;
+                        w.Internal = true;
 
-            mainWindow.ReloadWindow();
-            this.Close();
+                        context.Warehouses.Add(w);
+                    }
+                    else
+                    {
+                        w = (from warehouse in context.Warehouses where warehouse.Id == warehouseId select warehouse).FirstOrDefault();
+                        w.Name = tmp.Name;
+                        w.City = tmp.City;
+                        w.Code = tmp.Code;
+                        w.Street = tmp.Street;
+                        w.Num = tmp.Num;
+                        w.Tel = tmp.Tel;
+                        w.Mail = tmp.Mail;
+                    }
+
+                    context.SaveChanges();
+
+                    return true;
+                }, t => Dispatcher.BeginInvoke(new Action(() =>
+                    {
+                        mainWindow.ReloadWindow();
+                        this.Close();
+                    })), tokenSource);
         }
 
         private void CancelClick(object sender, RoutedEventArgs e)
         {
+            tokenSource.Cancel();
             this.Close();
         }
     }

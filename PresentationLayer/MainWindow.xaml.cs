@@ -16,7 +16,7 @@ using System.Windows.Shapes;
 namespace PresentationLayer
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Główne okno programu, na które wczytywane są okna w postaci kontrolek.
     /// </summary>
     public partial class MainWindow : Window
     {

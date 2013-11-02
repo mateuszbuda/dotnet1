@@ -22,6 +22,9 @@ namespace DatabaseAccess
 
         public static void Transaction<T>(Func<SystemContext, T> action, Action<T> continuation = null, CancellationTokenSource _tokenSource = null)
         {
+            if (_tokenSource == null)
+                _tokenSource = new CancellationTokenSource();
+
             Task<T> task = new Task<T>((object t) =>
                 {
                     CancellationToken token = (CancellationToken)t;

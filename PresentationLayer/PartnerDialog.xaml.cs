@@ -16,7 +16,7 @@ using System.Windows.Shapes;
 namespace PresentationLayer
 {
     /// <summary>
-    /// Interaction logic for PartnerDialog.xaml
+    /// Dodawanie i edycja partnerów.
     /// </summary>
     public partial class PartnerDialog : Window     // 18
     {
@@ -33,7 +33,7 @@ namespace PresentationLayer
 
             partnerId = id;
 
-            Task.Factory.StartNew(LoadData, tokenSource.Token, tokenSource.Token);
+            LoadData();
         }
 
         public PartnerDialog(MainWindow mainWindow)
@@ -47,24 +47,16 @@ namespace PresentationLayer
             Title = "Tworzenie nowego partnera";
         }
 
-        private void LoadData(Object _token)
+        private void LoadData()
         {
-            CancellationToken token = (CancellationToken)_token;
+            DatabaseAccess.SystemContext.Transaction(context =>
+                {
+                    partner = (from w in context.Partners.Include("Warehouse")
+                               where w.Id == partnerId
+                               select w).FirstOrDefault();
 
-            if (token.IsCancellationRequested)
-                return;
-
-            using (var context = new DatabaseAccess.SystemContext())
-            {
-                partner = (from w in context.Partners.Include("Warehouse")
-                           where w.Id == partnerId
-                           select w).FirstOrDefault();
-
-                if (token.IsCancellationRequested)
-                    return;
-
-                Dispatcher.BeginInvoke(new Action(() => InitializeData()));
-            }
+                    return true;
+                }, t => Dispatcher.BeginInvoke(new Action(() => InitializeData())), tokenSource);
         }
 
         private void InitializeData()
@@ -80,71 +72,88 @@ namespace PresentationLayer
 
         private void SaveClick(object sender, RoutedEventArgs e)
         {
-            using (var context = new DatabaseAccess.SystemContext())
-            {
-                DatabaseAccess.Partner p;
+            (sender as Button).IsEnabled = false;
 
-                if (partnerId == -1)
+            var data = new
                 {
-                    p = new DatabaseAccess.Partner();
-                    DatabaseAccess.Warehouse w = new DatabaseAccess.Warehouse();
-                    DatabaseAccess.Sector s = new DatabaseAccess.Sector();
+                    Name = NameTB.Text,
+                    City = CityTB.Text,
+                    Code = CodeTB.Text,
+                    Street = StreetTB.Text,
+                    Num = NumberTB.Text,
+                    Tel = PhoneTB.Text,
+                    Mail = MailTB.Text
+                };
 
-                    s.Limit = 0;
-                    s.Deleted = false;
-                    s.Number = 1;
-                    //s.Warehouse = w;
-
-                    w.Name = NameTB.Text;
-                    w.Internal = false;
-                    w.City = CityTB.Text;
-                    w.Code = CodeTB.Text;
-                    w.Street = StreetTB.Text;
-                    w.Num = NumberTB.Text;
-                    w.Tel = PhoneTB.Text;
-                    w.Mail = MailTB.Text;
-                    w.Deleted = false;
-                    w.Sectors = new HashSet<DatabaseAccess.Sector>();
-                    w.Sectors.Add(s);
-
-                    p.Warehouse = w;
-                    p.City = CityTB.Text;
-                    p.Code = CodeTB.Text;
-                    p.Street = StreetTB.Text;
-                    p.Num = NumberTB.Text;
-                    p.Tel = PhoneTB.Text;
-                    p.Mail = MailTB.Text;
-
-                    context.Partners.Add(p);
-                }
-                else
+            DatabaseAccess.SystemContext.Transaction(context =>
                 {
-                    p = (from partner in context.Partners.Include("Warehouse") where partner.Id == partnerId select partner).FirstOrDefault();
-                    p.Warehouse.Name = NameTB.Text;
-                    p.City = CityTB.Text;
-                    p.Code = CodeTB.Text;
-                    p.Street = StreetTB.Text;
-                    p.Num = NumberTB.Text;
-                    p.Tel = PhoneTB.Text;
-                    p.Mail = MailTB.Text;
+                    DatabaseAccess.Partner p;
 
-                    p.Warehouse.City = CityTB.Text;
-                    p.Warehouse.Code = CodeTB.Text;
-                    p.Warehouse.Street = StreetTB.Text;
-                    p.Warehouse.Num = NumberTB.Text;
-                    p.Warehouse.Tel = PhoneTB.Text;
-                    p.Warehouse.Mail = MailTB.Text;
-                }
+                    if (partnerId == -1)
+                    {
+                        p = new DatabaseAccess.Partner();
+                        DatabaseAccess.Warehouse w = new DatabaseAccess.Warehouse();
+                        DatabaseAccess.Sector s = new DatabaseAccess.Sector();
 
-                context.SaveChanges();
-            }
+                        s.Limit = 0;
+                        s.Deleted = false;
+                        s.Number = 1;
+                        //s.Warehouse = w;
 
-            mainWindow.ReloadWindow();
-            this.Close();
+                        w.Name = data.Name;
+                        w.Internal = false;
+                        w.City = data.City;
+                        w.Code = data.Code;
+                        w.Street = data.Street;
+                        w.Num = data.Num;
+                        w.Tel = data.Tel;
+                        w.Mail = data.Mail;
+                        w.Deleted = false;
+                        w.Sectors = new HashSet<DatabaseAccess.Sector>();
+                        w.Sectors.Add(s);
+
+                        p.Warehouse = w;
+                        p.City = data.City;
+                        p.Code = data.Code;
+                        p.Street = data.Street;
+                        p.Num = data.Num;
+                        p.Tel = data.Tel;
+                        p.Mail = data.Mail;
+
+                        context.Partners.Add(p);
+                    }
+                    else
+                    {
+                        p = (from partner in context.Partners.Include("Warehouse") where partner.Id == partnerId select partner).FirstOrDefault();
+                        p.Warehouse.Name = data.Name;
+                        p.City = data.City;
+                        p.Code = data.Code;
+                        p.Street = data.Street;
+                        p.Num = data.Num;
+                        p.Tel = data.Tel;
+                        p.Mail = data.Mail;
+
+                        p.Warehouse.City = data.City;
+                        p.Warehouse.Code = data.Code;
+                        p.Warehouse.Street = data.Street;
+                        p.Warehouse.Num = data.Num;
+                        p.Warehouse.Tel = data.Tel;
+                        p.Warehouse.Mail = data.Mail;
+                    }
+
+                    context.SaveChanges();
+
+                    return true;
+                }, t => Dispatcher.BeginInvoke(new Action(() =>
+                    {
+                        mainWindow.ReloadWindow();
+                        this.Close();
+                    })), tokenSource);            
         }
 
         private void CancelClick(object sender, RoutedEventArgs e)
         {
+            tokenSource.Cancel();
             this.Close();
         }
     }

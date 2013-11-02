@@ -17,7 +17,8 @@ using System.Windows.Shapes;
 namespace PresentationLayer
 {
     /// <summary>
-    /// Interaction logic for WarehousesMenu.xaml
+    /// Menu Magazynów.
+    /// Wyświetla wszystkie magazyny w systemie.
     /// </summary>
     public partial class WarehousesMenu : UserControl   // 2
     {
@@ -37,38 +38,31 @@ namespace PresentationLayer
         private bool isLoaded;
         private ContextMenu contextMenu;
 
-        private void LoadWarehouses(Object _token)
+        private void LoadWarehouses()
         {
-            CancellationToken token = (CancellationToken)_token;
-
-            if (token.IsCancellationRequested)
-                return;
-
-            using (var context = new DatabaseAccess.SystemContext())
-            {
-                List<DatabaseAccess.Warehouse> war = context.GetWarehouses();
-
-                warehouses.Clear();
-
-                foreach (DatabaseAccess.Warehouse w in war)
-                    warehouses.Add(new Warehouse()
-                    {
-                        Id = w.Id,
-                        Name = w.Name,
-                        AllSectors = w.GetAllSectorCount(),
-                        EmptySectors = w.GetFreeSectorCount()
-                    });
-
-                if (token.IsCancellationRequested)
-                    return;
-
-                Dispatcher.BeginInvoke(new Action(() =>
+            DatabaseAccess.SystemContext.Transaction(context =>
                 {
-                    isLoaded = true;
-                    InitializeButtons();
-                }
-                ));
-            }
+                    List<DatabaseAccess.Warehouse> war = context.GetWarehouses();
+                    List<Warehouse> _warehouses = new List<Warehouse>();
+
+                    foreach (DatabaseAccess.Warehouse w in war)
+                        _warehouses.Add(new Warehouse()
+                        {
+                            Id = w.Id,
+                            Name = w.Name,
+                            AllSectors = w.GetAllSectorCount(),
+                            EmptySectors = w.GetFreeSectorCount()
+                        });
+
+                    return _warehouses;
+                },
+                t => Dispatcher.BeginInvoke(new Action(() =>
+                    {
+                        warehouses.Clear();
+                        isLoaded = true;
+                        warehouses = t;
+                        InitializeButtons();
+                    })), tokenSource);
         }
 
         private void WarehouseClick(Object sender, RoutedEventArgs e)
@@ -114,7 +108,7 @@ namespace PresentationLayer
             this.mainWindow = mainWindow;
             mainWindow.Title = "Magazyny";
             tokenSource = new CancellationTokenSource();
-            mainWindow.ReloadWindow = new Action(() => Task.Factory.StartNew(LoadWarehouses, tokenSource.Token, tokenSource.Token));
+            mainWindow.ReloadWindow = LoadWarehouses;
 
             isLoaded = false;
             InitializeComponent();
@@ -134,39 +128,34 @@ namespace PresentationLayer
 
             warehouses = new List<Warehouse>();
 
-            Task.Factory.StartNew(LoadWarehouses, tokenSource.Token, tokenSource.Token);
+            LoadWarehouses();
         }
 
-        private void DeleteWarehouse(Object _token, int id)
+        private void DeleteWarehouse(int id)
         {
-            CancellationToken token = (CancellationToken)_token;
-
-            if (token.IsCancellationRequested)
-                return;
-
-            using (var context = new DatabaseAccess.SystemContext())
-            {
-                DatabaseAccess.Warehouse w = (from x in context.Warehouses
-                                              where x.Id == id
-                                              select x).FirstOrDefault();
-
-                int c = (from s in w.Sectors
-                         where s.Deleted == false
-                         where s.Groups.Count != 0
-                         select s).Count();
-
-                if (c != 0)
+            DatabaseAccess.SystemContext.Transaction(context =>
                 {
-                    MessageBox.Show("Magazyn nie jest pusty!", "Błąd", MessageBoxButton.OK, MessageBoxImage.Error);
-                    return;
-                }
+                    DatabaseAccess.Warehouse w = (from x in context.Warehouses
+                                                  where x.Id == id
+                                                  select x).FirstOrDefault();
 
-                w.Deleted = true;
+                    int c = (from s in w.Sectors
+                             where s.Deleted == false
+                             where s.Groups.Count != 0
+                             select s).Count();
 
-                context.SaveChanges();
-            }
+                    if (c != 0)
+                    {
+                        MessageBox.Show("Magazyn nie jest pusty!", "Błąd", MessageBoxButton.OK, MessageBoxImage.Error);
+                        return false;
+                    }
 
-            LoadWarehouses(_token);
+                    w.Deleted = true;
+
+                    context.SaveChanges();
+
+                    return true;
+                }, t => LoadWarehouses());
         }
 
         void DeleteClick(object sender, RoutedEventArgs e)
@@ -178,7 +167,7 @@ namespace PresentationLayer
 
             if (MessageBox.Show("Czy chcesz usunąć magazyn '" + name + "'?", "Uwaga!",
                 MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No) == MessageBoxResult.Yes)
-                Task.Factory.StartNew((Object _token) => DeleteWarehouse(_token, id), tokenSource.Token, tokenSource.Token);
+                    DeleteWarehouse(id);
         }
 
         private void EditClick(object sender, RoutedEventArgs e)

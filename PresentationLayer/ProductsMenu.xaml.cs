@@ -17,7 +17,7 @@ using System.Windows.Shapes;
 namespace PresentationLayer
 {
     /// <summary>
-    /// Interaction logic for ProductsMenu.xaml
+    /// Podgląd i edycja produktów.
     /// </summary>
     public partial class ProductsMenu : UserControl     // 11
     {
@@ -32,39 +32,29 @@ namespace PresentationLayer
             mainWindow.Title = "Produkty";
             tokenSource = new CancellationTokenSource();
 
-            mainWindow.ReloadWindow = new Action(() => { Task.Factory.StartNew(LoadData, tokenSource.Token, tokenSource.Token); });
+            mainWindow.ReloadWindow = LoadData;
 
             isLoaded = false;
             InitializeComponent();
 
-            Task.Factory.StartNew(LoadData, tokenSource.Token, tokenSource.Token);
+           LoadData();
         }
 
-        private void LoadData(Object _token)
+        private void LoadData()
         {
-            CancellationToken token = (CancellationToken)_token;
+            DatabaseAccess.SystemContext.Transaction(context =>
+                {
+                    products = (from p in context.Products
+                                where true
+                                select p).ToList();
 
-            if (token.IsCancellationRequested)
-                return;
-
-            using (var context = new DatabaseAccess.SystemContext())
-            {
-                products = (from p in context.Products
-                            where true
-                            select p).ToList();
-
-                Dispatcher.BeginInvoke(new Action(() =>
+                    return true;
+                }, t => Dispatcher.BeginInvoke(new Action(() =>
                 {
                     isLoaded = true;
                     InitializeData();
                 }
-                ));
-            }
-
-            if (token.IsCancellationRequested)
-                return;
-
-            Dispatcher.BeginInvoke(new Action(() => InitializeData()));
+                )), tokenSource);
         }
 
         private void InitializeData()

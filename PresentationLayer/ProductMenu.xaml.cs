@@ -17,7 +17,7 @@ using System.Windows.Shapes;
 namespace PresentationLayer
 {
     /// <summary>
-    /// Interaction logic for ProductMenu.xaml
+    /// Wyświetla informacje o produkcie.
     /// </summary>
     public partial class ProductMenu : UserControl // 12
     {
@@ -32,31 +32,23 @@ namespace PresentationLayer
             mainWindow.Title = "Podgląd Produktu";
             productId = id;
             tokenSource = new CancellationTokenSource();
-            mainWindow.ReloadWindow = new Action(() => { Task.Factory.StartNew(LoadData, tokenSource.Token, tokenSource.Token); });
+            mainWindow.ReloadWindow = LoadData;
 
             InitializeComponent();
 
-            Task.Factory.StartNew(LoadData, tokenSource.Token, tokenSource.Token);
+            LoadData();
         }
 
-        private void LoadData(object _token)
+        private void LoadData()
         {
-            CancellationToken token = (CancellationToken)_token;
+            DatabaseAccess.SystemContext.Transaction(context =>
+                {
+                    product = (from p in context.Products
+                               where p.Id == productId
+                               select p).FirstOrDefault();
 
-            if (token.IsCancellationRequested)
-                return;
-
-            using (var context = new DatabaseAccess.SystemContext())
-            {
-                product = (from p in context.Products
-                           where p.Id == productId
-                           select p).FirstOrDefault();
-            }
-
-            if (token.IsCancellationRequested)
-                return;
-
-            Dispatcher.BeginInvoke(new Action(() => InitializeData()));
+                    return true;
+                }, t => Dispatcher.BeginInvoke(new Action(() => InitializeData())), tokenSource);
         }
 
         private void InitializeData()

@@ -17,7 +17,7 @@ using System.Windows.Shapes;
 namespace PresentationLayer
 {
     /// <summary>
-    /// Interaction logic for PartnerMenu.xaml
+    /// Podgląd danych partnera.
     /// </summary>
     public partial class PartnerMenu : UserControl  // 8
     {
@@ -32,31 +32,23 @@ namespace PresentationLayer
             mainWindow.Title = "Podgląd Partnera";
             partnerId = id;
             tokenSource = new CancellationTokenSource();
-            mainWindow.ReloadWindow = new Action(() => { Task.Factory.StartNew(LoadData, tokenSource.Token, tokenSource.Token); });
+            mainWindow.ReloadWindow = LoadData;
 
             InitializeComponent();
 
-            Task.Factory.StartNew(LoadData, tokenSource.Token, tokenSource.Token);
+            LoadData();
         }
 
-        private void LoadData(object _token)
+        private void LoadData()
         {
-            CancellationToken token = (CancellationToken)_token;
+            DatabaseAccess.SystemContext.Transaction(context =>
+                {
+                    partner = (from p in context.Partners.Include("Warehouse")
+                               where p.Id == partnerId
+                               select p).FirstOrDefault();
 
-            if (token.IsCancellationRequested)
-                return;
-
-            using (var context = new DatabaseAccess.SystemContext())
-            {
-                partner = (from p in context.Partners.Include("Warehouse")
-                           where p.Id == partnerId
-                           select p).FirstOrDefault();
-            }
-
-            if (token.IsCancellationRequested)
-                return;
-
-            Dispatcher.BeginInvoke(new Action(() => InitializeData()));
+                    return true;
+                }, t => Dispatcher.BeginInvoke(new Action(() => InitializeData())), tokenSource);
         }
 
         private void InitializeData()

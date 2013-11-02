@@ -16,7 +16,7 @@ using System.Windows.Shapes;
 namespace PresentationLayer
 {
     /// <summary>
-    /// Interaction logic for ShiftDialog.xaml
+    /// Okno dialogowe odpowiedzialne za realizację przesunięć partii.
     /// </summary>
     public partial class ShiftDialog : Window   // 16
     {
@@ -33,42 +33,31 @@ namespace PresentationLayer
             this.groupId = groupId;
             tokenSource = new CancellationTokenSource();
 
-            // Błąd - nie będzie odświeżać MainWindow
-            //mainWindow.ReloadWindow = new Action(() => { LoadData(tokenSource.Token); });
-
             isLoaded = false;
             InitializeComponent();
 
-            Task.Factory.StartNew(LoadData, tokenSource.Token, tokenSource.Token);
+            LoadData();
         }
 
-        private void LoadData(Object _token)
+        private void LoadData()
         {
-            CancellationToken token = (CancellationToken)_token;
+            DatabaseAccess.SystemContext.Transaction(context =>
+                {
+                    group = (from g in context.Groups.Include("Sector")
+                             where g.Id == this.groupId
+                             select g).FirstOrDefault();
 
-            if (token.IsCancellationRequested)
-                return;
+                    warehouses = (from w in context.Warehouses.Include("Sectors")
+                                  //where w.Internal == true
+                                  select w).ToList();
 
-            using (var context = new DatabaseAccess.SystemContext())
-            {
-                group = (from g in context.Groups.Include("Sector")
-                         where g.Id == this.groupId
-                         select g).FirstOrDefault();
-
-                warehouses = (from w in context.Warehouses.Include("Sectors")
-                              //where w.Internal == true
-                              select w).ToList();
-
-                Dispatcher.BeginInvoke(new Action(() =>
+                    return true;
+                }, t => Dispatcher.BeginInvoke(new Action(() =>
                 {
                     isLoaded = true;
                     InitializeData();
                 }
-                ));
-            }
-
-            if (token.IsCancellationRequested)
-                return;
+                )), tokenSource);
         }
 
         private void InitializeData()
@@ -85,48 +74,53 @@ namespace PresentationLayer
 
         private void SaveButtonClick(object sender, RoutedEventArgs e)
         {
-            using (var context = new DatabaseAccess.SystemContext())
-            {
-                List<DatabaseAccess.Shift> shifts = (from sh in context.Shifts
-                                                     where sh.GroupId == groupId
-                                                     select sh).ToList();
+            (sender as Button).IsEnabled = false;
 
-                foreach (DatabaseAccess.Shift shift in shifts)
-                    shift.Latest = false;
+            DatabaseAccess.Warehouse recipient = 
+                ((DatabaseAccess.Sector)WarehousesComboBox.Items[WarehousesComboBox.SelectedIndex]).Warehouse;
 
-                context.SaveChanges();
+            DatabaseAccess.Sector sector = (DatabaseAccess.Sector)WarehousesComboBox.SelectedValue;
 
-                context.Groups.Attach(group);
+            DatabaseAccess.SystemContext.Transaction(context =>
+                {
+                    List<DatabaseAccess.Shift> shifts = (from sh in context.Shifts
+                                                         where sh.GroupId == groupId
+                                                         select sh).ToList();
 
-                DatabaseAccess.Shift s = new DatabaseAccess.Shift();
+                    foreach (DatabaseAccess.Shift shift in shifts)
+                        shift.Latest = false;
 
-                //s.SenderId = group.Sector.WarehouseId;
-                s.Sender = group.Sector.Warehouse;
-                s.Recipient = ((DatabaseAccess.Sector)WarehousesComboBox.Items[WarehousesComboBox.SelectedIndex]).Warehouse;
-                //context.Warehouses.Attach(s.Sender);
-                context.Warehouses.Attach(s.Recipient);
-                s.Date = new DateTime(DateTime.Now.Ticks);
-                s.Latest = true;
-                s.Group = group;
+                    context.SaveChanges();
 
-                group.Sector = (DatabaseAccess.Sector)WarehousesComboBox.SelectedValue;
-                //s.GroupId = group.Id;
-                //s.Group.Sector = (DatabaseAccess.Sector)WarehousesComboBox.Items[WarehousesComboBox.SelectedIndex];
-                //context.Groups.Attach(group);
 
-                
+                    context.Groups.Attach(group);
 
-                context.Shifts.Add(s);
+                    DatabaseAccess.Shift s = new DatabaseAccess.Shift();
 
-                context.SaveChanges();
-            }
+                    s.Sender = group.Sector.Warehouse;
+                    s.Recipient = recipient;
+                    context.Warehouses.Attach(s.Recipient);
+                    s.Date = new DateTime(DateTime.Now.Ticks);
+                    s.Latest = true;
+                    s.Group = group;
 
-            mainWindow.ReloadWindow();
-            this.Close();
+                    group.Sector = sector;
+
+                    context.Shifts.Add(s);
+
+                    context.SaveChanges();
+
+                    return true;
+                }, t => Dispatcher.BeginInvoke(new Action(() =>
+                    {
+                        mainWindow.ReloadWindow();
+                        this.Close();
+                    })), tokenSource);
         }
 
         private void CancelButtonClick(object sender, RoutedEventArgs e)
         {
+            tokenSource.Cancel();
             this.Close();
         }
     }

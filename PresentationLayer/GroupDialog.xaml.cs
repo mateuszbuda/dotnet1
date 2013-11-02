@@ -16,7 +16,7 @@ using System.Windows.Shapes;
 namespace PresentationLayer
 {
     /// <summary>
-    /// Interaction logic for GroupDialog.xaml
+    /// Tworzenie nowej partii (Przesunięcie partii od partnera).
     /// </summary>
     public partial class GroupDialog : Window   // 17
     {
@@ -33,48 +33,35 @@ namespace PresentationLayer
             this.mainWindow = mainWindow;
             tokenSource = new CancellationTokenSource();
 
-            // Naprawione :)
-            //mainWindow.ReloadWindow = new Action(() => { LoadData(tokenSource.Token); });
-
             isLoaded = false;
             InitializeComponent();
 
-            Task.Factory.StartNew(LoadData, tokenSource.Token, tokenSource.Token);
+            LoadData();
         }
 
-        private void LoadData(Object _token)
+        private void LoadData()
         {
-            CancellationToken token = (CancellationToken)_token;
+            DatabaseAccess.SystemContext.Transaction(context =>
+                {
+                    products = (from p in context.Products
+                                where true
+                                select p).ToList();
 
-            if (token.IsCancellationRequested)
-                return;
+                    internalOnes = (from w in context.Warehouses.Include("Sectors")
+                                    where w.Internal == true
+                                    select w).ToList();
 
-            using (var context = new DatabaseAccess.SystemContext())
-            {
-                products = (from p in context.Products
-                            where true
-                            select p).ToList();
+                    externalOnes = (from w in context.Warehouses.Include("Sectors")
+                                    where w.Internal == false
+                                    select w).ToList();
 
-                internalOnes = (from w in context.Warehouses.Include("Sectors")
-                                where w.Internal == true
-                                select w).ToList();
-
-                externalOnes = (from w in context.Warehouses.Include("Sectors")
-                                where w.Internal == false
-                                select w).ToList();
-
-                Dispatcher.BeginInvoke(new Action(() =>
+                    return true;
+                }, t => Dispatcher.BeginInvoke(new Action(() =>
                 {
                     isLoaded = true;
                     InitializeData();
                 }
-                ));
-            }
-
-            if (token.IsCancellationRequested)
-                return;
-
-            //Dispatcher.BeginInvoke(new Action(() => InitializeData()));
+                )), tokenSource);
         }
 
         private void InitializeData()
@@ -111,50 +98,67 @@ namespace PresentationLayer
 
         private void SaveButtonClick(object sender, RoutedEventArgs e)
         {
-            using (var context = new DatabaseAccess.SystemContext())
-            {
-                DatabaseAccess.Shift s = new DatabaseAccess.Shift();
+            (sender as Button).IsEnabled = false;
 
-                s.Sender = (DatabaseAccess.Warehouse)PartnersComboBox.Items[PartnersComboBox.SelectedIndex];
-                s.Recipient = ((DatabaseAccess.Sector)WarehousesComboBox.Items[PartnersComboBox.SelectedIndex]).Warehouse;
-                context.Warehouses.Attach(s.Recipient);
-                context.Warehouses.Attach(s.Sender);
-                s.Date = new DateTime(DateTime.Now.Ticks);
-                s.Latest = true;
+            DatabaseAccess.Warehouse senderW = 
+                (DatabaseAccess.Warehouse)PartnersComboBox.Items[PartnersComboBox.SelectedIndex];
 
-                s.Group = new DatabaseAccess.Group()
-                    {
-                        Sector = (DatabaseAccess.Sector)WarehousesComboBox.SelectedItem,
-                        GroupDetails = new List<DatabaseAccess.GroupDetails>()
-                    };
+            DatabaseAccess.Warehouse recipientW =
+                ((DatabaseAccess.Sector)WarehousesComboBox.Items[PartnersComboBox.SelectedIndex]).Warehouse;
 
-                foreach (ProductGroupRow p in Products.Items)
+            DatabaseAccess.Sector sector = (DatabaseAccess.Sector)WarehousesComboBox.SelectedItem;
+
+            // przenieść w to miejsce wszystkie odwołania do UI
+
+            DatabaseAccess.SystemContext.Transaction(context =>
                 {
-                    DatabaseAccess.GroupDetails gd = new DatabaseAccess.GroupDetails()
-                    {
-                        Product = products.Find(delegate(DatabaseAccess.Product prod)
+                    DatabaseAccess.Shift s = new DatabaseAccess.Shift();
+
+                    s.Sender = senderW;
+                    s.Recipient = recipientW;
+                    context.Warehouses.Attach(s.Recipient);
+                    context.Warehouses.Attach(s.Sender);
+                    s.Date = new DateTime(DateTime.Now.Ticks);
+                    s.Latest = true;
+
+                    s.Group = new DatabaseAccess.Group()
                         {
-                            return prod.Name == (string)p.ProductsComboBox.Text;
-                        }),
-                        Count = int.Parse(p.Quantity.Text),
-                    };
+                            Sector = sector,
+                            GroupDetails = new List<DatabaseAccess.GroupDetails>()
+                        };
 
-                    context.Products.Attach(gd.Product);
+                    foreach (ProductGroupRow p in Products.Items) // Tu się wywala. Nie można dać tu odwołania do UI.
+                        // trzeba dać to jakoś przed, przypisać do listy czy coś. generalnie nic z UI nie może tutaj być
+                    {
+                        DatabaseAccess.GroupDetails gd = new DatabaseAccess.GroupDetails()
+                        {
+                            Product = products.Find(delegate(DatabaseAccess.Product prod)
+                            {
+                                return prod.Name == (string)p.ProductsComboBox.Text;
+                            }),
+                            Count = int.Parse(p.Quantity.Text),
+                        };
 
-                    s.Group.GroupDetails.Add(gd);                    
-                }
+                        context.Products.Attach(gd.Product);
 
-                context.Shifts.Add(s);
+                        s.Group.GroupDetails.Add(gd);
+                    }
 
-                context.SaveChanges();
-            }
+                    context.Shifts.Add(s);
 
-            mainWindow.ReloadWindow();
-            this.Close();
+                    context.SaveChanges();
+
+                    return true;
+                }, t => Dispatcher.BeginInvoke(new Action(() =>
+                    {
+                        mainWindow.ReloadWindow();
+                        this.Close();
+                    })), tokenSource);           
         }
 
         private void CancelButtonClick(object sender, RoutedEventArgs e)
         {
+            tokenSource.Cancel();
             this.Close();
         }
     }

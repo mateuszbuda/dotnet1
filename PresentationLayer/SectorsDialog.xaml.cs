@@ -16,7 +16,7 @@ using System.Windows.Shapes;
 namespace PresentationLayer
 {
     /// <summary>
-    /// Interaction logic for SectorsDialog.xaml
+    /// Dodawanie i edycja sektorów w magazynie.
     /// </summary>
     public partial class SectorsDialog : Window     // 15
     {
@@ -38,7 +38,7 @@ namespace PresentationLayer
 
                 this.sectorId = sectorId;
 
-                Task.Factory.StartNew(LoadData, tokenSource.Token, tokenSource.Token);
+                LoadData();
             }
         }
 
@@ -53,24 +53,16 @@ namespace PresentationLayer
             Title = "Tworzenie nowego sektora";
         }
 
-        private void LoadData(Object _token)
+        private void LoadData()
         {
-            CancellationToken token = (CancellationToken)_token;
+            DatabaseAccess.SystemContext.Transaction(context =>
+                {
+                    sector = (from w in context.Sectors
+                              where w.Id == sectorId
+                              select w).FirstOrDefault();
 
-            if (token.IsCancellationRequested)
-                return;
-
-            using (var context = new DatabaseAccess.SystemContext())
-            {
-                sector = (from w in context.Sectors
-                          where w.Id == sectorId
-                          select w).FirstOrDefault();
-
-                if (token.IsCancellationRequested)
-                    return;
-
-                Dispatcher.BeginInvoke(new Action(() => InitializeData()));
-            }
+                    return true;
+                }, t => Dispatcher.BeginInvoke(new Action(() => InitializeData())), tokenSource);
         }
 
         private void InitializeData()
@@ -81,35 +73,44 @@ namespace PresentationLayer
 
         private void SaveClick(object sender, RoutedEventArgs e)
         {
-            using (var context = new DatabaseAccess.SystemContext())
-            {
-                DatabaseAccess.Sector s;
+            (sender as Button).IsEnabled = false;
 
-                if (sectorId == -1)
+            int number = int.Parse(NumberTB.Text);
+            int limit = int.Parse(CapacityTB.Text);
+
+            DatabaseAccess.SystemContext.Transaction(context =>
                 {
-                    s = new DatabaseAccess.Sector();
-                    s.WarehouseId = warehouseId;
-                    s.Number = int.Parse(NumberTB.Text);
-                    s.Limit = int.Parse(CapacityTB.Text);
+                    DatabaseAccess.Sector s;
 
-                    context.Sectors.Add(s);
-                }
-                else
-                {
-                    s = (from sector in context.Sectors where sector.Id == sectorId select sector).FirstOrDefault();
-                    s.Number = int.Parse(NumberTB.Text);
-                    s.Limit = int.Parse(CapacityTB.Text);
-                }
+                    if (sectorId == -1)
+                    {
+                        s = new DatabaseAccess.Sector();
+                        s.WarehouseId = warehouseId;
+                        s.Number = number;
+                        s.Limit = limit;
 
-                context.SaveChanges();
-            }
+                        context.Sectors.Add(s);
+                    }
+                    else
+                    {
+                        s = (from sector in context.Sectors where sector.Id == sectorId select sector).FirstOrDefault();
+                        s.Number = number;
+                        s.Limit = limit;
+                    }
 
-            mainWindow.ReloadWindow();
-            this.Close();
+                    context.SaveChanges();
+
+                    return true;
+                }, t => Dispatcher.BeginInvoke(new Action(() =>
+                    {
+                        mainWindow.ReloadWindow();
+                        this.Close();
+                    })), tokenSource);            
         }
 
         private void CancelClick(object sender, RoutedEventArgs e)
         {
+            tokenSource.Cancel();
             this.Close();
         }
     }

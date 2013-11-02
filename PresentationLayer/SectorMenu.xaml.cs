@@ -17,7 +17,8 @@ using System.Windows.Shapes;
 namespace PresentationLayer
 {
     /// <summary>
-    /// Interaction logic for SectorMenu.xaml
+    /// Menu sektora.
+    /// Podgląd sektora i partii znajdujących się w nim.
     /// </summary>
     public partial class SectorMenu : UserControl   // 4
     {
@@ -46,43 +47,35 @@ namespace PresentationLayer
             isLoaded = false;
             sectorId = id;
             tokenSource = new CancellationTokenSource();
-            mainWindow.ReloadWindow = new Action(() => Task.Factory.StartNew(LoadData, tokenSource.Token, tokenSource.Token));
+            mainWindow.ReloadWindow = LoadData;
 
             InitializeComponent();
 
-            Task.Factory.StartNew(LoadData, tokenSource.Token, tokenSource.Token);
+            LoadData();
         }
 
-        private void LoadData(Object _token)
+        private void LoadData()
         {
-            CancellationToken token = (CancellationToken)_token;
+            DatabaseAccess.SystemContext.Transaction(context =>
+                {
+                    sector = (from s in context.Sectors.Include("Warehouse")
+                              where s.Id == sectorId
+                              select s).FirstOrDefault();
 
-            if (token.IsCancellationRequested)
-                return;
+                    groups = new List<Group>();
 
-            using (var context = new DatabaseAccess.SystemContext())
-            {
-                sector = (from s in context.Sectors.Include("Warehouse")
-                          where s.Id == sectorId
-                          select s).FirstOrDefault();
+                    foreach (var g in sector.Groups)
+                        groups.Add(new Group()
+                        {
+                            Id = g.Id,
+                            Date = g.GetLastDate(),
+                            SenderId = g.GetLastSenderId(),
+                            InternalSender = g.IsSenderInternal(),
+                            SenderName = g.GetSenderName()
+                        });
 
-                groups = new List<Group>();
-
-                foreach (var g in sector.Groups)
-                    groups.Add(new Group()
-                    {
-                        Id = g.Id,
-                        Date = g.GetLastDate(),
-                        SenderId = g.GetLastSenderId(),
-                        InternalSender = g.IsSenderInternal(),
-                        SenderName = g.GetSenderName()
-                    });
-            }
-
-            if (token.IsCancellationRequested)
-                return;
-
-            Dispatcher.BeginInvoke(new Action(() => InitializeData()));
+                    return 0;
+                }, t => Dispatcher.BeginInvoke(new Action(() => InitializeData())), tokenSource);
         }
 
         private void InitializeData()
@@ -118,24 +111,16 @@ namespace PresentationLayer
             dlg.Show();
         }
 
-        private void FindSender(CancellationToken token, int id)
+        private void FindSender(int id)
         {
-            if (token.IsCancellationRequested)
-                return;
+            DatabaseAccess.SystemContext.Transaction(context =>
+                {
+                    int pId = (from p in context.Partners
+                               where p.WarehouseId == id
+                               select p.Id).FirstOrDefault();
 
-            int pId = 0;
-
-            using (var context = new DatabaseAccess.SystemContext())
-            {
-                pId = (from p in context.Partners
-                       where p.WarehouseId == id
-                       select p.Id).FirstOrDefault();
-            }
-
-            if (token.IsCancellationRequested)
-                return;
-
-            Dispatcher.BeginInvoke(new Action(() => LoadNewMenu(new PartnerMenu(mainWindow, pId))));
+                    return pId;
+                }, t => Dispatcher.BeginInvoke(new Action(() => LoadNewMenu(new PartnerMenu(mainWindow, t)))), tokenSource);
         }
 
         private void SenderButtonClick(object sender, RoutedEventArgs e)
@@ -148,7 +133,7 @@ namespace PresentationLayer
             if (group.InternalSender)
                 LoadNewMenu(new WarehouseMenu(mainWindow, group.SenderId, group.SenderName));
             else
-                Task.Factory.StartNew(new Action(() => FindSender(tokenSource.Token, group.Id)));
+                FindSender(group.Id);
         }
 
         private void IdButtonClick(object sender, RoutedEventArgs e)
@@ -162,51 +147,41 @@ namespace PresentationLayer
             dlg.Show();
         }
 
-        private void DeleteSector(Object _token)
+        private void DeleteSector()
         {
-            CancellationToken token = (CancellationToken)_token;
-
-            if (token.IsCancellationRequested)
-                return;
-
-            string name = null;
-            int warehouseId = 0;
-
-            using (var context = new DatabaseAccess.SystemContext())
-            {
-                DatabaseAccess.Sector sec = (from s in context.Sectors.Include("Warehouse")
-                                             where s.Id == sectorId
-                                             select s).FirstOrDefault();
-
-                if (sec.Groups.Count != 0)
+            DatabaseAccess.SystemContext.Transaction(context =>
                 {
-                    MessageBox.Show("Sektor nie jest pusty!", "Błąd!", MessageBoxButton.OK, MessageBoxImage.Error);
-                    return;
-                }
+                    DatabaseAccess.Sector sec = (from s in context.Sectors.Include("Warehouse")
+                                                 where s.Id == sectorId
+                                                 select s).FirstOrDefault();
 
-                name = sec.Warehouse.Name;
-                warehouseId = sec.WarehouseId;
+                    if (sec.Groups.Count != 0)
+                    {
+                        MessageBox.Show("Sektor nie jest pusty!", "Błąd!", MessageBoxButton.OK, MessageBoxImage.Error);
+                        return new { F = false, Name = "", WarehouseId = 0 };
+                    }
 
-                sec.Deleted = true;
+                    var ret = new { F = true, Name = sec.Warehouse.Name, WarehouseId = sec.WarehouseId };
 
-                context.SaveChanges();
-            }
+                    sec.Deleted = true;
 
-            if (token.IsCancellationRequested)
-                return;
-
-            Dispatcher.BeginInvoke(new Action(() =>
+                    context.SaveChanges();
+                    return ret;
+                }, t => Dispatcher.BeginInvoke(new Action(() =>
             {
-                mainWindow.MainWindowContent.Children.Clear();
-                mainWindow.MainWindowContent.Children.Add(new WarehouseMenu(mainWindow, warehouseId, name));
-            }));
+                if (t.F)
+                {
+                    mainWindow.MainWindowContent.Children.Clear();
+                    mainWindow.MainWindowContent.Children.Add(new WarehouseMenu(mainWindow, t.WarehouseId, t.Name));
+                }
+            })), tokenSource);
         }
 
         private void DeleteButton_Click(object sender, RoutedEventArgs e)
         {
             if (MessageBox.Show("Czy chcesz usunąć ten sektor?", "Uwaga!",
                 MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No) == MessageBoxResult.Yes)
-                Task.Factory.StartNew((Object _token) => DeleteSector(_token), tokenSource.Token, tokenSource.Token);
+                DeleteSector();
         }
 
         private void NewGroupButton_Click(object sender, RoutedEventArgs e)

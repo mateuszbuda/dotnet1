@@ -17,7 +17,7 @@ using System.Windows.Shapes;
 namespace PresentationLayer
 {
     /// <summary>
-    /// Interaction logic for PartnerHistoryMenu.xaml
+    /// Historia partnera.
     /// </summary>
     public partial class PartnerHistoryMenu : UserControl   // 9
     {
@@ -34,35 +34,27 @@ namespace PresentationLayer
             this.partnerId = partnerId;
             tokenSource = new CancellationTokenSource();
 
-            mainWindow.ReloadWindow = new Action(() => Task.Factory.StartNew(LoadData, tokenSource.Token, tokenSource.Token));
+            mainWindow.ReloadWindow = LoadData;
 
             InitializeComponent();
 
-            Task.Factory.StartNew(LoadData, tokenSource.Token, tokenSource.Token);
+            LoadData();
         }
 
-        private void LoadData(Object _token)
+        private void LoadData()
         {
-            CancellationToken token = (CancellationToken)_token;
+            DatabaseAccess.SystemContext.Transaction(context =>
+                {
+                    partner = (from p in context.Partners.Include("Warehouse")
+                               where p.Id == partnerId
+                               select p).FirstOrDefault();
 
-            if (token.IsCancellationRequested)
-                return;
+                    shifts = (from s in context.Shifts.Include("Sender").Include("Recipient")
+                              where (int)s.RecipientId == partner.WarehouseId || (int)s.SenderId == partner.WarehouseId
+                              select s).ToList();
 
-            using (var context = new DatabaseAccess.SystemContext())
-            {
-                partner = (from p in context.Partners.Include("Warehouse")
-                           where p.Id == partnerId
-                           select p).FirstOrDefault();
-
-                shifts = (from s in context.Shifts.Include("Sender").Include("Recipient")
-                          where (int)s.RecipientId == partner.WarehouseId || (int)s.SenderId == partner.WarehouseId
-                          select s).ToList();
-
-                if (token.IsCancellationRequested)
-                    return;
-
-                Dispatcher.BeginInvoke(new Action(() => InitializeData()));
-            }
+                    return true;
+                }, t => Dispatcher.BeginInvoke(new Action(() => InitializeData())), tokenSource);
         }
 
         private void InitializeData()

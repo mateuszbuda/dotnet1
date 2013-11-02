@@ -17,7 +17,8 @@ using System.Windows.Shapes;
 namespace PresentationLayer
 {
     /// <summary>
-    /// Interaction logic for GroupsMenu.xaml
+    /// Menu Partii.
+    /// Umożliwia podgląd, dodawanie i przenoszenie partii.
     /// </summary>
     public partial class GroupsMenu : UserControl   // 10
     {
@@ -34,7 +35,7 @@ namespace PresentationLayer
             mainWindow.Title = "Przetwarzane Partie";
             tokenSource = new CancellationTokenSource();
 
-            mainWindow.ReloadWindow = new Action(() => { Task.Factory.StartNew(LoadData, tokenSource.Token, tokenSource.Token); });
+            mainWindow.ReloadWindow = LoadData;
 
             isLoaded = false;
             InitializeComponent();
@@ -42,34 +43,23 @@ namespace PresentationLayer
             showInternal = (bool)Internal.IsChecked;
             showExternal = (bool)External.IsChecked;
 
-            Task.Factory.StartNew(LoadData, tokenSource.Token, tokenSource.Token);
+            LoadData();
         }
 
-        private void LoadData(Object _token)
+        private void LoadData()
         {
-            CancellationToken token = (CancellationToken)_token;
-
-            if (token.IsCancellationRequested)
-                return;
-
-            using (var context = new DatabaseAccess.SystemContext())
-            {
-                groups = (from g in context.Groups.Include("Sector.Warehouse")
-                          where true
-                          select g).ToList();
-
-                Dispatcher.BeginInvoke(new Action(() =>
+            DatabaseAccess.SystemContext.Transaction(context =>
+                {
+                    groups = (from g in context.Groups.Include("Sector.Warehouse")
+                              where true
+                              select g).ToList();
+                    return true;
+                }, t => Dispatcher.BeginInvoke(new Action(() =>
                 {
                     isLoaded = true;
                     InitializeData();
                 }
-                ));
-            }
-
-            if (token.IsCancellationRequested)
-                return;
-
-            Dispatcher.BeginInvoke(new Action(() => InitializeData()));
+                )), tokenSource);
         }
 
         private void InitializeData()
@@ -115,7 +105,7 @@ namespace PresentationLayer
             if (Internal != null)
             {
                 showInternal = (bool)Internal.IsChecked;
-                Task.Factory.StartNew(LoadData, tokenSource.Token, tokenSource.Token);
+                LoadData();
             }
         }
 
@@ -124,7 +114,7 @@ namespace PresentationLayer
             if (Internal != null)
             {
                 showInternal = (bool)Internal.IsChecked;
-                Task.Factory.StartNew(LoadData, tokenSource.Token, tokenSource.Token);
+                LoadData();
             }
         }
 
@@ -133,7 +123,7 @@ namespace PresentationLayer
             if (External != null)
             {
                 showExternal = (bool)External.IsChecked;
-                Task.Factory.StartNew(LoadData, tokenSource.Token, tokenSource.Token);
+                LoadData();
             }
         }
 
@@ -142,7 +132,7 @@ namespace PresentationLayer
             if (External != null)
             {
                 showExternal = (bool)External.IsChecked;
-                Task.Factory.StartNew(LoadData, tokenSource.Token, tokenSource.Token);
+                LoadData();
             }
         }
 

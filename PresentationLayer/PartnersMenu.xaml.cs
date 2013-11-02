@@ -17,7 +17,8 @@ using System.Windows.Shapes;
 namespace PresentationLayer
 {
     /// <summary>
-    /// Interaction logic for PartnersMenu.xaml
+    /// Menu partnerów.
+    /// Umożliwia podgląd i edycję danych partnerów.
     /// </summary>
     public partial class PartnersMenu : UserControl // 7
     {
@@ -32,39 +33,29 @@ namespace PresentationLayer
             mainWindow.Title = "Partnerzy";
             tokenSource = new CancellationTokenSource();
 
-            mainWindow.ReloadWindow = new Action(() => { Task.Factory.StartNew(LoadData, tokenSource.Token, tokenSource.Token); });
+            mainWindow.ReloadWindow = LoadData;
 
             isLoaded = false;
             InitializeComponent();
 
-            Task.Factory.StartNew(LoadData, tokenSource.Token, tokenSource.Token);
+            LoadData();
         }
 
-        private void LoadData(Object _token)
+        private void LoadData()
         {
-            CancellationToken token = (CancellationToken)_token;
+            DatabaseAccess.SystemContext.Transaction(context =>
+                {
+                    partners = (from p in context.Partners.Include("Warehouse")
+                                where true
+                                select p).ToList();
 
-            if (token.IsCancellationRequested)
-                return;
-
-            using (var context = new DatabaseAccess.SystemContext())
-            {
-                partners = (from p in context.Partners.Include("Warehouse")
-                            where true
-                            select p).ToList();
-
-                Dispatcher.BeginInvoke(new Action(() =>
+                    return true;
+                }, t => Dispatcher.BeginInvoke(new Action(() =>
                 {
                     isLoaded = true;
                     InitializeData();
                 }
-                ));
-            }
-
-            if (token.IsCancellationRequested)
-                return;
-
-            Dispatcher.BeginInvoke(new Action(() => InitializeData()));
+                )), tokenSource);
         }
 
         private void InitializeData()

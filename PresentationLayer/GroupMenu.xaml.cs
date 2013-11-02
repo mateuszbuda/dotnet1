@@ -17,7 +17,8 @@ using System.Windows.Shapes;
 namespace PresentationLayer
 {
     /// <summary>
-    /// Interaction logic for GroupMenu.xaml
+    /// Menu partii.
+    /// Umożliwia podgląd produktów w partii.
     /// </summary>
     public partial class GroupMenu : UserControl    // 5
     {
@@ -47,55 +48,46 @@ namespace PresentationLayer
             mainWindow.Title = "Podgląd Partii";
             tokenSource = new CancellationTokenSource();
 
-            mainWindow.ReloadWindow = new Action(() => { Task.Factory.StartNew(LoadData, tokenSource.Token, tokenSource.Token); });
+            mainWindow.ReloadWindow = LoadData;
 
             InitializeComponent();
 
-            Task.Factory.StartNew(LoadData, tokenSource.Token, tokenSource.Token);
-            //LoadData(tokenSource.Token);
+            LoadData();
         }
 
-        private void LoadData(Object _token)
+        private void LoadData()
         {
-            CancellationToken token = (CancellationToken)_token;
+            DatabaseAccess.SystemContext.Transaction(context =>
+                {
+                    group = (from g in context.Groups.Include("Sector").Include("GroupDetails.Product")
+                             where g.Id == groupId
+                             select g).FirstOrDefault();
 
-            if (token.IsCancellationRequested)
-                return;
+                    int wid = group.Sector.WarehouseId;
 
-            using (var context = new DatabaseAccess.SystemContext())
-            {
-                group = (from g in context.Groups.Include("Sector").Include("GroupDetails.Product")
-                         where g.Id == groupId
-                         select g).FirstOrDefault();
+                    warehouseName = (from w in context.Warehouses
+                                     where w.Id == wid
+                                     select w.Name).FirstOrDefault();
 
-                int wid = group.Sector.WarehouseId;
+                    isInternal = (from w in context.Warehouses
+                                  where w.Id == wid
+                                  select w.Internal).FirstOrDefault();
 
-                warehouseName = (from w in context.Warehouses
-                                 where w.Id == wid
-                                 select w.Name).FirstOrDefault();
+                    products = new List<Product>();
 
-                isInternal = (from w in context.Warehouses
-                              where w.Id == wid
-                              select w.Internal).FirstOrDefault();
+                    foreach (var p in group.GroupDetails)
+                        products.Add(new Product()
+                        {
+                            Id = p.ProductId,
+                            Name = p.Product.Name,
+                            Count = p.Count,
+                            Date = p.Product.Date.ToShortDateString(),
+                            Price = p.Product.Price * p.Count,
+                            OnePrice = p.Product.Price
+                        });
 
-                products = new List<Product>();
-
-                foreach (var p in group.GroupDetails)
-                    products.Add(new Product()
-                    {
-                        Id = p.ProductId,
-                        Name = p.Product.Name,
-                        Count = p.Count,
-                        Date = p.Product.Date.ToShortDateString(),
-                        Price = p.Product.Price * p.Count,
-                        OnePrice = p.Product.Price
-                    });
-            }
-
-            if (token.IsCancellationRequested)
-                return;
-
-            Dispatcher.BeginInvoke(new Action(() => InitializeData()));
+                    return true;
+                }, t => Dispatcher.BeginInvoke(new Action(() => InitializeData())), tokenSource);
         }
 
         private void InitializeData()

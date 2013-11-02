@@ -16,7 +16,7 @@ using System.Windows.Shapes;
 namespace PresentationLayer
 {
     /// <summary>
-    /// Interaction logic for ProductDialog.xaml
+    /// Dodawanie i edycja produktów.
     /// </summary>
     public partial class ProductDialog : Window     // 19
     {
@@ -43,28 +43,20 @@ namespace PresentationLayer
                 Header.Content = "Edytuj dane:";
                 Title = "Edycja produktu";
 
-                Task.Factory.StartNew(LoadData, tokenSource.Token, tokenSource.Token);
+                LoadData();
             }
         }
 
-        private void LoadData(Object _token)
+        private void LoadData()
         {
-            CancellationToken token = (CancellationToken)_token;
+            DatabaseAccess.SystemContext.Transaction(context =>
+                {
+                    product = (from w in context.Products
+                               where w.Id == productID
+                               select w).FirstOrDefault();
 
-            if (token.IsCancellationRequested)
-                return;
-
-            using (var context = new DatabaseAccess.SystemContext())
-            {
-                product = (from w in context.Products
-                           where w.Id == productID
-                           select w).FirstOrDefault();
-
-                if (token.IsCancellationRequested)
-                    return;
-
-                Dispatcher.BeginInvoke(new Action(() => InitializeData()));
-            }
+                    return true;
+                }, t => Dispatcher.BeginInvoke(new Action(() => InitializeData())), tokenSource);
         }
 
         private void InitializeData()
@@ -76,36 +68,49 @@ namespace PresentationLayer
 
         private void SaveClick(object sender, RoutedEventArgs e)
         {
-            using (var context = new DatabaseAccess.SystemContext())
-            {
-                DatabaseAccess.Product p;
+            (sender as Button).IsEnabled = false;
 
-                if (productID == -1)
+            var data = new
                 {
-                    p = new DatabaseAccess.Product();
-                    p.Name = NameTB.Text;
-                    p.Price = decimal.Parse(PriceTB.Text);
-                    p.Date = DateTime.Parse(DateTB.Text);
+                    Name = NameTB.Text,
+                    Price = PriceTB.Text,
+                    Date = DateTB.Text
+                };
 
-                    context.Products.Add(p);
-                }
-                else
+            DatabaseAccess.SystemContext.Transaction(context =>
                 {
-                    p = (from warehouse in context.Products where warehouse.Id == productID select warehouse).FirstOrDefault();
-                    p.Name = NameTB.Text;
-                    p.Price = decimal.Parse(PriceTB.Text);
-                    p.Date = DateTime.Parse(DateTB.Text);
-                }
+                    DatabaseAccess.Product p;
 
-                context.SaveChanges();
-            }
+                    if (productID == -1)
+                    {
+                        p = new DatabaseAccess.Product();
+                        p.Name = data.Name;
+                        p.Price = decimal.Parse(data.Price);
+                        p.Date = DateTime.Parse(data.Date);
 
-            mainWindow.ReloadWindow();
-            this.Close();
+                        context.Products.Add(p);
+                    }
+                    else
+                    {
+                        p = (from warehouse in context.Products where warehouse.Id == productID select warehouse).FirstOrDefault();
+                        p.Name = data.Name;
+                        p.Price = decimal.Parse(data.Price);
+                        p.Date = DateTime.Parse(data.Date);
+                    }
+
+                    context.SaveChanges();
+
+                    return true;
+                }, t => Dispatcher.BeginInvoke(new Action(() =>
+                    {
+                        mainWindow.ReloadWindow();
+                        this.Close();
+                    })), tokenSource);
         }
 
         private void CancelClick(object sender, RoutedEventArgs e)
         {
+            tokenSource.Cancel();
             this.Close();
         }
     }

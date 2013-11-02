@@ -20,7 +20,7 @@ using DatabaseAccess;
 namespace PresentationLayer
 {
     /// <summary>
-    /// Interaction logic for MainMenu.xaml
+    /// Główne menu alpikacji.
     /// </summary>
     public partial class MainMenu : UserControl // 1
     {

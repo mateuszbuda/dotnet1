@@ -17,7 +17,7 @@ using System.Windows.Shapes;
 namespace PresentationLayer
 {
     /// <summary>
-    /// Interaction logic for GroupHistoryMenu.xaml
+    /// Umożliwia podgląd historii partii, z uwzględnieniem partnerów.
     /// </summary>
     public partial class GroupHistoryMenu : UserControl     // 6
     {
@@ -43,50 +43,42 @@ namespace PresentationLayer
             this.mainWindow = mainWindow;
             mainWindow.Title = "Historia Partii";
             tokenSource = new CancellationTokenSource();
-            mainWindow.ReloadWindow = new Action(() => { Task.Factory.StartNew(LoadData, tokenSource.Token, tokenSource.Token); });
+            mainWindow.ReloadWindow = LoadData;
 
             InitializeComponent();
 
             GroupLabel.Content = String.Format("Historia partii #{0}", groupId);
             GroupButton.Content = String.Format("Partia #{0}", groupId);
 
-            Task.Factory.StartNew(LoadData, tokenSource.Token, tokenSource.Token);
+            LoadData();
         }
 
-        private void LoadData(Object _token)
+        private void LoadData()
         {
-            CancellationToken token = (CancellationToken)_token;
+            DatabaseAccess.SystemContext.Transaction(context =>
+                {
+                    var shifts = (from s in context.Shifts.Include("Sender").Include("Recipient")
+                                  where s.GroupId == groupId
+                                  orderby s.Date
+                                  select s).ToList();
 
-            if (token.IsCancellationRequested)
-                return;
+                    history = new List<HistoryEntry>();
 
-            using (var context = new DatabaseAccess.SystemContext())
-            {
-                var shifts = (from s in context.Shifts.Include("Sender").Include("Recipient")
-                              where s.GroupId == groupId
-                              orderby s.Date
-                              select s).ToList();
+                    foreach (var s in shifts)
+                        history.Add(new HistoryEntry()
+                        {
+                            SenderId = s.SenderId.Value,
+                            RecipientId = s.RecipientId.Value,
+                            SenderName = s.Sender.Name,
+                            RecipientName = s.Recipient.Name,
+                            Date = s.Date.ToString(),
+                            SenderColor = s.Sender.Internal ? Brushes.Silver : Brushes.Green,
+                            RecipientColor = s.Recipient.Internal ? Brushes.Silver : Brushes.Green
+                        });
 
-                history = new List<HistoryEntry>();
-
-                foreach (var s in shifts)
-                    history.Add(new HistoryEntry()
-                    {
-                        SenderId = s.SenderId.Value,
-                        RecipientId = s.RecipientId.Value,
-                        SenderName = s.Sender.Name,
-                        RecipientName = s.Recipient.Name,
-                        Date = s.Date.ToString(),
-                        SenderColor = s.Sender.Internal ? Brushes.Silver : Brushes.Green,
-                        RecipientColor = s.Recipient.Internal ? Brushes.Silver : Brushes.Green
-                    });
+                    return true;
+                }, t => Dispatcher.BeginInvoke(new Action(() => InitializeData())), tokenSource);
             }
-
-            if (token.IsCancellationRequested)
-                return;
-
-            Dispatcher.BeginInvoke(new Action(() => InitializeData()));
-        }
 
         private void InitializeData()
         {
@@ -102,43 +94,35 @@ namespace PresentationLayer
             HistoryGrid.Visibility = System.Windows.Visibility.Visible;
         }
 
-        private void RecipientSenderClick(CancellationToken token, int id)
+        private void RecipientSenderClick(int id)
         {
-            if (token.IsCancellationRequested)
-                return;
-
-            bool i;
             int realId = id;
-            string name = null;;
+            string name = null;
 
-            using (var context = new DatabaseAccess.SystemContext())
-            {
-                i = (from w in context.Warehouses
-                     where w.Id == id
-                     select w.Internal).FirstOrDefault();
-
-                if (!i)
-                    realId = (from p in context.Partners
-                              where p.WarehouseId == id
-                              select p.Id).FirstOrDefault();
-                else
-                    name = (from w in context.Warehouses
-                            where w.Id == realId
-                            select w.Name).FirstOrDefault();
-
-            }
-
-            if (token.IsCancellationRequested)
-                return;
-
-            Dispatcher.BeginInvoke(new Action(() =>
+            DatabaseAccess.SystemContext.Transaction(context =>
                 {
-                    if (i)
+                    bool i = (from w in context.Warehouses
+                              where w.Id == id
+                              select w.Internal).FirstOrDefault();
+
+                    if (!i)
+                        realId = (from p in context.Partners
+                                  where p.WarehouseId == id
+                                  select p.Id).FirstOrDefault();
+                    else
+                        name = (from w in context.Warehouses
+                                where w.Id == realId
+                                select w.Name).FirstOrDefault();
+
+                    return i;
+                }, t => Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    if (t)
                         LoadNewMenu(new WarehouseMenu(mainWindow, realId, name));
                     else
                         LoadNewMenu(new PartnerMenu(mainWindow, realId));
                 }
-            ));
+            )), tokenSource);           
         }
 
         private void SenderButtonClick(object sender, RoutedEventArgs e)
@@ -146,8 +130,7 @@ namespace PresentationLayer
             int id = (int)(sender as Button).Tag;
             (sender as Button).IsEnabled = false;
 
-            Task.Factory.StartNew((object _token) => RecipientSenderClick((CancellationToken)_token, id), 
-                tokenSource.Token, tokenSource.Token);
+            RecipientSenderClick(id);
         }
 
         private void RecipientButtonClick(object sender, RoutedEventArgs e)
@@ -155,8 +138,7 @@ namespace PresentationLayer
             int id = (int)(sender as Button).Tag;
             (sender as Button).IsEnabled = false;
 
-            Task.Factory.StartNew((object _token) => RecipientSenderClick((CancellationToken)_token, id),
-                tokenSource.Token, tokenSource.Token);
+            RecipientSenderClick(id);
         }
 
         private void MainMenuButton_Click(object sender, RoutedEventArgs e)
