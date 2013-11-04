@@ -20,6 +20,34 @@ namespace DatabaseAccess
         public DbSet<Partner> Partners { get; set; }
         public DbSet<GroupDetails> GroupsDetails { get; set; }
 
+        public DbContextTransaction Tran { get; private set; }
+
+        // Wersja synchroniczna. Tylko do testów jednostkowych!
+        public static T SyncTransaction<T>(Func<SystemContext, T> action)
+        {
+            using (var context = new SystemContext())
+            {
+                using (context.Tran = context.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        T result = action(context);
+
+                        try { context.Tran.Commit(); }
+                        catch { }
+                        return result;
+                    }
+                    catch
+                    {
+                        context.Tran.Rollback();
+                        //MessageBox.Show("Błąd wewnętrzny bazy danych.\nAplikacja zostanie zamknięta.", "Błąd", MessageBoxButton.OK, MessageBoxImage.Error);
+                        //System.Diagnostics.Process.GetCurrentProcess().Kill();
+                        throw;
+                    }
+                }
+            }
+        }
+
         public static void Transaction<T>(Func<SystemContext, T> action, Action<T> continuation = null, CancellationTokenSource _tokenSource = null)
         {
             if (_tokenSource == null)
@@ -28,26 +56,18 @@ namespace DatabaseAccess
             Task<T> task = new Task<T>((object t) =>
                 {
                     CancellationToken token = (CancellationToken)t;
-                    using (var context = new SystemContext())
-                    {
-                        using (var tran = context.Database.BeginTransaction())
-                        {
-                            try
-                            {
-                                T result = action(context);
 
-                                tran.Commit();
-                                return result;
-                            }
-                            catch
-                            {
-                                tran.Rollback();
-                                MessageBox.Show("Błąd wewnętrzny bazy danych.\nAplikacja zostanie zamknięta.", "Błąd", MessageBoxButton.OK, MessageBoxImage.Error);
-                                System.Diagnostics.Process.GetCurrentProcess().Kill();
-                                throw;
-                            }
-                        }
+                    try
+                    {
+                        return SyncTransaction(action);
                     }
+                    catch
+                    {
+                        MessageBox.Show("Błąd wewnętrzny bazy danych.\nAplikacja zostanie zamknięta.", "Błąd", MessageBoxButton.OK, MessageBoxImage.Error);
+                        System.Diagnostics.Process.GetCurrentProcess().Kill();
+                        throw;
+                    }
+
                 }, _tokenSource.Token, _tokenSource.Token);
 
             if (continuation != null)

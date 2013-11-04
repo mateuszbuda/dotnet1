@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>CompareNETObjects</id>
+    <version>1.7.3.0</version>
+    <title>Compare .NET Objects</title>
+    <authors>gfinzer</authors>
+    <owners>gfinzer</owners>
+    <licenseUrl>http://comparenetobjects.codeplex.com/license</licenseUrl>
+    <projectUrl>http://comparenetobjects.codeplex.com/</projectUrl>
+    <iconUrl>http://www.kellermansoftware.com/images/NuGetIcon.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>What you have been waiting for. Perform a deep compare of any two .NET objects using reflection. Shows the differences between the two objects.</description>
+    <summary>What you have been waiting for. Perform a deep compare of any two .NET objects using reflection. Shows the differences between the two objects.</summary>
+    <releaseNotes>* Fix for problem with enum showing type in the breadcrumb
+* Changed skip of same class from GetHashCode to use ReferenceEquals
+* Applied patch 15082 from Farris</releaseNotes>
+    <copyright />
+    <language>en-US</language>
+    <tags>compare comparison objects difference</tags>
+  </metadata>
+</package>
