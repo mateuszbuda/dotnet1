@@ -108,7 +108,17 @@ namespace PresentationLayer
 
             DatabaseAccess.Sector sector = (DatabaseAccess.Sector)WarehousesComboBox.SelectedItem;
 
-            // przenieść w to miejsce wszystkie odwołania do UI
+            int productsCount = Products.Items.Count;
+            String[,] productsInfo = new String[2, productsCount];
+            // productsInfo[0,*] - name
+            // productsInfo[1,*] - quantity
+            int i = 0;
+            foreach (ProductGroupRow p in Products.Items)
+            {
+                productsInfo[0, i] = (string)p.ProductsComboBox.Text;
+                productsInfo[1, i] = p.Quantity.Text;
+                i++;
+            }
 
             DatabaseAccess.SystemContext.Transaction(context =>
                 {
@@ -127,16 +137,15 @@ namespace PresentationLayer
                             GroupDetails = new List<DatabaseAccess.GroupDetails>()
                         };
 
-                    foreach (ProductGroupRow p in Products.Items) // Tu się wywala. Nie można dać tu odwołania do UI.
-                        // trzeba dać to jakoś przed, przypisać do listy czy coś. generalnie nic z UI nie może tutaj być
+                    for (int k = 0; k < productsCount; k++)
                     {
                         DatabaseAccess.GroupDetails gd = new DatabaseAccess.GroupDetails()
                         {
                             Product = products.Find(delegate(DatabaseAccess.Product prod)
                             {
-                                return prod.Name == (string)p.ProductsComboBox.Text;
+                                return prod.Name == productsInfo[0, k];
                             }),
-                            Count = int.Parse(p.Quantity.Text),
+                            Count = int.Parse(productsInfo[1, k]),
                         };
 
                         context.Products.Attach(gd.Product);

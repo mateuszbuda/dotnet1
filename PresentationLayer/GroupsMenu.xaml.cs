@@ -143,8 +143,18 @@ namespace PresentationLayer
 
         private void ShiftClick(object sender, RoutedEventArgs e)
         {
-            ShiftDialog dlg = new ShiftDialog(mainWindow, (int)((sender as Button).Tag));
-            dlg.Show();
+            DatabaseAccess.Group toMove = groups.Find(delegate(DatabaseAccess.Group gr)
+            {
+                return gr.Id == (int)((sender as Button).Tag);
+            });
+
+            if (toMove.InInternal())
+            {
+                ShiftDialog dlg = new ShiftDialog(mainWindow, (int)((sender as Button).Tag));
+                dlg.Show();
+            }
+            else
+                MessageBox.Show("Nie można przesunąć wydanej partii", "Uwaga");
         }
     }
 }
