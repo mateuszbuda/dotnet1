@@ -22,6 +22,9 @@ namespace PresentationLayer
     /// </summary>
     public partial class SectorMenu : UserControl   // 4
     {
+        /// <summary>
+        /// Grupa do wyświetlania na ekranie
+        /// </summary>
         struct Group
         {
             public int Id { get; set; }
@@ -40,6 +43,11 @@ namespace PresentationLayer
         private CancellationTokenSource tokenSource;
         private MainWindow mainWindow;
 
+        /// <summary>
+        /// Inicjalizacja menu
+        /// </summary>
+        /// <param name="mainWindow">Referencja do okna głównego</param>
+        /// <param name="id">ID sektora</param>
         public SectorMenu(MainWindow mainWindow, int id)
         {
             this.mainWindow = mainWindow;
@@ -54,6 +62,9 @@ namespace PresentationLayer
             LoadData();
         }
 
+        /// <summary>
+        /// Ładowanie danych
+        /// </summary>
         private void LoadData()
         {
             DatabaseAccess.SystemContext.Transaction(context =>
@@ -78,6 +89,9 @@ namespace PresentationLayer
                 }, t => Dispatcher.BeginInvoke(new Action(() => InitializeData())), tokenSource);
         }
 
+        /// <summary>
+        /// Wyświetlanie danych
+        /// </summary>
         private void InitializeData()
         {
             LoadingLabel.Visibility = System.Windows.Visibility.Hidden;
@@ -105,12 +119,21 @@ namespace PresentationLayer
             isLoaded = true;
         }
 
+        /// <summary>
+        /// Wyślij partię
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void SendButtonClick(object sender, RoutedEventArgs e)
         {
             ShiftDialog dlg = new ShiftDialog(mainWindow, int.Parse((sender as Button).Tag as string));
             dlg.Show();
         }
 
+        /// <summary>
+        /// Znajdź nadawcę
+        /// </summary>
+        /// <param name="id"></param>
         private void FindSender(int id)
         {
             DatabaseAccess.SystemContext.Transaction(context =>
@@ -123,6 +146,11 @@ namespace PresentationLayer
                 }, t => Dispatcher.BeginInvoke(new Action(() => LoadNewMenu(new PartnerMenu(mainWindow, t)))), tokenSource);
         }
 
+        /// <summary>
+        /// Nadawca
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void SenderButtonClick(object sender, RoutedEventArgs e)
         {
             (sender as Button).IsEnabled = false;
@@ -136,17 +164,30 @@ namespace PresentationLayer
                 FindSender(group.Id);
         }
 
+        /// <summary>
+        /// Partia
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void IdButtonClick(object sender, RoutedEventArgs e)
         {
             LoadNewMenu(new GroupMenu(mainWindow, int.Parse((sender as Button).Tag as string)));
         }
 
+        /// <summary>
+        /// Edycja Sektora
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void EditButton_Click(object sender, RoutedEventArgs e)
         {
             SectorsDialog dlg = new SectorsDialog(mainWindow, sector.WarehouseId, sectorId);
             dlg.Show();
         }
 
+        /// <summary>
+        /// Usunięcie sektora
+        /// </summary>
         private void DeleteSector()
         {
             DatabaseAccess.SystemContext.Transaction(context =>
@@ -177,6 +218,11 @@ namespace PresentationLayer
             })), tokenSource);
         }
 
+        /// <summary>
+        /// Usunięcie sektora
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void DeleteButton_Click(object sender, RoutedEventArgs e)
         {
             if (MessageBox.Show("Czy chcesz usunąć ten sektor?", "Uwaga!",
@@ -184,22 +230,41 @@ namespace PresentationLayer
                 DeleteSector();
         }
 
+        /// <summary>
+        /// Nowa grupa
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void NewGroupButton_Click(object sender, RoutedEventArgs e)
         {
             GroupDialog dlg = new GroupDialog(mainWindow, sectorId);
             dlg.Show();
         }
 
+        /// <summary>
+        /// Menu główne
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void MainMenuButton_Click(object sender, RoutedEventArgs e)
         {
             LoadNewMenu(new MainMenu(mainWindow));
         }
 
+        /// <summary>
+        /// Sektory
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void SectorsButton_Click(object sender, RoutedEventArgs e)
         {
             LoadNewMenu(new WarehouseMenu(mainWindow, sector.Warehouse.Id, sector.Warehouse.Name));
         }
 
+        /// <summary>
+        /// Ładowanie menu
+        /// </summary>
+        /// <param name="menu"></param>
         private void LoadNewMenu(UserControl menu)
         {
             Grid content = Parent as Grid;

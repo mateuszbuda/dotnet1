@@ -8,20 +8,38 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DatabaseAccess
 {
+    /// <summary>
+    /// Klasa opisująca Partie.
+    /// </summary>
     [Table("Group")]
     public class Group : Entity
     {
+        /// <summary>
+        /// Id sektora, w którym znajduje się partia.
+        /// </summary>
         [Column("sector_id"), Required]
         public int SectorId { get; set; }
 
-        // Klucze obce
+        /// <summary>
+        /// Sektor, w którym znajduje się partia.
+        /// </summary>
         [ForeignKey("SectorId")]
         public Sector Sector { get; set; }
 
-        // Właściwości nawigacyjne
+        /// <summary>
+        /// Wszystkie przesunięcia partii.
+        /// </summary>
         public virtual ICollection<Shift> Shifts { get; set; }
+
+        /// <summary>
+        /// Szczegóły partii.
+        /// </summary>
         public virtual ICollection<GroupDetails> GroupDetails { get; set; }
 
+        /// <summary>
+        /// Sprawdza czy grupa znajduje się w magazynie czy u partnera.
+        /// </summary>
+        /// <returns>True - w magazynie, False - partner</returns>
         public bool InInternal()
         {
             using (var ctx = new SystemContext())
@@ -32,6 +50,10 @@ namespace DatabaseAccess
             }
         }
 
+        /// <summary>
+        /// Zwraca datę ostatniego przesunięcia.
+        /// </summary>
+        /// <returns>Data</returns>
         public DateTime GetLastDate()
         {
             return (from s in Shifts
@@ -39,6 +61,10 @@ namespace DatabaseAccess
                     select s.Date).FirstOrDefault();
         }
 
+        /// <summary>
+        /// Sprawdza czy nadawcą jest magazyn czy partner.
+        /// </summary>
+        /// <returns>True - magazyn, False - partner</returns>
         public bool IsSenderInternal()
         {
             int id = (from s in Shifts
@@ -53,6 +79,10 @@ namespace DatabaseAccess
             }
         }
 
+        /// <summary>
+        /// Zwraca Id ostatniego nadawcy.
+        /// </summary>
+        /// <returns>Id nadawcy</returns>
         public int GetLastSenderId()
         {
             int? id = (from s in Shifts
@@ -72,6 +102,10 @@ namespace DatabaseAccess
             }
         }
 
+        /// <summary>
+        /// Zwraca nazwę nadawcy.
+        /// </summary>
+        /// <returns>Nazwa nadawcy</returns>
         public string GetSenderName()
         {
             int? id = (from s in Shifts

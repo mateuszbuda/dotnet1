@@ -24,6 +24,9 @@ namespace PresentationLayer
     {
         private MainWindow mainWindow;
 
+        /// <summary>
+        /// Magazyn do wyświetlenia na ekranie
+        /// </summary>
         private struct Warehouse
         {
             public string Name { get; set; }
@@ -38,6 +41,9 @@ namespace PresentationLayer
         private bool isLoaded;
         private ContextMenu contextMenu;
 
+        /// <summary>
+        /// Ładowanie danych
+        /// </summary>
         private void LoadWarehouses()
         {
             DatabaseAccess.SystemContext.Transaction(context =>
@@ -65,6 +71,11 @@ namespace PresentationLayer
                     })), tokenSource);
         }
 
+        /// <summary>
+        /// Magazyn
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void WarehouseClick(Object sender, RoutedEventArgs e)
         {
             int id = (int)(e.Source as Button).Tag;
@@ -80,6 +91,9 @@ namespace PresentationLayer
             content.Children.Add(new WarehouseMenu(mainWindow, id, name));
         }
 
+        /// <summary>
+        /// Inicjalizacja danych
+        /// </summary>
         private void InitializeButtons()
         {
             buttons = new List<Button>();
@@ -103,6 +117,10 @@ namespace PresentationLayer
             ShowButtons();
         }
 
+        /// <summary>
+        /// Inicjalizacja manu
+        /// </summary>
+        /// <param name="mainWindow">Referencja do okna głównego</param>
         public WarehousesMenu(MainWindow mainWindow)
         {
             this.mainWindow = mainWindow;
@@ -131,6 +149,10 @@ namespace PresentationLayer
             LoadWarehouses();
         }
 
+        /// <summary>
+        /// Usunięcie magazynu
+        /// </summary>
+        /// <param name="id">Id magazynu</param>
         private void DeleteWarehouse(int id)
         {
             DatabaseAccess.SystemContext.Transaction(context =>
@@ -158,6 +180,11 @@ namespace PresentationLayer
                 }, t => LoadWarehouses());
         }
 
+        /// <summary>
+        /// Usunięcie magazynu
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         void DeleteClick(object sender, RoutedEventArgs e)
         {
             int id = (int)(((e.Source as MenuItem).Parent as ContextMenu).PlacementTarget as Button).Tag;
@@ -170,6 +197,11 @@ namespace PresentationLayer
                     DeleteWarehouse(id);
         }
 
+        /// <summary>
+        /// Edycja magazynu
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void EditClick(object sender, RoutedEventArgs e)
         {
             int id = (int)(((e.Source as MenuItem).Parent as ContextMenu).PlacementTarget as Button).Tag;
@@ -178,6 +210,11 @@ namespace PresentationLayer
             dlg.Show();
         }
 
+        /// <summary>
+        /// Menu główne
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void MainMenuButton_Click(object sender, RoutedEventArgs e)
         {
             Grid content = Parent as Grid;
@@ -188,6 +225,9 @@ namespace PresentationLayer
             content.Children.Add(new MainMenu(mainWindow));
         }
 
+        /// <summary>
+        /// Wyświetlenie danych
+        /// </summary>
         private void ShowButtons()
         {
             if (!isLoaded)
@@ -218,12 +258,22 @@ namespace PresentationLayer
             }
         }
 
+        /// <summary>
+        /// Nowy magazyn
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void AddNewButton_Click(object sender, RoutedEventArgs e)
         {
             WarehouseDialog dlg = new WarehouseDialog(mainWindow);
             dlg.Show();
         }
 
+        /// <summary>
+        /// Zmiana rozmiaru kontrolki
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void MenuSizeChanged(object sender, SizeChangedEventArgs e)
         {
             ShowButtons();

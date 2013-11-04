@@ -8,20 +8,36 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DatabaseAccess
 {
+    /// <summary>
+    /// Klasa opisująca produkt
+    /// </summary>
     public class Product : Entity
     {
+        /// <summary>
+        /// Nazwa produktu
+        /// </summary>
         [Required]
         public string Name { get; set; }
 
+        /// <summary>
+        /// Data produkcji
+        /// </summary>
         public DateTime Date { get; set; }
 
+        /// <summary>
+        /// Cena
+        /// </summary>
         [Required]
         public Decimal Price { get; set; }
 
-        // Właściwości nawigacyjne
+        /// <summary>
+        /// Szczegóły partii zawierających produkt
+        /// </summary>
         public virtual ICollection<GroupDetails> GroupsDetails { get; set; }
 
-        // Wyświetlenie daty bez godziny
+        /// <summary>
+        /// Krótki format daty.
+        /// </summary>
         [NotMapped]
         public string DateShort { get { return Date.ToShortDateString(); } }
     }

@@ -10,19 +10,58 @@ using System.Windows.Threading;
 
 namespace DatabaseAccess
 {
+    /// <summary>
+    /// Kontekst bazy danych
+    /// </summary>
     public class SystemContext : DbContext
     {
+        /// <summary>
+        /// Magazyny
+        /// </summary>
         public DbSet<Warehouse> Warehouses { get; set; }
+        
+        /// <summary>
+        /// Sektory
+        /// </summary>
         public DbSet<Sector> Sectors { get; set; }
+
+        /// <summary>
+        /// Partie
+        /// </summary>
         public DbSet<Group> Groups { get; set; }
+
+        /// <summary>
+        /// Przesunięcia
+        /// </summary>
         public DbSet<Shift> Shifts { get; set; }
+
+        /// <summary>
+        /// Produkty
+        /// </summary>
         public DbSet<Product> Products { get; set; }
+
+        /// <summary>
+        /// Partnerzy
+        /// </summary>
         public DbSet<Partner> Partners { get; set; }
+
+        /// <summary>
+        /// Szczegóły grup
+        /// </summary>
         public DbSet<GroupDetails> GroupsDetails { get; set; }
 
+        /// <summary>
+        /// Transakcja kontekstu
+        /// </summary>
         public DbContextTransaction Tran { get; private set; }
 
-        // Wersja synchroniczna. Tylko do testów jednostkowych!
+        /// <summary>
+        /// Metoda wykonująca operacje na bazie danych w transakcji.
+        /// Wersja synchroniczna. Przydatna do testów jednostkowych.
+        /// </summary>
+        /// <typeparam name="T">Typ zwracanej zmiennej</typeparam>
+        /// <param name="action">Operacje do wykonania na bazie danych</param>
+        /// <returns>Wynik operacji</returns>
         public static T SyncTransaction<T>(Func<SystemContext, T> action)
         {
             using (var context = new SystemContext())
@@ -46,6 +85,13 @@ namespace DatabaseAccess
             }
         }
 
+        /// <summary>
+        /// Metoda wykonująca operacje na bazie danych w sposób asynchroniczny.
+        /// </summary>
+        /// <typeparam name="T">Typ zwracanej wartości</typeparam>
+        /// <param name="action">Operacje do wykonania na bazie danych</param>
+        /// <param name="continuation">Zadanie do wykonania po zakończeniu transakcji.</param>
+        /// <param name="_tokenSource">CancellationTokenSource</param>
         public static void Transaction<T>(Func<SystemContext, T> action, Action<T> continuation = null, CancellationTokenSource _tokenSource = null)
         {
             if (_tokenSource == null)
@@ -75,6 +121,10 @@ namespace DatabaseAccess
             task.Start();
         }
 
+        /// <summary>
+        /// Zwraca liczbę partii wewnątrz magazynów
+        /// </summary>
+        /// <returns>Liczba partii</returns>
         public int GetInternalGroupsCount()
         {
             return (from g in Groups
@@ -82,6 +132,10 @@ namespace DatabaseAccess
                     select g).Count();
         }
 
+        /// <summary>
+        /// Zapełnienie magazynów
+        /// </summary>
+        /// <returns>Procent zapełnienia</returns>
         public int GetFillRate()
         {
             int all = 0;
@@ -98,6 +152,10 @@ namespace DatabaseAccess
             return all == 0 ? 0 : (full * 100) / all;
         }
 
+        /// <summary>
+        /// Zwraca magazyny wewnętrzne.
+        /// </summary>
+        /// <returns>Lista magazynów</returns>
         public List<Warehouse> GetWarehouses()
         {
             return (from w in Warehouses
@@ -106,6 +164,10 @@ namespace DatabaseAccess
                     select w).ToList();
         }
 
+        /// <summary>
+        /// Liczba magazynów wewnętrznych
+        /// </summary>
+        /// <returns>Liczba magazynów</returns>
         public int GetWarehousesCount()
         {
             return (from w in Warehouses

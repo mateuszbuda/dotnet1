@@ -20,6 +20,9 @@ namespace PresentationLayer
     /// </summary>
     public partial class MainWindow : Window
     {
+        /// <summary>
+        /// Przeładowywanie kontrolki i jej zawartości w oknie głównym
+        /// </summary>
         public Action ReloadWindow { get; set; }
 
         public MainWindow()

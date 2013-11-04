@@ -21,6 +21,9 @@ namespace PresentationLayer
     /// </summary>
     public partial class GroupHistoryMenu : UserControl     // 6
     {
+        /// <summary>
+        /// Wpis historii grupy do wyświetlania na ekranie.
+        /// </summary>
         struct HistoryEntry
         {
             public int SenderId { get; set; }
@@ -37,6 +40,11 @@ namespace PresentationLayer
         private MainWindow mainWindow;
         private List<HistoryEntry> history;
 
+        /// <summary>
+        /// Inicjalizacja menu historii grupy.
+        /// </summary>
+        /// <param name="mainWindow">Referencja do okna głównego</param>
+        /// <param name="id">ID Grupy</param>
         public GroupHistoryMenu(MainWindow mainWindow, int id)
         {
             groupId = id;
@@ -53,6 +61,9 @@ namespace PresentationLayer
             LoadData();
         }
 
+        /// <summary>
+        /// Ładowanie danych
+        /// </summary>
         private void LoadData()
         {
             DatabaseAccess.SystemContext.Transaction(context =>
@@ -80,6 +91,9 @@ namespace PresentationLayer
                 }, t => Dispatcher.BeginInvoke(new Action(() => InitializeData())), tokenSource);
             }
 
+        /// <summary>
+        /// Wyświetlanie danych
+        /// </summary>
         private void InitializeData()
         {
             LoadingLabel.Visibility = System.Windows.Visibility.Hidden;
@@ -94,6 +108,10 @@ namespace PresentationLayer
             HistoryGrid.Visibility = System.Windows.Visibility.Visible;
         }
 
+        /// <summary>
+        /// Przejście do menu partnera/magazynu
+        /// </summary>
+        /// <param name="id">ID nadawcy/odbiorcy</param>
         private void RecipientSenderClick(int id)
         {
             int realId = id;
@@ -125,6 +143,11 @@ namespace PresentationLayer
             )), tokenSource);           
         }
 
+        /// <summary>
+        /// Nadawca
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void SenderButtonClick(object sender, RoutedEventArgs e)
         {
             int id = (int)(sender as Button).Tag;
@@ -132,7 +155,12 @@ namespace PresentationLayer
 
             RecipientSenderClick(id);
         }
-
+        
+        /// <summary>
+        /// Odbiorca
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void RecipientButtonClick(object sender, RoutedEventArgs e)
         {
             int id = (int)(sender as Button).Tag;
@@ -141,21 +169,40 @@ namespace PresentationLayer
             RecipientSenderClick(id);
         }
 
+        /// <summary>
+        /// Menu główne
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void MainMenuButton_Click(object sender, RoutedEventArgs e)
         {
             LoadNewMenu(new MainMenu(mainWindow));
         }
 
+        /// <summary>
+        /// Menu grup
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void GroupsButton_Click(object sender, RoutedEventArgs e)
         {
             LoadNewMenu(new GroupsMenu(mainWindow));
         }
 
+        /// <summary>
+        /// Powrót do grupy
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void GroupButton_Click(object sender, RoutedEventArgs e)
         {
             LoadNewMenu(new GroupMenu(mainWindow, groupId));
         }
 
+        /// <summary>
+        /// Ładowanie manu
+        /// </summary>
+        /// <param name="menu"></param>
         private void LoadNewMenu(UserControl menu)
         {
             Grid content = Parent as Grid;

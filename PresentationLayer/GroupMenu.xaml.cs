@@ -22,6 +22,9 @@ namespace PresentationLayer
     /// </summary>
     public partial class GroupMenu : UserControl    // 5
     {
+        /// <summary>
+        /// Produkt do wyświetlenia na ekranie
+        /// </summary>
         struct Product
         {
             public int Id { get; set; }
@@ -41,6 +44,11 @@ namespace PresentationLayer
 
         private List<Product> products;
 
+        /// <summary>
+        /// Inicjalizacja menu partii
+        /// </summary>
+        /// <param name="mainWindow">Referencja do okna głównego</param>
+        /// <param name="id">ID Partii</param>
         public GroupMenu(MainWindow mainWindow, int id)
         {
             groupId = id;
@@ -55,6 +63,9 @@ namespace PresentationLayer
             LoadData();
         }
 
+        /// <summary>
+        /// Ładowanie danych
+        /// </summary>
         private void LoadData()
         {
             DatabaseAccess.SystemContext.Transaction(context =>
@@ -90,6 +101,9 @@ namespace PresentationLayer
                 }, t => Dispatcher.BeginInvoke(new Action(() => InitializeData())), tokenSource);
         }
 
+        /// <summary>
+        /// Wyświetlanie danych
+        /// </summary>
         private void InitializeData()
         {
             if (!isInternal)
@@ -109,32 +123,61 @@ namespace PresentationLayer
             ProductsGrid.Visibility = System.Windows.Visibility.Visible;
         }
 
+        /// <summary>
+        /// Historia partii
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void HistoryButton_Click(object sender, RoutedEventArgs e)
         {
             LoadNewMenu(new GroupHistoryMenu(mainWindow, groupId));
         }
 
+        /// <summary>
+        /// Wysyłanie partii
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void SendButton_Click(object sender, RoutedEventArgs e)
         {
             ShiftDialog dlg = new ShiftDialog(mainWindow, groupId);
             dlg.Show();
         }
 
+        /// <summary>
+        /// Menu główne
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void MainMenuButton_Click(object sender, RoutedEventArgs e)
         {
             LoadNewMenu(new MainMenu(mainWindow));
         }
 
+        /// <summary>
+        /// Menu grup
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void GroupsButton_Click(object sender, RoutedEventArgs e)
         {
             LoadNewMenu(new GroupsMenu(mainWindow));
         }
 
+        /// <summary>
+        /// Menu produktu
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void IdButtonClick(object sender, RoutedEventArgs e)
         {
             LoadNewMenu(new ProductMenu(mainWindow, (int)(sender as Button).Tag));
         }
 
+        /// <summary>
+        /// Ładowanie menu
+        /// </summary>
+        /// <param name="menu"></param>
         private void LoadNewMenu(UserControl menu)
         {
             Grid content = Parent as Grid;

@@ -26,6 +26,11 @@ namespace PresentationLayer
         private CancellationTokenSource tokenSource;
         private DatabaseAccess.Product product;
 
+        /// <summary>
+        /// Inicjalizacja menu
+        /// </summary>
+        /// <param name="mainWindow">Referencja do okna głównego</param>
+        /// <param name="id">Id produktu</param>
         public ProductMenu(MainWindow mainWindow, int id)
         {
             this.mainWindow = mainWindow;
@@ -39,6 +44,9 @@ namespace PresentationLayer
             LoadData();
         }
 
+        /// <summary>
+        /// Ładowanie danych
+        /// </summary>
         private void LoadData()
         {
             DatabaseAccess.SystemContext.Transaction(context =>
@@ -51,6 +59,9 @@ namespace PresentationLayer
                 }, t => Dispatcher.BeginInvoke(new Action(() => InitializeData())), tokenSource);
         }
 
+        /// <summary>
+        /// Wyświetlanie danych
+        /// </summary>
         private void InitializeData()
         {
             LoadingLabel.Visibility = System.Windows.Visibility.Hidden;
@@ -62,22 +73,41 @@ namespace PresentationLayer
             PriceLabel.Content = product.Price.ToString();
         }
 
+        /// <summary>
+        /// Edycja produktu
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void EditButton_Click(object sender, RoutedEventArgs e)
         {
             ProductDialog dlg = new ProductDialog(mainWindow, productId);
             dlg.Show();
         }
 
+        /// <summary>
+        /// Menu główne
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void MainMenuButton_Click(object sender, RoutedEventArgs e)
         {
             LoadNewMenu(new MainMenu(mainWindow));
         }
 
+        /// <summary>
+        /// Produkty
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ProductsButton_Click(object sender, RoutedEventArgs e)
         {
             LoadNewMenu(new ProductsMenu(mainWindow));
         }
 
+        /// <summary>
+        /// Ładowanie menu
+        /// </summary>
+        /// <param name="menu"></param>
         private void LoadNewMenu(UserControl menu)
         {
             Grid content = Parent as Grid;
