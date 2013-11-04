@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:PresentationLayer"
              mc:Ignorable="d" 
              d:DesignHeight="30" d:DesignWidth="500">
     <Grid>
@@ -15,7 +16,15 @@
         </Grid.ColumnDefinitions>
         <Label Content="Produkt:" HorizontalAlignment="Right" VerticalAlignment="Center"/>
         <ComboBox Name="ProductsComboBox" Grid.Column="1" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center" Width="160"/>
-        <TextBox Name="Quantity" Grid.Column="3" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="0" VerticalAlignment="Center" Width="100"/>
+        <TextBox Name="Quantity" Grid.Column="3" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Center" Width="100">
+            <TextBox.Text>
+                <Binding Path="ValueInBox" UpdateSourceTrigger="PropertyChanged">
+                    <Binding.ValidationRules>
+                        <local:QuantityRule Min="0" />
+                    </Binding.ValidationRules>
+                </Binding>
+            </TextBox.Text>
+        </TextBox>
         <Label Grid.Column="2" Content="Ilość:" HorizontalAlignment="Right" VerticalAlignment="Center"/>
     </Grid>
 </UserControl>
