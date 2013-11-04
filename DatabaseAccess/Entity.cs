@@ -12,5 +12,8 @@ namespace DatabaseAccess
     {
         [Key, Required]
         public int Id { get; set; }
+
+        [Timestamp, ConcurrencyCheck]
+        public byte[] Version { get; set; }
     }
 }

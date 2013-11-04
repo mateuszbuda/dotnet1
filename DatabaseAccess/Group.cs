@@ -34,10 +34,6 @@ namespace DatabaseAccess
 
         public DateTime GetLastDate()
         {
-            var test = (from s in Shifts
-                        where s.Latest == true
-                        select s).FirstOrDefault();
-
             return (from s in Shifts
                     where s.Latest == true
                     select s.Date).FirstOrDefault();

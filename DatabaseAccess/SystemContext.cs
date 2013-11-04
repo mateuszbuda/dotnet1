@@ -40,8 +40,6 @@ namespace DatabaseAccess
                     catch
                     {
                         context.Tran.Rollback();
-                        //MessageBox.Show("Błąd wewnętrzny bazy danych.\nAplikacja zostanie zamknięta.", "Błąd", MessageBoxButton.OK, MessageBoxImage.Error);
-                        //System.Diagnostics.Process.GetCurrentProcess().Kill();
                         throw;
                     }
                 }

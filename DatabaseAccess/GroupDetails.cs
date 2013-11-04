@@ -26,5 +26,8 @@ namespace DatabaseAccess
 
         [ForeignKey("GroupId")]
         public Group Group { get; set; }
+
+        [Timestamp, ConcurrencyCheck]
+        public byte[] Version { get; set; }
     }
 }
