@@ -24,7 +24,7 @@
                 <ColumnDefinition Width="2*"/>
             </Grid.ColumnDefinitions>
             <Label Content="Nazwa:" HorizontalAlignment="Right" VerticalAlignment="Center"/>
-            <TextBox Grid.Column="1" Name="NameTB" Text="{Binding Path=Name}" HorizontalAlignment="Left" Height="25" TextWrapping="Wrap" VerticalAlignment="Center" Width="200"/>
+            <TextBox Grid.Column="1" Name="NameTB" Text="{Binding Path=Name}" HorizontalAlignment="Left" Height="25" TextWrapping="Wrap" VerticalAlignment="Center" Width="200" LostFocus="NameTB_LostFocus"/>
         </Grid>
         <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>

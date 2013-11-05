@@ -62,8 +62,10 @@ namespace PresentationLayer
 
         private void InitializeData()
         {
-            NameTB.Text = product.Name;
-            PriceTB.Text = product.Price.ToString();
+            ProductValidationRule rule = DataContext as ProductValidationRule;
+
+            rule.Name = NameTB.Text = product.Name;
+            rule.PatternPrice = PriceTB.Text = product.Price.ToString();
             DateTB.Text = product.Date.ToString();
         }
 

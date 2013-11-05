@@ -63,7 +63,7 @@ namespace PresentationLayer
 
         public override ValidationResult Validate(object value, CultureInfo ultureInfo)
         {
-            if (value == null || !regex.Match(value.ToString()).Success)
+            if (value == null || !regex.Match(value.ToString()).Success || value.ToString().Length > 50)
             {
                 return new ValidationResult(false, "Niepoprawny format wprowadzonego tekstu.");
             }

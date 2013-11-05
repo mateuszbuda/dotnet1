@@ -62,12 +62,14 @@ namespace PresentationLayer
 
         private void InitializeData()
         {
-            NameTB.Text = warehouse.Name;
-            CityTB.Text = warehouse.City;
-            CodeTB.Text = warehouse.Code;
-            StreetTB.Text = warehouse.Street;
-            NumberTB.Text = warehouse.Num;
-            PhoneTB.Text = warehouse.Tel;
+            WarehouseValidationRule rule = DataContext as WarehouseValidationRule;
+
+            rule.Name = NameTB.Text = warehouse.Name;
+            rule.City = CityTB.Text = warehouse.City;
+            rule.Code = CodeTB.Text = warehouse.Code;
+            rule.Street = StreetTB.Text = warehouse.Street;
+            rule.Number = NumberTB.Text = warehouse.Num;
+            rule.Phone = PhoneTB.Text = warehouse.Tel;
             MailTB.Text = warehouse.Mail;
         }
 
@@ -128,6 +130,10 @@ namespace PresentationLayer
         {
             tokenSource.Cancel();
             this.Close();
+        }
+
+        private void NameTB_LostFocus(object sender, RoutedEventArgs e)
+        {
         }
     }
 }

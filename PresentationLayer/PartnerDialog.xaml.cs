@@ -62,12 +62,14 @@ namespace PresentationLayer
 
         private void InitializeData()
         {
-            NameTB.Text = partner.Warehouse.Name;
-            CityTB.Text = partner.City;
-            CodeTB.Text = partner.Code;
-            StreetTB.Text = partner.Street;
-            NumberTB.Text = partner.Num;
-            PhoneTB.Text = partner.Tel;
+            WarehouseValidationRule rule = DataContext as WarehouseValidationRule;
+
+            rule.Name = NameTB.Text = partner.Warehouse.Name;
+            rule.City = CityTB.Text = partner.City;
+            rule.Code = CodeTB.Text = partner.Code;
+            rule.Street = StreetTB.Text = partner.Street;
+            rule.Number = NumberTB.Text = partner.Num;
+            rule.Phone = PhoneTB.Text = partner.Tel;
             MailTB.Text = partner.Mail;
         }
 

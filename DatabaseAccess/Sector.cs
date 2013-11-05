@@ -50,7 +50,10 @@ namespace DatabaseAccess
 
         public override string ToString()
         {
-            return Warehouse.Name + " - #" + Number.ToString();
+            if (Warehouse.Internal)
+                return Warehouse.Name + " - #" + Number.ToString();
+            else
+                return Warehouse.Name;
         }
     }
 }

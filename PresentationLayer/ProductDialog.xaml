@@ -32,7 +32,7 @@
                 <TextBox.Text>
                     <Binding Path="PatternPrice" UpdateSourceTrigger="PropertyChanged" ValidatesOnExceptions="True">
                         <Binding.ValidationRules>
-                            <local:ProductValidationRule PatternPrice="^[\d]{1,10}(\.[\d]{1,4})?$" />
+                            <local:ProductValidationRule PatternPrice="^[\d]{1,10}(\,[\d]{1,4})?$" />
                         </Binding.ValidationRules>
                     </Binding>
                 </TextBox.Text>

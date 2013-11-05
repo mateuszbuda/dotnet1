@@ -89,17 +89,17 @@ namespace DatabaseAccess
                        where s.Latest == true
                        select s.SenderId).FirstOrDefault();
 
-            if (IsSenderInternal())
+            //if (IsSenderInternal())
                 return id.Value;
-            else
-            {
-                using (var ctx = new SystemContext())
-                {
-                    return (from w in ctx.Warehouses
-                            where w.Id == id
-                            select w.Owners.FirstOrDefault().Id).FirstOrDefault();
-                }
-            }
+            //else
+            //{
+            //    using (var ctx = new SystemContext())
+            //    {
+            //        return (from w in ctx.Warehouses
+            //                where w.Id == id
+            //                select w.Owners.FirstOrDefault().Id).FirstOrDefault();
+            //    }
+            //}
         }
 
         /// <summary>
