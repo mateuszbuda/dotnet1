@@ -47,8 +47,7 @@ namespace PresentationLayer
                              where g.Id == this.groupId
                              select g).FirstOrDefault();
 
-                    warehouses = (from w in context.Warehouses.Include("Sectors")
-                                  //where w.Internal == true
+                    warehouses = (from w in context.Warehouses.Include("Sectors.Groups")
                                   select w).ToList();
 
                     return true;
@@ -69,7 +68,8 @@ namespace PresentationLayer
 
             foreach (DatabaseAccess.Warehouse w in warehouses)
                 foreach (DatabaseAccess.Sector s in w.Sectors)
-                    WarehousesComboBox.Items.Add(s);//w.Name + " - #" + s.Number);
+                    if (!s.IsFull())
+                        WarehousesComboBox.Items.Add(s);
         }
 
         private void SaveButtonClick(object sender, RoutedEventArgs e)

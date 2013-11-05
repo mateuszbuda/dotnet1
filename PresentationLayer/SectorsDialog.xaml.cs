@@ -81,7 +81,14 @@ namespace PresentationLayer
 
         private void InitializeData()
         {
-            NumberTB.Text = sectorId != -1 ? sector.Number.ToString() : (warehouse.Sectors.Max(s => s.Number) + 1).ToString();
+            try
+            {
+                NumberTB.Text = sectorId != -1 ? sector.Number.ToString() : (warehouse.Sectors.Max(s => s.Number) + 1).ToString();
+            }
+            catch
+            {
+                NumberTB.Text = "1";
+            }
             CapacityTB.Text = sectorId != -1 ? sector.Limit.ToString() : "1";
         }
 

@@ -52,5 +52,11 @@ namespace DatabaseAccess
         {
             return Warehouse.Name + " - #" + Number.ToString();
         }
+
+        public bool IsFull()
+        {
+            return Limit == Groups.Count;
+        }
+
     }
 }

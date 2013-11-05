@@ -58,7 +58,7 @@ namespace PresentationLayer
                                     where w.Internal == true
                                     select w).ToList();
 
-                    externalOnes = (from w in context.Warehouses.Include("Sectors")
+                    externalOnes = (from w in context.Warehouses.Include("Sectors.Groups")
                                     where w.Internal == false
                                     select w).ToList();
 
@@ -84,9 +84,8 @@ namespace PresentationLayer
 
             foreach (DatabaseAccess.Warehouse w in internalOnes)
                 foreach (DatabaseAccess.Sector s in w.Sectors)
-                {
-                    WarehousesComboBox.Items.Add(s);
-                }
+                    if (!s.IsFull())
+                        WarehousesComboBox.Items.Add(s);
 
             ProductGroupRow productRow = new ProductGroupRow();
             Products.Items.Add(productRow);
