@@ -32,6 +32,9 @@ namespace PresentationLayer
         private ContextMenu contextMenu;
         private MainWindow mainWindow;
 
+        /// <summary>
+        /// Ładowanie danych
+        /// </summary>
         private void LoadData()
         {
             DatabaseAccess.SystemContext.Transaction(context =>
@@ -50,6 +53,9 @@ namespace PresentationLayer
                 }, t => Dispatcher.BeginInvoke(new Action(() => InitializeData())), tokenSource);
         }
 
+        /// <summary>
+        /// Wyświetlanie danych
+        /// </summary>
         private void InitializeData()
         {
             AddressLabel1.Content = String.Format("{0} {1}, {2} {3}",
@@ -88,12 +94,20 @@ namespace PresentationLayer
             ShowData();
         }
 
+        /// <summary>
+        /// Sektor
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void SectorClick(Object sender, RoutedEventArgs e)
         {
             int id = (int)(e.Source as Button).Tag;
             LoadNewMenu(new SectorMenu(mainWindow, id));
         }
 
+        /// <summary>
+        /// Wyświetlanie danych
+        /// </summary>
         private void ShowData()
         {
             if (!isLoaded)
@@ -125,6 +139,12 @@ namespace PresentationLayer
             }
         }
 
+        /// <summary>
+        /// Inicjalizacja menu
+        /// </summary>
+        /// <param name="mainWindow">Referencja do okna głównego</param>
+        /// <param name="warehouseId">Id magazynu</param>
+        /// <param name="name">Nazwa magazynu</param>
         public WarehouseMenu(MainWindow mainWindow, int warehouseId, string name)
         {
             this.mainWindow = mainWindow;
@@ -155,6 +175,10 @@ namespace PresentationLayer
             LoadData();
         }
 
+        /// <summary>
+        /// Usuwanie sektora
+        /// </summary>
+        /// <param name="id"></param>
         private void DeleteSector(int id)
         {
             DatabaseAccess.SystemContext.Transaction(context =>
@@ -177,6 +201,11 @@ namespace PresentationLayer
                 }, t => Dispatcher.BeginInvoke(new Action(() => LoadData())), tokenSource);
         }
 
+        /// <summary>
+        /// Usuwanie sektora
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void DeleteClick(object sender, RoutedEventArgs e)
         {
             int id = (int)(((e.Source as MenuItem).Parent as ContextMenu).PlacementTarget as Button).Tag;
@@ -186,6 +215,11 @@ namespace PresentationLayer
                 DeleteSector(id);
         }
 
+        /// <summary>
+        /// Edycja sektora
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void EditClick(object sender, RoutedEventArgs e)
         {
             int id = (int)(((e.Source as MenuItem).Parent as ContextMenu).PlacementTarget as Button).Tag;
@@ -194,12 +228,21 @@ namespace PresentationLayer
             dlg.Show();
         }
 
+        /// <summary>
+        /// Nowy sektor
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void AddNewButton_Click(object sender, RoutedEventArgs e)
         {
             SectorsDialog dlg = new SectorsDialog(mainWindow, warehouseId, -1);
             dlg.Show();
         }
 
+        /// <summary>
+        /// Usuwanie magazynu
+        /// </summary>
+        /// <param name="id"></param>
         private void DeleteWarehouse(int id)
         {
             DatabaseAccess.SystemContext.Transaction(context =>
@@ -233,6 +276,11 @@ namespace PresentationLayer
             })), tokenSource);
         }
 
+        /// <summary>
+        /// Usuwanie magazynu
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void DeleteButton_Click(object sender, RoutedEventArgs e)
         {
             if (MessageBox.Show("Czy chcesz usunąć magazyn '" + warehouse.Name + "'?", "Uwaga!",
@@ -240,12 +288,21 @@ namespace PresentationLayer
                 DeleteWarehouse(warehouse.Id);
         }
 
+        /// <summary>
+        /// Edycja magazynu
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void EditButton_Click(object sender, RoutedEventArgs e)
         {
             WarehouseDialog dlg = new WarehouseDialog(mainWindow, warehouseId);
             dlg.Show();
         }
 
+        /// <summary>
+        /// Ładowanie menu
+        /// </summary>
+        /// <param name="menu"></param>
         private void LoadNewMenu(UserControl menu)
         {
             Grid content = Parent as Grid;
@@ -256,16 +313,31 @@ namespace PresentationLayer
             content.Children.Add(menu);
         }
 
+        /// <summary>
+        /// Magazyny
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void WarehousesButton_Click(object sender, RoutedEventArgs e)
         {
             LoadNewMenu(new WarehousesMenu(mainWindow));
         }
 
+        /// <summary>
+        /// Menu główne
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void MainMenuButton_Click(object sender, RoutedEventArgs e)
         {
             LoadNewMenu(new MainMenu(mainWindow));
         }
 
+        /// <summary>
+        /// Zmiana rozmiaru kontrolki
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void MenuSizeChanged(object sender, SizeChangedEventArgs e)
         {
             ShowData();

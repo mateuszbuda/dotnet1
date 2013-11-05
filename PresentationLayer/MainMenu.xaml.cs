@@ -26,6 +26,9 @@ namespace PresentationLayer
     {
         private MainWindow mainWindow;
 
+        /// <summary>
+        /// Wyświetlanie statystyk
+        /// </summary>
         private void ShowStats()
         {
             DatabaseAccess.SystemContext.Transaction(context =>
@@ -54,6 +57,10 @@ namespace PresentationLayer
 
         private CancellationTokenSource tokenSource;
 
+        /// <summary>
+        /// Inicjalizacja głównego menu
+        /// </summary>
+        /// <param name="mainWindow">Referencja do okna głównego</param>
         public MainMenu(MainWindow mainWindow)
         {
             this.mainWindow = mainWindow;
@@ -67,6 +74,10 @@ namespace PresentationLayer
             ShowStats();
         }
 
+        /// <summary>
+        /// Zmiana manu
+        /// </summary>
+        /// <param name="menu"></param>
         private void ChangeMenu(UserControl menu)
         {
             Grid content = Parent as Grid;
@@ -77,21 +88,41 @@ namespace PresentationLayer
             content.Children.Add(menu);
         }
 
+        /// <summary>
+        /// Magazyny
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ButtonWarehouses_Click(object sender, RoutedEventArgs e)
         {
             ChangeMenu(new WarehousesMenu(mainWindow));
         }
 
+        /// <summary>
+        /// Partnerzy
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ButtonPartners_Click(object sender, RoutedEventArgs e)
         {
             ChangeMenu(new PartnersMenu(mainWindow));
         }
 
+        /// <summary>
+        /// Partie
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ButtonGroups_Click(object sender, RoutedEventArgs e)
         {
             ChangeMenu(new GroupsMenu(mainWindow));
         }
 
+        /// <summary>
+        /// Produkty
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ButtonProducts_Click(object sender, RoutedEventArgs e)
         {
             ChangeMenu(new ProductsMenu(mainWindow));

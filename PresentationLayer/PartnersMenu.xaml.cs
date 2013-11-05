@@ -27,6 +27,10 @@ namespace PresentationLayer
         private List<DatabaseAccess.Partner> partners;
         private bool isLoaded;
 
+        /// <summary>
+        /// Inicjalizacja menu
+        /// </summary>
+        /// <param name="mainWindow">Referencja do okna głównego</param>
         public PartnersMenu(MainWindow mainWindow)
         {
             this.mainWindow = mainWindow;
@@ -41,6 +45,9 @@ namespace PresentationLayer
             LoadData();
         }
 
+        /// <summary>
+        /// Ładowanie danych
+        /// </summary>
         private void LoadData()
         {
             DatabaseAccess.SystemContext.Transaction(context =>
@@ -58,6 +65,9 @@ namespace PresentationLayer
                 )), tokenSource);
         }
 
+        /// <summary>
+        /// Wyświetlanie danych
+        /// </summary>
         private void InitializeData()
         {
             if (!isLoaded)
@@ -74,17 +84,31 @@ namespace PresentationLayer
             PartnersGrid.Visibility = System.Windows.Visibility.Visible;
         }
 
+        /// <summary>
+        /// Nowy partner
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void AddNewButton_Click(object sender, RoutedEventArgs e)
         {
             PartnerDialog dlg = new PartnerDialog(mainWindow);
             dlg.Show();
         }
 
+        /// <summary>
+        /// Menu główne
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void MainMenuButton_Click(object sender, RoutedEventArgs e)
         {
             LoadNewMenu(new MainMenu(mainWindow));
         }
 
+        /// <summary>
+        /// Ładowanie menu
+        /// </summary>
+        /// <param name="menu"></param>
         private void LoadNewMenu(UserControl menu)
         {
             Grid content = Parent as Grid;
@@ -95,16 +119,31 @@ namespace PresentationLayer
             content.Children.Add(menu);
         }
 
+        /// <summary>
+        /// Partner
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void WarehouseNameClick(object sender, RoutedEventArgs e)
         {
             LoadNewMenu(new PartnerMenu(mainWindow, (int)(sender as Button).Tag));
         }
 
+        /// <summary>
+        /// Historia partnera
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void PartnerHistoryMenuClick(object sender, RoutedEventArgs e)
         {
             LoadNewMenu(new PartnerHistoryMenu(mainWindow, (int)(sender as Button).Tag));
         }
 
+        /// <summary>
+        /// Edycja partnera
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void PartnerEditClick(object sender, RoutedEventArgs e)
         {
             PartnerDialog dlg = new PartnerDialog(mainWindow, (int)(sender as Button).Tag);

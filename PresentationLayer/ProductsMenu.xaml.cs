@@ -26,6 +26,10 @@ namespace PresentationLayer
         private List<DatabaseAccess.Product> products;
         private bool isLoaded;
 
+        /// <summary>
+        /// Inicjalizacja menu
+        /// </summary>
+        /// <param name="mainWindow">Referencja do okna głównego</param>
         public ProductsMenu(MainWindow mainWindow)
         {
             this.mainWindow = mainWindow;
@@ -40,6 +44,9 @@ namespace PresentationLayer
            LoadData();
         }
 
+        /// <summary>
+        /// Ładowanie danych
+        /// </summary>
         private void LoadData()
         {
             DatabaseAccess.SystemContext.Transaction(context =>
@@ -57,6 +64,9 @@ namespace PresentationLayer
                 )), tokenSource);
         }
 
+        /// <summary>
+        /// Wyświetlanie danych
+        /// </summary>
         private void InitializeData()
         {
             if (!isLoaded)
@@ -73,17 +83,31 @@ namespace PresentationLayer
             ProductsGrid.Visibility = System.Windows.Visibility.Visible;
         }
 
+        /// <summary>
+        /// Nowy produkt
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void AddNewButton_Click(object sender, RoutedEventArgs e)
         {
             ProductDialog dlg = new ProductDialog(mainWindow, -1);
             dlg.Show();
         }
 
+        /// <summary>
+        /// Menu główne
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void MainMenuButton_Click(object sender, RoutedEventArgs e)
         {
             LoadNewMenu(new MainMenu(mainWindow));
         }
 
+        /// <summary>
+        /// Ładowanie menu
+        /// </summary>
+        /// <param name="menu"></param>
         private void LoadNewMenu(UserControl menu)
         {
             Grid content = Parent as Grid;
@@ -94,11 +118,21 @@ namespace PresentationLayer
             content.Children.Add(menu);
         }
 
+        /// <summary>
+        /// Produkt
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ProductNameClick(object sender, RoutedEventArgs e)
         {
             LoadNewMenu(new ProductMenu(mainWindow, (int)(sender as Button).Tag));
         }
 
+        /// <summary>
+        /// Edycja produktu
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void EditProductClick(object sender, RoutedEventArgs e)
         {
             ProductDialog dlg = new ProductDialog(mainWindow, (int)(sender as Button).Tag);

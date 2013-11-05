@@ -29,6 +29,10 @@ namespace PresentationLayer
         private bool showInternal = false;
         private bool showExternal = false;
 
+        /// <summary>
+        /// Inicjalizacja menu
+        /// </summary>
+        /// <param name="mainWindow">Referencja do okna głównego</param>
         public GroupsMenu(MainWindow mainWindow)
         {
             this.mainWindow = mainWindow;
@@ -46,6 +50,9 @@ namespace PresentationLayer
             LoadData();
         }
 
+        /// <summary>
+        /// Ładowanie danych
+        /// </summary>
         private void LoadData()
         {
             DatabaseAccess.SystemContext.Transaction(context =>
@@ -62,6 +69,9 @@ namespace PresentationLayer
                 )), tokenSource);
         }
 
+        /// <summary>
+        /// Wyświetlanie danych
+        /// </summary>
         private void InitializeData()
         {
             if (!isLoaded)
@@ -79,17 +89,31 @@ namespace PresentationLayer
             GroupsGrid.Visibility = System.Windows.Visibility.Visible;
         }
 
+        /// <summary>
+        /// Nowa partia
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void AddNewButton_Click(object sender, RoutedEventArgs e)
         {
             GroupDialog dlg = new GroupDialog(mainWindow, 0);
             dlg.Show();
         }
 
+        /// <summary>
+        /// Manu główne
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void MainMenuButton_Click(object sender, RoutedEventArgs e)
         {
             LoadNewMenu(new MainMenu(mainWindow));
         }
 
+        /// <summary>
+        /// Ładowanie menu
+        /// </summary>
+        /// <param name="menu"></param>
         private void LoadNewMenu(UserControl menu)
         {
             Grid content = Parent as Grid;
@@ -100,6 +124,11 @@ namespace PresentationLayer
             content.Children.Add(menu);
         }
 
+        /// <summary>
+        /// Zmiana zaznaczenia magazynów wewnętrznych
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Internal_Checked(object sender, RoutedEventArgs e)
         {
             if (Internal != null)
@@ -109,6 +138,11 @@ namespace PresentationLayer
             }
         }
 
+        /// <summary>
+        /// Zmiana zaznaczenia magazynów wewnętrznych
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Internal_Unchecked(object sender, RoutedEventArgs e)
         {
             if (Internal != null)
@@ -118,6 +152,11 @@ namespace PresentationLayer
             }
         }
 
+        /// <summary>
+        /// Zmiana zaznaczenia magazynow partnerów
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void External_Unchecked(object sender, RoutedEventArgs e)
         {
             if (External != null)
@@ -127,6 +166,11 @@ namespace PresentationLayer
             }
         }
 
+        /// <summary>
+        /// Zmiana zaznaczenia magazynów partnerów
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void External_Click(object sender, RoutedEventArgs e)
         {
             if (External != null)
@@ -136,11 +180,21 @@ namespace PresentationLayer
             }
         }
 
+        /// <summary>
+        /// Partia
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void GroupIdClick(object sender, RoutedEventArgs e)
         {
             LoadNewMenu(new GroupMenu(mainWindow, (int)(sender as Button).Tag));
         }
 
+        /// <summary>
+        /// Przesuń
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ShiftClick(object sender, RoutedEventArgs e)
         {
             DatabaseAccess.Group toMove = groups.Find(delegate(DatabaseAccess.Group gr)
@@ -154,7 +208,7 @@ namespace PresentationLayer
                 dlg.Show();
             }
             else
-                MessageBox.Show("Nie można przesunąć wydanej partii", "Uwaga");
+                MessageBox.Show("Partia znajduje się u partnera. Nie mozna przesunąć", "Uwaga");
         }
     }
 }

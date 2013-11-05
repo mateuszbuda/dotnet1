@@ -27,6 +27,11 @@ namespace PresentationLayer
         private List<DatabaseAccess.Shift> shifts;
         private MainWindow mainWindow;
 
+        /// <summary>
+        /// Inicjalizacja menu
+        /// </summary>
+        /// <param name="mainWindow">Referencja do okna głównego</param>
+        /// <param name="partnerId">Id Partnera</param>
         public PartnerHistoryMenu(MainWindow mainWindow, int partnerId)
         {
             this.mainWindow = mainWindow;
@@ -41,6 +46,9 @@ namespace PresentationLayer
             LoadData();
         }
 
+        /// <summary>
+        /// Ładowanie danych
+        /// </summary>
         private void LoadData()
         {
             DatabaseAccess.SystemContext.Transaction(context =>
@@ -57,6 +65,9 @@ namespace PresentationLayer
                 }, t => Dispatcher.BeginInvoke(new Action(() => InitializeData())), tokenSource);
         }
 
+        /// <summary>
+        /// Wyświetlanie danych
+        /// </summary>
         private void InitializeData()
         {
             InfoLabel1.Content = String.Format("{0} {1}, {2} {3}",
@@ -80,11 +91,20 @@ namespace PresentationLayer
 
         }
 
+        /// <summary>
+        /// Menu główne
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void MainMenuButton_Click(object sender, RoutedEventArgs e)
         {
             LoadNewMenu(new MainMenu(mainWindow));
         }
 
+        /// <summary>
+        /// Ładowanie menu
+        /// </summary>
+        /// <param name="menu"></param>
         private void LoadNewMenu(UserControl menu)
         {
             Grid content = Parent as Grid;
@@ -95,11 +115,21 @@ namespace PresentationLayer
             content.Children.Add(menu);
         }
 
+        /// <summary>
+        /// Partnerzy
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void PartnersButton_Click(object sender, RoutedEventArgs e)
         {
             LoadNewMenu(new PartnersMenu(mainWindow));
         }
 
+        /// <summary>
+        /// Partia
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void IdButtonClick(object sender, RoutedEventArgs e)
         {
             LoadNewMenu(new GroupMenu(mainWindow, (int)(sender as Button).Tag));

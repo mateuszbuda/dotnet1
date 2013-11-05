@@ -27,6 +27,11 @@ namespace PresentationLayer
         private List<DatabaseAccess.Warehouse> externalOnes;
         private bool isLoaded;
 
+        /// <summary>
+        /// Nowe okno dialogowe
+        /// </summary>
+        /// <param name="mainWindow">Referencja do okna głównego</param>
+        /// <param name="sectorId"></param>
         public GroupDialog(MainWindow mainWindow, int sectorId)
         {
             this.mainWindow = mainWindow;
@@ -38,6 +43,9 @@ namespace PresentationLayer
             LoadData();
         }
 
+        /// <summary>
+        /// Ładowanie danych
+        /// </summary>
         private void LoadData()
         {
             DatabaseAccess.SystemContext.Transaction(context =>
@@ -63,6 +71,9 @@ namespace PresentationLayer
                 )), tokenSource);
         }
 
+        /// <summary>
+        /// Przygotowywanie danych do wyświetlania
+        /// </summary>
         private void InitializeData()
         {
             if (!isLoaded)

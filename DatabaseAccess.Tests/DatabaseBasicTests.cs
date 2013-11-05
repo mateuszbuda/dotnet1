@@ -12,7 +12,7 @@ namespace DatabaseAccess.Tests
         {
             var compare = new CompareObjects();
             compare.IgnoreObjectTypes = true;
-            compare.ElementsToIgnore.AddRange(new string[] { "Sectors", "Sent", "Received", "Owners" });
+            compare.ElementsToIgnore.AddRange(new string[] { "Sectors", "Sent", "Received", "Owners", "Version" });
 
             TransactionWithRolllback(context =>
             {
@@ -48,7 +48,7 @@ namespace DatabaseAccess.Tests
         {
             var compare = new CompareObjects();
             compare.IgnoreObjectTypes = true;
-            compare.ElementsToIgnore.AddRange(new string[] { "Groups" });
+            compare.ElementsToIgnore.AddRange(new string[] { "Groups", "Version" });
 
             TransactionWithRolllback(context =>
             {
@@ -85,7 +85,7 @@ namespace DatabaseAccess.Tests
         {
             var compare = new CompareObjects();
             compare.IgnoreObjectTypes = true;
-            compare.ElementsToIgnore.AddRange(new string[] { "GroupsDetails", "Date" });
+            compare.ElementsToIgnore.AddRange(new string[] { "GroupsDetails", "Date", "Version" });
 
             TransactionWithRolllback(context =>
             {
@@ -122,6 +122,7 @@ namespace DatabaseAccess.Tests
         {
             var compare = new CompareObjects();
             compare.IgnoreObjectTypes = true;
+            compare.ElementsToIgnore.AddRange(new string[] { "Version" });
 
             TransactionWithRolllback(context =>
             {
@@ -158,7 +159,7 @@ namespace DatabaseAccess.Tests
         {
             var compare = new CompareObjects();
             compare.IgnoreObjectTypes = true;
-            compare.ElementsToIgnore.AddRange(new string[] { "GroupDetails", "Shfts" });
+            compare.ElementsToIgnore.AddRange(new string[] { "GroupDetails", "Shfts", "Version" });
 
             TransactionWithRolllback(context =>
             {
@@ -188,6 +189,7 @@ namespace DatabaseAccess.Tests
         {
             var compare = new CompareObjects();
             compare.IgnoreObjectTypes = true;
+            compare.ElementsToIgnore.AddRange(new string[] { "Version" });
 
             TransactionWithRolllback(context =>
             {
@@ -224,7 +226,7 @@ namespace DatabaseAccess.Tests
         {
             var compare = new CompareObjects();
             compare.IgnoreObjectTypes = true;
-            compare.ElementsToIgnore.AddRange(new string[] { "Date" });
+            compare.ElementsToIgnore.AddRange(new string[] { "Date", "Version" });
 
             TransactionWithRolllback(context =>
             {
