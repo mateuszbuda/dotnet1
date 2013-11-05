@@ -16,10 +16,20 @@ using System.Windows.Shapes;
 
 namespace PresentationLayer
 {
+    /// <summary>
+    /// Klasa do walidacji pola ilości produktu przy tworzeniu nowej partii
+    /// </summary>
     public class QuantityRule : ValidationRule
     {
+        // Minimalna ilość produktu
         public int Min { get; set; }
 
+        /// <summary>
+        /// Nadpisana metoda nadklasy, służaca do walidcji
+        /// </summary>
+        /// <param name="value">Objekt do sprawdzenia</param>
+        /// <param name="cultureInfo"></param>
+        /// <returns>Informacje o wyniku walidacji</returns>
         public override ValidationResult Validate(object value,
                                                    CultureInfo cultureInfo)
         {

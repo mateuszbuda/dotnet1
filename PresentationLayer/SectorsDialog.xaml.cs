@@ -27,6 +27,12 @@ namespace PresentationLayer
         private DatabaseAccess.Sector sector;
         private DatabaseAccess.Warehouse warehouse;
 
+        /// <summary>
+        /// Konstruktor inicjalizujący dane.
+        /// </summary>
+        /// <param name="mainWindow"></param>
+        /// <param name="warehouseId">Id magazynu dla którego tworzymy/edytujemy sektor</param>
+        /// <param name="sectorId">Id edytowanego sektora lub -1 jeśli tworzony jest nowy sektor</param>
         public SectorsDialog(MainWindow mainWindow, int warehouseId, int sectorId)
             : this(mainWindow)
         {
@@ -43,6 +49,10 @@ namespace PresentationLayer
             LoadData();
         }
 
+        /// <summary>
+        /// Podstawowy konstruktor inicjalizujący podstawowe dane wspólne dla tworzenia i edycji sektora.
+        /// </summary>
+        /// <param name="mainWindow"></param>
         public SectorsDialog(MainWindow mainWindow)
         {
             this.mainWindow = mainWindow;
@@ -55,6 +65,9 @@ namespace PresentationLayer
             Title = "Tworzenie nowego sektora";
         }
 
+        /// <summary>
+        /// Ładowanie danych
+        /// </summary>
         private void LoadData()
         {
             if (sectorId != -1)
@@ -79,19 +92,21 @@ namespace PresentationLayer
 
         }
 
+        /// <summary>
+        /// Wyświetlanie danych
+        /// </summary>
         private void InitializeData()
         {
-            try
-            {
-                NumberTB.Text = sectorId != -1 ? sector.Number.ToString() : (warehouse.Sectors.Max(s => s.Number) + 1).ToString();
-            }
-            catch
-            {
-                NumberTB.Text = "1";
-            }
+            NumberTB.Text = sectorId != -1 ? sector.Number.ToString() : (warehouse.Sectors.Count != 0 ?
+                (warehouse.Sectors.Max(s => s.Number) + 1).ToString() : "1");
             CapacityTB.Text = sectorId != -1 ? sector.Limit.ToString() : "1";
         }
 
+        /// <summary>
+        /// Zapis danych po ich sprawdzeniu i zamknięcie okna
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void SaveClick(object sender, RoutedEventArgs e)
         {
             (sender as Button).IsEnabled = false;
@@ -146,6 +161,11 @@ namespace PresentationLayer
                     })), tokenSource);
         }
 
+        /// <summary>
+        /// Zamknięcie okna bez zapisu danych
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void CancelClick(object sender, RoutedEventArgs e)
         {
             tokenSource.Cancel();

@@ -27,6 +27,11 @@ namespace PresentationLayer
         private bool isLoaded;
         private int groupId;
 
+        /// <summary>
+        /// Konstruktor inicjalizujący dane
+        /// </summary>
+        /// <param name="mainWindow"></param>
+        /// <param name="groupId">Id przesuwanej partii</param>
         public ShiftDialog(MainWindow mainWindow, int groupId)
         {
             this.mainWindow = mainWindow;
@@ -39,6 +44,9 @@ namespace PresentationLayer
             LoadData();
         }
 
+        /// <summary>
+        /// Ładowanie danych
+        /// </summary>
         private void LoadData()
         {
             DatabaseAccess.SystemContext.Transaction(context =>
@@ -48,6 +56,7 @@ namespace PresentationLayer
                              select g).FirstOrDefault();
 
                     warehouses = (from w in context.Warehouses.Include("Sectors.Groups")
+                                  where w.Deleted == false
                                   select w).ToList();
 
                     return true;
@@ -59,6 +68,9 @@ namespace PresentationLayer
                 )), tokenSource);
         }
 
+        /// <summary>
+        /// Wyświetlanie danych
+        /// </summary>
         private void InitializeData()
         {
             if (!isLoaded)
@@ -72,6 +84,11 @@ namespace PresentationLayer
                         WarehousesComboBox.Items.Add(s);
         }
 
+        /// <summary>
+        /// Zapis danych po ich sprawdzeniu i zamknięcie okna
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void SaveButtonClick(object sender, RoutedEventArgs e)
         {
             (sender as Button).IsEnabled = false;
@@ -125,6 +142,11 @@ namespace PresentationLayer
                     })), tokenSource);
         }
 
+        /// <summary>
+        /// Zamknięcie okna bez zapisu danych
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void CancelButtonClick(object sender, RoutedEventArgs e)
         {
             tokenSource.Cancel();

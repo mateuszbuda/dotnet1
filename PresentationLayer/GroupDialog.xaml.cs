@@ -59,7 +59,7 @@ namespace PresentationLayer
                                     select w).ToList();
 
                     externalOnes = (from w in context.Warehouses.Include("Sectors.Groups")
-                                    where w.Internal == false
+                                    where w.Internal == false && w.Deleted == false
                                     select w).ToList();
 
                     return true;
@@ -84,7 +84,7 @@ namespace PresentationLayer
 
             foreach (DatabaseAccess.Warehouse w in internalOnes)
                 foreach (DatabaseAccess.Sector s in w.Sectors)
-                    if (!s.IsFull())
+                    if (!s.IsFull() && s.Deleted == false)
                         WarehousesComboBox.Items.Add(s);
 
             ProductGroupRow productRow = new ProductGroupRow();
@@ -96,6 +96,11 @@ namespace PresentationLayer
             }
         }
 
+        /// <summary>
+        /// Dodaje nowy wiersz do wprowadzenia danych produktu w partii.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void AddProductClick(object sender, RoutedEventArgs e)
         {
             ProductGroupRow productRow = new ProductGroupRow();
@@ -105,6 +110,11 @@ namespace PresentationLayer
                 productRow.ProductsComboBox.Items.Add(p.Name);
         }
 
+        /// <summary>
+        /// Zapisuje partię, po wcześniejszym sprawdzeniu danych i zamyka okno.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void SaveButtonClick(object sender, RoutedEventArgs e)
         {
             (sender as Button).IsEnabled = false;
@@ -194,6 +204,11 @@ namespace PresentationLayer
                     })), tokenSource);
         }
 
+        /// <summary>
+        /// Anuluje tworzenie nowej partii i zamyka okna bez zapisu danych.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void CancelButtonClick(object sender, RoutedEventArgs e)
         {
             tokenSource.Cancel();

@@ -6,6 +6,9 @@ using System.Windows.Input;
 
 namespace PresentationLayer
 {
+    /// <summary>
+    /// Klasa do obsługi bindingu validacji.
+    /// </summary>
     public class DelegatedCommand : ICommand
     {
         private readonly Action _execute;

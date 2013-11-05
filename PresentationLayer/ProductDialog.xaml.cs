@@ -25,6 +25,11 @@ namespace PresentationLayer
         private int productID = -1;
         private DatabaseAccess.Product product;
 
+        /// <summary>
+        /// Konstruktor inicjalicujący dane.
+        /// </summary>
+        /// <param name="mainWindow"></param>
+        /// <param name="id">Id edytowanego produktu lub -1 jśli tworzony jest nowy produkt</param>
         public ProductDialog(MainWindow mainWindow, int id)
         {
             this.mainWindow = mainWindow;
@@ -48,6 +53,9 @@ namespace PresentationLayer
             }
         }
 
+        /// <summary>
+        /// Ładowanie danych
+        /// </summary>
         private void LoadData()
         {
             DatabaseAccess.SystemContext.Transaction(context =>
@@ -60,13 +68,23 @@ namespace PresentationLayer
                 }, t => Dispatcher.BeginInvoke(new Action(() => InitializeData())), tokenSource);
         }
 
+        /// <summary>
+        /// Wyświetlanie danych
+        /// </summary>
         private void InitializeData()
         {
-            NameTB.Text = product.Name;
-            PriceTB.Text = product.Price.ToString();
+            ProductValidationRule rule = DataContext as ProductValidationRule;
+
+            rule.Name = NameTB.Text = product.Name;
+            rule.PatternPrice = PriceTB.Text = product.Price.ToString();
             DateTB.Text = product.Date.ToString();
         }
 
+        /// <summary>
+        /// Zapis danych i zamknięcie okna
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void SaveClick(object sender, RoutedEventArgs e)
         {
             var data = new
@@ -114,6 +132,11 @@ namespace PresentationLayer
                     })), tokenSource);
         }
 
+        /// <summary>
+        /// Zamknięcie okna bez zapisu danych
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void CancelClick(object sender, RoutedEventArgs e)
         {
             tokenSource.Cancel();

@@ -25,6 +25,11 @@ namespace PresentationLayer
         private int warehouseId = -1;
         private DatabaseAccess.Warehouse warehouse;
 
+        /// <summary>
+        /// Konstruktor uzywany przy edycji magazynu
+        /// </summary>
+        /// <param name="mainWindow"></param>
+        /// <param name="id"></param>
         public WarehouseDialog(MainWindow mainWindow, int id)
             : this(mainWindow)
         {
@@ -36,6 +41,10 @@ namespace PresentationLayer
             LoadData();
         }
 
+        /// <summary>
+        /// Konstruktor używany przy tworzeniu nowego magazynu
+        /// </summary>
+        /// <param name="mainWindow"></param>
         public WarehouseDialog(MainWindow mainWindow)
         {
             this.mainWindow = mainWindow;
@@ -48,6 +57,9 @@ namespace PresentationLayer
             Title = "Tworzenie nowego magazynu";
         }
 
+        /// <summary>
+        /// Ładowanie danych
+        /// </summary>
         private void LoadData()
         {
             DatabaseAccess.SystemContext.Transaction(context =>
@@ -60,17 +72,27 @@ namespace PresentationLayer
                 }, t => Dispatcher.BeginInvoke(new Action(() => InitializeData())), tokenSource);
         }
 
+        /// <summary>
+        /// Wyświetlanie danych
+        /// </summary>
         private void InitializeData()
         {
-            NameTB.Text = warehouse.Name;
-            CityTB.Text = warehouse.City;
-            CodeTB.Text = warehouse.Code;
-            StreetTB.Text = warehouse.Street;
-            NumberTB.Text = warehouse.Num;
-            PhoneTB.Text = warehouse.Tel;
+            WarehouseValidationRule rule = DataContext as WarehouseValidationRule;
+
+            rule.Name = NameTB.Text = warehouse.Name;
+            rule.City = CityTB.Text = warehouse.City;
+            rule.Code = CodeTB.Text = warehouse.Code;
+            rule.Street = StreetTB.Text = warehouse.Street;
+            rule.Number = NumberTB.Text = warehouse.Num;
+            rule.Phone = PhoneTB.Text = warehouse.Tel;
             MailTB.Text = warehouse.Mail;
         }
 
+        /// <summary>
+        /// Zapis danych i zamknięcie okna
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void SaveClick(object sender, RoutedEventArgs e)
         {
             var data = new
@@ -124,10 +146,24 @@ namespace PresentationLayer
                     })), tokenSource);
         }
 
+        /// <summary>
+        /// Zamknięcie okna bez zapisu danych
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void CancelClick(object sender, RoutedEventArgs e)
         {
             tokenSource.Cancel();
             this.Close();
+        }
+
+        /// <summary>
+        /// lol
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void NameTB_LostFocus(object sender, RoutedEventArgs e)
+        {
         }
     }
 }

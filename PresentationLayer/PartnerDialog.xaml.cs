@@ -25,6 +25,11 @@ namespace PresentationLayer
         private int partnerId = -1;
         private DatabaseAccess.Partner partner;
 
+        /// <summary>
+        /// Konstruktor wykorzystywany przy edycji partnera.
+        /// </summary>
+        /// <param name="mainWindow"></param>
+        /// <param name="id">Id edytowanego partnera</param>
         public PartnerDialog(MainWindow mainWindow, int id)
             : this(mainWindow)
         {
@@ -36,6 +41,10 @@ namespace PresentationLayer
             LoadData();
         }
 
+        /// <summary>
+        /// Konstruktor wykorzystywany przy tworzeniu nowego partnera.
+        /// </summary>
+        /// <param name="mainWindow"></param>
         public PartnerDialog(MainWindow mainWindow)
         {
             this.mainWindow = mainWindow;
@@ -48,6 +57,9 @@ namespace PresentationLayer
             Title = "Tworzenie nowego partnera";
         }
 
+        /// <summary>
+        /// Ładowanie danych
+        /// </summary>
         private void LoadData()
         {
             DatabaseAccess.SystemContext.Transaction(context =>
@@ -60,17 +72,27 @@ namespace PresentationLayer
                 }, t => Dispatcher.BeginInvoke(new Action(() => InitializeData())), tokenSource);
         }
 
+        /// <summary>
+        /// Wyświetlanie danych
+        /// </summary>
         private void InitializeData()
         {
-            NameTB.Text = partner.Warehouse.Name;
-            CityTB.Text = partner.City;
-            CodeTB.Text = partner.Code;
-            StreetTB.Text = partner.Street;
-            NumberTB.Text = partner.Num;
-            PhoneTB.Text = partner.Tel;
+            WarehouseValidationRule rule = DataContext as WarehouseValidationRule;
+
+            rule.Name = NameTB.Text = partner.Warehouse.Name;
+            rule.City = CityTB.Text = partner.City;
+            rule.Code = CodeTB.Text = partner.Code;
+            rule.Street = StreetTB.Text = partner.Street;
+            rule.Number = NumberTB.Text = partner.Num;
+            rule.Phone = PhoneTB.Text = partner.Tel;
             MailTB.Text = partner.Mail;
         }
 
+        /// <summary>
+        /// Zapis danych i zamknięcie okna
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void SaveClick(object sender, RoutedEventArgs e)
         {
             (sender as Button).IsEnabled = false;
@@ -99,7 +121,6 @@ namespace PresentationLayer
                         s.Limit = 0;
                         s.Deleted = false;
                         s.Number = 1;
-                        //s.Warehouse = w;
 
                         w.Name = data.Name;
                         w.Internal = false;
@@ -152,6 +173,11 @@ namespace PresentationLayer
                     })), tokenSource);
         }
 
+        /// <summary>
+        /// Zamknięcie okna bez zapisu danych
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void CancelClick(object sender, RoutedEventArgs e)
         {
             tokenSource.Cancel();

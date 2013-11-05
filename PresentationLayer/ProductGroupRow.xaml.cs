@@ -16,7 +16,7 @@ using System.Windows.Shapes;
 namespace PresentationLayer
 {
     /// <summary>
-    /// Interaction logic for ProductGroupRow.xaml
+    /// Wiersz do wprowadzania danych o produkcie w nowej partii
     /// </summary>
     public partial class ProductGroupRow : UserControl
     {

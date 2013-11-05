@@ -161,7 +161,7 @@ namespace PresentationLayer
             if (group.InternalSender)
                 LoadNewMenu(new WarehouseMenu(mainWindow, group.SenderId, group.SenderName));
             else
-                FindSender(group.Id);
+                FindSender(group.SenderId);
         }
 
         /// <summary>
