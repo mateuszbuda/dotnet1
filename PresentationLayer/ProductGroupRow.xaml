@@ -18,7 +18,7 @@
         <ComboBox Name="ProductsComboBox" Grid.Column="1" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center" Width="160"/>
         <TextBox Name="Quantity" Grid.Column="3" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Center" Width="100">
             <TextBox.Text>
-                <Binding Path="ValueInBox" UpdateSourceTrigger="PropertyChanged">
+                <Binding Path="Min" UpdateSourceTrigger="PropertyChanged" ValidatesOnExceptions="True">
                     <Binding.ValidationRules>
                         <local:QuantityRule Min="0" />
                     </Binding.ValidationRules>

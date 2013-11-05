@@ -23,6 +23,7 @@ namespace PresentationLayer
         public ProductGroupRow()
         {
             InitializeComponent();
+            this.DataContext = new QuantityRule();
         }
     }
 }

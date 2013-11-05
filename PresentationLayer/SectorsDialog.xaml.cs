@@ -25,6 +25,7 @@ namespace PresentationLayer
         private int sectorId = -1;
         private int warehouseId = -1;
         private DatabaseAccess.Sector sector;
+        private DatabaseAccess.Warehouse warehouse;
 
         public SectorsDialog(MainWindow mainWindow, int warehouseId, int sectorId)
             : this(mainWindow)
@@ -37,9 +38,9 @@ namespace PresentationLayer
                 Title = "Edycja sektora";
 
                 this.sectorId = sectorId;
-
-                LoadData();
             }
+
+            LoadData();
         }
 
         public SectorsDialog(MainWindow mainWindow)
@@ -48,6 +49,7 @@ namespace PresentationLayer
             tokenSource = new CancellationTokenSource();
 
             InitializeComponent();
+            this.DataContext = new RegexValidationRule();
 
             Header.Content = "Wprowadź dane:";
             Title = "Tworzenie nowego sektora";
@@ -55,20 +57,32 @@ namespace PresentationLayer
 
         private void LoadData()
         {
-            DatabaseAccess.SystemContext.Transaction(context =>
-                {
-                    sector = (from w in context.Sectors
-                              where w.Id == sectorId
-                              select w).FirstOrDefault();
+            if (sectorId != -1)
+            {
+                DatabaseAccess.SystemContext.Transaction(context =>
+                    {
+                        sector = (from s in context.Sectors
+                                  where s.Id == sectorId
+                                  select s).FirstOrDefault();
 
-                    return true;
-                }, t => Dispatcher.BeginInvoke(new Action(() => InitializeData())), tokenSource);
+                        return true;
+                    }, t => Dispatcher.BeginInvoke(new Action(() => InitializeData())), tokenSource);
+            }
+            DatabaseAccess.SystemContext.Transaction(context =>
+            {
+                warehouse = (from w in context.Warehouses.Include("Sectors")
+                             where w.Id == warehouseId
+                             select w).FirstOrDefault();
+
+                return true;
+            }, t => Dispatcher.BeginInvoke(new Action(() => InitializeData())), tokenSource);
+
         }
 
         private void InitializeData()
         {
-            NumberTB.Text = sector.Number.ToString();
-            CapacityTB.Text = sector.Limit.ToString();
+            NumberTB.Text = sectorId != -1 ? sector.Number.ToString() : (warehouse.Sectors.Max(s => s.Number) + 1).ToString();
+            CapacityTB.Text = sectorId != -1 ? sector.Limit.ToString() : "1";
         }
 
         private void SaveClick(object sender, RoutedEventArgs e)
@@ -76,7 +90,24 @@ namespace PresentationLayer
             (sender as Button).IsEnabled = false;
 
             int number = int.Parse(NumberTB.Text);
-            int limit = int.Parse(CapacityTB.Text);
+
+            if (CapacityTB.Text.Length > 10 || CapacityTB.Text.Length < 1)
+            {
+                MessageBox.Show("Wprowadź poprawną pojemność sektora.", "Uwaga");
+                (sender as Button).IsEnabled = true;
+                return;
+            }
+            int limit = 1;
+            try
+            {
+                limit = int.Parse(CapacityTB.Text);
+            }
+            catch
+            {
+                MessageBox.Show("Wprowadź poprawną pojemność sektora.", "Uwaga");
+                (sender as Button).IsEnabled = true;
+                return;
+            }
 
             DatabaseAccess.SystemContext.Transaction(context =>
                 {
@@ -105,7 +136,7 @@ namespace PresentationLayer
                     {
                         mainWindow.ReloadWindow();
                         this.Close();
-                    })), tokenSource);            
+                    })), tokenSource);
         }
 
         private void CancelClick(object sender, RoutedEventArgs e)

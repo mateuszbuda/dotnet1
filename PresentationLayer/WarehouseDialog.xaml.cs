@@ -42,6 +42,7 @@ namespace PresentationLayer
             tokenSource = new CancellationTokenSource();
 
             InitializeComponent();
+            this.DataContext = new WarehouseValidationRule();
 
             Header.Content = "Wprowadź dane:";
             Title = "Tworzenie nowego magazynu";
@@ -72,9 +73,7 @@ namespace PresentationLayer
 
         private void SaveClick(object sender, RoutedEventArgs e)
         {
-            (sender as Button).IsEnabled = false;
-
-            var tmp = new
+            var data = new
                 {
                     Name = NameTB.Text,
                     City = CityTB.Text,
@@ -92,13 +91,13 @@ namespace PresentationLayer
                     if (warehouseId == -1)
                     {
                         w = new DatabaseAccess.Warehouse();
-                        w.Name = tmp.Name;
-                        w.City = tmp.City;
-                        w.Code = tmp.Code;
-                        w.Street = tmp.Street;
-                        w.Num = tmp.Num;
-                        w.Tel = tmp.Tel;
-                        w.Mail = tmp.Mail;
+                        w.Name = data.Name;
+                        w.City = data.City;
+                        w.Code = data.Code;
+                        w.Street = data.Street;
+                        w.Num = data.Num;
+                        w.Tel = data.Tel;
+                        w.Mail = data.Mail;
                         w.Internal = true;
 
                         context.Warehouses.Add(w);
@@ -106,13 +105,13 @@ namespace PresentationLayer
                     else
                     {
                         w = (from warehouse in context.Warehouses where warehouse.Id == warehouseId select warehouse).FirstOrDefault();
-                        w.Name = tmp.Name;
-                        w.City = tmp.City;
-                        w.Code = tmp.Code;
-                        w.Street = tmp.Street;
-                        w.Num = tmp.Num;
-                        w.Tel = tmp.Tel;
-                        w.Mail = tmp.Mail;
+                        w.Name = data.Name;
+                        w.City = data.City;
+                        w.Code = data.Code;
+                        w.Street = data.Street;
+                        w.Num = data.Num;
+                        w.Tel = data.Tel;
+                        w.Mail = data.Mail;
                     }
 
                     context.SaveChanges();

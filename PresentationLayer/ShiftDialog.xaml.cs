@@ -76,7 +76,14 @@ namespace PresentationLayer
         {
             (sender as Button).IsEnabled = false;
 
-            DatabaseAccess.Warehouse recipient = 
+            if (WarehousesComboBox.SelectedIndex < 0)
+            {
+                MessageBox.Show("Wybierz miejsce docelowe przesunięcia.", "Uwaga");
+                (sender as Button).IsEnabled = true;
+                return;
+            }
+
+            DatabaseAccess.Warehouse recipient =
                 ((DatabaseAccess.Sector)WarehousesComboBox.Items[WarehousesComboBox.SelectedIndex]).Warehouse;
 
             DatabaseAccess.Sector sector = (DatabaseAccess.Sector)WarehousesComboBox.SelectedValue;

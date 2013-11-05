@@ -77,6 +77,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="DelegatedCommand.cs" />
     <Compile Include="GroupDialog.xaml.cs">
       <DependentUpon>GroupDialog.xaml</DependentUpon>
     </Compile>
@@ -116,7 +117,9 @@
     <Compile Include="ProductsMenu.xaml.cs">
       <DependentUpon>ProductsMenu.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ProductValidationRule.cs" />
     <Compile Include="QuantityRule.cs" />
+    <Compile Include="RegexValidationRule.cs" />
     <Compile Include="SectorMenu.xaml.cs">
       <DependentUpon>SectorMenu.xaml</DependentUpon>
     </Compile>
@@ -135,6 +138,7 @@
     <Compile Include="WarehousesMenu.xaml.cs">
       <DependentUpon>WarehousesMenu.xaml</DependentUpon>
     </Compile>
+    <Compile Include="WarehouseValidationRule.cs" />
     <Page Include="GroupDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

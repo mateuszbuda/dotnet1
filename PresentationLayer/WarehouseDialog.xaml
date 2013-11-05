@@ -1,6 +1,7 @@
 ﻿<Window x:Class="PresentationLayer.WarehouseDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:PresentationLayer"
         Title="Magazyn - Edycja" Height="500" Width="400">
     <Grid>
         <Grid.RowDefinitions>
@@ -23,7 +24,7 @@
                 <ColumnDefinition Width="2*"/>
             </Grid.ColumnDefinitions>
             <Label Content="Nazwa:" HorizontalAlignment="Right" VerticalAlignment="Center"/>
-            <TextBox Grid.Column="1" Name="NameTB" HorizontalAlignment="Left" Height="25" TextWrapping="Wrap" VerticalAlignment="Center" Width="200"/>
+            <TextBox Grid.Column="1" Name="NameTB" Text="{Binding Path=Name}" HorizontalAlignment="Left" Height="25" TextWrapping="Wrap" VerticalAlignment="Center" Width="200"/>
         </Grid>
         <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
@@ -31,7 +32,7 @@
                 <ColumnDefinition Width="2*"/>
             </Grid.ColumnDefinitions>
             <Label Content="Miasto:" HorizontalAlignment="Right" VerticalAlignment="Center"/>
-            <TextBox Grid.Column="1" Name="CityTB" HorizontalAlignment="Left" Height="25" TextWrapping="Wrap" VerticalAlignment="Center" Width="200"/>
+            <TextBox Grid.Column="1" Name="CityTB" Text="{Binding Path=City}" HorizontalAlignment="Left" Height="25" TextWrapping="Wrap" VerticalAlignment="Center" Width="200"/>
         </Grid>
         <Grid Grid.Row="3">
             <Grid.ColumnDefinitions>
@@ -39,7 +40,7 @@
                 <ColumnDefinition Width="2*"/>
             </Grid.ColumnDefinitions>
             <Label Content="Kod:" HorizontalAlignment="Right" VerticalAlignment="Center"/>
-            <TextBox Grid.Column="1" Name="CodeTB" HorizontalAlignment="Left" Height="25" TextWrapping="Wrap" VerticalAlignment="Center" Width="200"/>
+            <TextBox Grid.Column="1" Name="CodeTB" Text="{Binding Path=Code}" HorizontalAlignment="Left" Height="25" TextWrapping="Wrap" VerticalAlignment="Center" Width="200"/>
         </Grid>
         <Grid Grid.Row="4">
             <Grid.ColumnDefinitions>
@@ -47,7 +48,7 @@
                 <ColumnDefinition Width="2*"/>
             </Grid.ColumnDefinitions>
             <Label Content="Ulica:" HorizontalAlignment="Right" VerticalAlignment="Center"/>
-            <TextBox Grid.Column="1" Name="StreetTB" HorizontalAlignment="Left" Height="25" TextWrapping="Wrap" VerticalAlignment="Center" Width="200"/>
+            <TextBox Grid.Column="1" Name="StreetTB" Text="{Binding Path=Street}" HorizontalAlignment="Left" Height="25" TextWrapping="Wrap" VerticalAlignment="Center" Width="200"/>
         </Grid>
         <Grid Grid.Row="5">
             <Grid.ColumnDefinitions>
@@ -55,7 +56,7 @@
                 <ColumnDefinition Width="2*"/>
             </Grid.ColumnDefinitions>
             <Label Content="Numer:" HorizontalAlignment="Right" VerticalAlignment="Center"/>
-            <TextBox Grid.Column="1" Name="NumberTB" HorizontalAlignment="Left" Height="25" TextWrapping="Wrap" VerticalAlignment="Center" Width="200"/>
+            <TextBox Grid.Column="1" Name="NumberTB" Text="{Binding Path=Number}" HorizontalAlignment="Left" Height="25" TextWrapping="Wrap" VerticalAlignment="Center" Width="200"/>
         </Grid>
         <Grid Grid.Row="6">
             <Grid.ColumnDefinitions>
@@ -63,7 +64,7 @@
                 <ColumnDefinition Width="2*"/>
             </Grid.ColumnDefinitions>
             <Label Content="Telefon:" HorizontalAlignment="Right" VerticalAlignment="Center"/>
-            <TextBox Grid.Column="1" Name="PhoneTB" HorizontalAlignment="Left" Height="25" TextWrapping="Wrap" VerticalAlignment="Center" Width="200"/>
+            <TextBox Grid.Column="1" Name="PhoneTB" Text="{Binding Path=Phone}" HorizontalAlignment="Left" Height="25" TextWrapping="Wrap" VerticalAlignment="Center" Width="200"/>
         </Grid>
         <Grid Grid.Row="7">
             <Grid.ColumnDefinitions>
@@ -71,14 +72,22 @@
                 <ColumnDefinition Width="2*"/>
             </Grid.ColumnDefinitions>
             <Label Content="E-mail:" HorizontalAlignment="Right" VerticalAlignment="Center"/>
-            <TextBox Grid.Column="1" Name="MailTB" HorizontalAlignment="Left" Height="25" TextWrapping="Wrap" VerticalAlignment="Center" Width="200"/>
+            <TextBox Grid.Column="1" Name="MailTB" HorizontalAlignment="Left" Height="25" TextWrapping="Wrap" VerticalAlignment="Center" Width="200">
+                <TextBox.Text>
+                    <Binding Path="Pattern" UpdateSourceTrigger="PropertyChanged" ValidatesOnExceptions="True">
+                        <Binding.ValidationRules>
+                            <local:WarehouseValidationRule Pattern="^[a-zA-Z][\w\.-]*[a-zA-Z0-9]@[a-zA-Z0-9][\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]$" />
+                        </Binding.ValidationRules>
+                    </Binding>
+                </TextBox.Text>
+            </TextBox>
         </Grid>
         <Grid Grid.Row="8">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
-            <Button Content="Zapisz" Click="SaveClick" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Height="30"/>
+            <Button Content="Zapisz" Click="SaveClick" Command="{Binding Path=OkCommand}" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Height="30"/>
             <Button Content="Anuluj" Click="CancelClick" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Height="30"/>
         </Grid>
     </Grid>

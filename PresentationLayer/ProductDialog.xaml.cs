@@ -32,6 +32,7 @@ namespace PresentationLayer
             tokenSource = new CancellationTokenSource();
 
             InitializeComponent();
+            this.DataContext = new ProductValidationRule();
 
             if (productID == -1)
             {
@@ -68,14 +69,19 @@ namespace PresentationLayer
 
         private void SaveClick(object sender, RoutedEventArgs e)
         {
-            (sender as Button).IsEnabled = false;
-
             var data = new
                 {
                     Name = NameTB.Text,
                     Price = PriceTB.Text,
                     Date = DateTB.Text
                 };
+
+            if (string.IsNullOrEmpty(data.Date))
+            {
+                MessageBox.Show("Wprowadź poprawną datę.", "Uwaga");
+                (sender as Button).IsEnabled = true;
+                return;
+            }
 
             DatabaseAccess.SystemContext.Transaction(context =>
                 {

@@ -26,7 +26,6 @@ namespace PresentationLayer
         private List<DatabaseAccess.Warehouse> internalOnes;
         private List<DatabaseAccess.Warehouse> externalOnes;
         private bool isLoaded;
-        private int sectorId;
 
         public GroupDialog(MainWindow mainWindow, int sectorId)
         {
@@ -70,12 +69,12 @@ namespace PresentationLayer
                 return;
 
             foreach (DatabaseAccess.Warehouse w in externalOnes)
-                PartnersComboBox.Items.Add(w);//.Name);
+                PartnersComboBox.Items.Add(w);
 
             foreach (DatabaseAccess.Warehouse w in internalOnes)
                 foreach (DatabaseAccess.Sector s in w.Sectors)
                 {
-                    WarehousesComboBox.Items.Add(s);//w.Name + " - #" + s.Number);
+                    WarehousesComboBox.Items.Add(s);
                 }
 
             ProductGroupRow productRow = new ProductGroupRow();
@@ -100,11 +99,17 @@ namespace PresentationLayer
         {
             (sender as Button).IsEnabled = false;
 
-            DatabaseAccess.Warehouse senderW = 
+            if (PartnersComboBox.SelectedIndex < 0 || WarehousesComboBox.SelectedIndex < 0)
+            {
+                MessageBox.Show("Wypełnij poprawnie wszystkie dane.", "Uwaga");
+                (sender as Button).IsEnabled = true;
+                return;
+            }
+            DatabaseAccess.Warehouse senderW =
                 (DatabaseAccess.Warehouse)PartnersComboBox.Items[PartnersComboBox.SelectedIndex];
 
             DatabaseAccess.Warehouse recipientW =
-                ((DatabaseAccess.Sector)WarehousesComboBox.Items[PartnersComboBox.SelectedIndex]).Warehouse;
+                ((DatabaseAccess.Sector)WarehousesComboBox.Items[WarehousesComboBox.SelectedIndex]).Warehouse;
 
             DatabaseAccess.Sector sector = (DatabaseAccess.Sector)WarehousesComboBox.SelectedItem;
 
@@ -115,6 +120,12 @@ namespace PresentationLayer
             int i = 0;
             foreach (ProductGroupRow p in Products.Items)
             {
+                if (p.ProductsComboBox.SelectedIndex < 0)
+                {
+                    MessageBox.Show("Wypełnij poprawnie wszystkie dane.", "Uwaga");
+                    (sender as Button).IsEnabled = true;
+                    return;
+                }
                 productsInfo[0, i] = (string)p.ProductsComboBox.Text;
                 productsInfo[1, i] = p.Quantity.Text;
                 i++;
@@ -139,15 +150,23 @@ namespace PresentationLayer
 
                     for (int k = 0; k < productsCount; k++)
                     {
-                        DatabaseAccess.GroupDetails gd = new DatabaseAccess.GroupDetails()
+                        DatabaseAccess.GroupDetails gd = null;
+                        try
                         {
-                            Product = products.Find(delegate(DatabaseAccess.Product prod)
+                            gd = new DatabaseAccess.GroupDetails()
                             {
-                                return prod.Name == productsInfo[0, k];
-                            }),
-                            Count = int.Parse(productsInfo[1, k]),
-                        };
-
+                                Product = products.Find(delegate(DatabaseAccess.Product prod)
+                                {
+                                    return prod.Name == productsInfo[0, k];
+                                }),
+                                Count = int.Parse(productsInfo[1, k]),
+                            };
+                        }
+                        catch
+                        {
+                            MessageBox.Show("Wypełnij poprawnie wszystkie dane.", "Uwaga");
+                            return false;
+                        }
                         context.Products.Attach(gd.Product);
 
                         s.Group.GroupDetails.Add(gd);
@@ -162,7 +181,7 @@ namespace PresentationLayer
                     {
                         mainWindow.ReloadWindow();
                         this.Close();
-                    })), tokenSource);           
+                    })), tokenSource);
         }
 
         private void CancelButtonClick(object sender, RoutedEventArgs e)

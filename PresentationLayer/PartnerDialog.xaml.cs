@@ -42,6 +42,7 @@ namespace PresentationLayer
             tokenSource = new CancellationTokenSource();
 
             InitializeComponent();
+            this.DataContext = new WarehouseValidationRule();
 
             Header.Content = "Wprowadź dane:";
             Title = "Tworzenie nowego partnera";
@@ -148,7 +149,7 @@ namespace PresentationLayer
                     {
                         mainWindow.ReloadWindow();
                         this.Close();
-                    })), tokenSource);            
+                    })), tokenSource);
         }
 
         private void CancelClick(object sender, RoutedEventArgs e)
