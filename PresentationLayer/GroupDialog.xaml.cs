@@ -54,7 +54,7 @@ namespace PresentationLayer
                                 where true
                                 select p).ToList();
 
-                    internalOnes = (from w in context.Warehouses.Include("Sectors")
+                    internalOnes = (from w in context.Warehouses.Include("Sectors.Groups")
                                     where w.Internal == true
                                     select w).ToList();
 
