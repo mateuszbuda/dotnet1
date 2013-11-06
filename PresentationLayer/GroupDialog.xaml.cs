@@ -54,7 +54,7 @@ namespace PresentationLayer
                                 where true
                                 select p).ToList();
 
-                    internalOnes = (from w in context.Warehouses.Include("Sectors")
+                    internalOnes = (from w in context.Warehouses.Include("Sectors.Groups")
                                     where w.Internal == true
                                     select w).ToList();
 
@@ -134,10 +134,9 @@ namespace PresentationLayer
             DatabaseAccess.Sector sector = (DatabaseAccess.Sector)WarehousesComboBox.SelectedItem;
 
             int productsCount = Products.Items.Count;
-            String[,] productsInfo = new String[2, productsCount];
+            List<Tuple<string, int>> productsInfo = new List<Tuple<string, int>>();
             // productsInfo[0,*] - name
             // productsInfo[1,*] - quantity
-            int i = 0;
             foreach (ProductGroupRow p in Products.Items)
             {
                 if (p.ProductsComboBox.SelectedIndex < 0)
@@ -146,9 +145,26 @@ namespace PresentationLayer
                     (sender as Button).IsEnabled = true;
                     return;
                 }
-                productsInfo[0, i] = (string)p.ProductsComboBox.Text;
-                productsInfo[1, i] = p.Quantity.Text;
-                i++;
+                var pp = productsInfo.Find(q => q.Item1 == (string)p.ProductsComboBox.Text);
+                try
+                {
+                    int count = 0;
+                    if (pp == null)
+                        productsInfo.Add(new Tuple<string, int>((string)p.ProductsComboBox.Text, count = int.Parse(p.Quantity.Text)));
+                    else
+                    {
+                        productsInfo.Remove(pp);
+                        productsInfo.Add(new Tuple<string, int>((string)p.ProductsComboBox.Text, count = pp.Item2 + int.Parse(p.Quantity.Text)));
+                    }
+                    if (count < 0)
+                        throw new InvalidOperationException();
+                }
+                catch
+                {
+                    MessageBox.Show("Wypełnij poprawnie wszystkie dane.", "Uwaga");
+                    (sender as Button).IsEnabled = true;
+                    return;
+                }
             }
 
             DatabaseAccess.SystemContext.Transaction(context =>
@@ -168,7 +184,7 @@ namespace PresentationLayer
                             GroupDetails = new List<DatabaseAccess.GroupDetails>()
                         };
 
-                    for (int k = 0; k < productsCount; k++)
+                    for (int k = 0; k < productsInfo.Count; k++)
                     {
                         DatabaseAccess.GroupDetails gd = null;
                         try
@@ -177,9 +193,9 @@ namespace PresentationLayer
                             {
                                 Product = products.Find(delegate(DatabaseAccess.Product prod)
                                 {
-                                    return prod.Name == productsInfo[0, k];
+                                    return prod.Name == productsInfo[k].Item1;
                                 }),
-                                Count = int.Parse(productsInfo[1, k]),
+                                Count = productsInfo[k].Item2,
                             };
                         }
                         catch
@@ -187,6 +203,10 @@ namespace PresentationLayer
                             MessageBox.Show("Wypełnij poprawnie wszystkie dane.", "Uwaga");
                             return false;
                         }
+                        //List<DatabaseAccess.Product> sameProducts = products.FindAll(delegate(DatabaseAccess.Product prod)
+                        //        {
+                        //            return prod.Name == productsInfo[0, k];
+                        //        });
                         context.Products.Attach(gd.Product);
 
                         s.Group.GroupDetails.Add(gd);

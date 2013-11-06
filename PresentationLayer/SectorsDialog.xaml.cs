@@ -130,6 +130,12 @@ namespace PresentationLayer
                 (sender as Button).IsEnabled = true;
                 return;
             }
+            if (limit < 1)
+            {
+                MessageBox.Show("Wprowadź poprawną pojemność sektora.", "Uwaga");
+                (sender as Button).IsEnabled = true;
+                return;
+            }
 
             DatabaseAccess.SystemContext.Transaction(context =>
                 {
