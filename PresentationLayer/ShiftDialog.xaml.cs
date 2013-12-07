@@ -80,7 +80,7 @@ namespace PresentationLayer
 
             foreach (DatabaseAccess.Warehouse w in warehouses)
                 foreach (DatabaseAccess.Sector s in w.Sectors)
-                    if (!s.IsFull())
+                    if ((w.Internal == true && !s.IsFull()) || w.Internal == false)
                         WarehousesComboBox.Items.Add(s);
         }
 
